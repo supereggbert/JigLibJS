@@ -26,10 +26,10 @@
 (function(jigLib){
 	var Vector3D=jigLib.Vector3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JBox=jigLib.JBox;
+    var JNumber3D=jigLib.JNumber3D;
+    var JBox=jigLib.JBox;
 
-	var JChassis=function(car, skin, width = 40, depth = 70, height = 30){
+	var JChassis=function(car, skin, width, depth, height){
 		if(width==null) width=40;
 		if(depth==null) depth=70;
 		if(height==null) height=30;
@@ -37,24 +37,24 @@
 		this.super(skin, width, depth, height);
 
 		this._car = car;
-	}
+	};
 	jigLib.extends(JChassis,jigLib.JBox);
 	
 	JChassis.prototype._car=null;
 	
 	JChassis.prototype.get_car=function(){
 		return this._car;
-	}
+	};
 
 	JChassis.prototype.addExternalForces=function(dt){
 		this.clearForces();
 		this.addGravity();
 		this._car.addExternalForces(dt);
-	}
+	};
 
 	JChassis.prototype.postPhysics=function(dt){
 		this._car.postPhysics(dt);
-	}
+	};
 	
 	jigLib.JChassis=JChassis;
 	

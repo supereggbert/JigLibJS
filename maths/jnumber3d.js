@@ -5,7 +5,7 @@
 	/**
 	* @author katopz
 	*/
-	var JNumber3D={}
+	var JNumber3D={};
 	
 	JNumber3D.NUM_TINY = 0.00001;
 	JNumber3D.NUM_HUGE = 100000;
@@ -16,19 +16,15 @@
 		
 	JNumber3D.toArray=function(v){
 		return [v.x, v.y, v.z];
-	}
+	};
 	
 	JNumber3D.getScaleVector=function(v, s){
 		return new Vector3D(v.x*s,v.y*s,v.z*s,v.w);
-	}
+	};
 
 	JNumber3D.getDivideVector=function(v, w){
-		if (w != 0){
-			return new Vector3D(v.x / w, v.y / w, v.z / w);
-		}else{
-			return new Vector3D(0, 0, 0);
-		}
-	}
+		return (w) ? new Vector3D(v.x / w, v.y / w, v.z / w) : new Vector3D(0, 0, 0);
+	};
 	
 	JNumber3D.getNormal=function(v0, v1, v2){
 		var E = v1.clone();
@@ -37,7 +33,7 @@
 		N.normalize();
 
 		return N;
-	}
+	};
 
 	JNumber3D.copyFromArray=function(v, arr){
 		if (arr.length >= 3)
@@ -46,7 +42,7 @@
 			v.y = arr[1];
 			v.z = arr[2];
 		}
-	}
+	};
 
 	JNumber3D.getLimiteNumber=function(num, min, max){
 		var n = num;
@@ -56,7 +52,7 @@
 			n = max;
 		}
 		return n;
-	}
+	};
 	
 	jigLib.JNumber3D=JNumber3D;
 	

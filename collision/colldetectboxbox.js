@@ -42,7 +42,7 @@
 		this.name = "BoxBox";
 		this.type0 = "BOX";
 		this.type1 = "BOX";
-	}
+	};
 	
 	jigLib.extends(CollDetectBoxBox,jigLib.CollDetectFunctor);
 	
@@ -57,26 +57,27 @@
 		var obj0Max = obj0.max;
 		var obj1Min = obj1.min;
 		var obj1Max = obj1.max;
+		var mmin = Math.min;
                         
 		if (obj0Min > (obj1Max + JConfig.collToll + JNumber3D.NUM_TINY) || obj1Min > (obj0Max + JConfig.collToll + JNumber3D.NUM_TINY)){
 			out.flag = true;
 			return true;
 		}
 		if ((obj0Max > obj1Max) && (obj1Min > obj0Min)){
-			out.depth = Math.min(obj0Max - obj1Min, obj1Max - obj0Min);
+			out.depth = mmin(obj0Max - obj1Min, obj1Max - obj0Min);
 		}else if ((obj1Max > obj0Max) && (obj0Min > obj1Min)){
-			out.depth = Math.min(obj1Max - obj0Min, obj0Max - obj1Min);
+			out.depth = mmin(obj1Max - obj0Min, obj0Max - obj1Min);
 		}else{
-			out.depth = Math.min(obj0Max, obj1Max);
+			out.depth = mmin(obj0Max, obj1Max);
 			out.depth -= Math.max(obj0Min, obj1Min);
 		}
 		out.flag = false;
 		return false;
-	}
+	};
 
 	CollDetectBoxBox.prototype.addPoint=function(contactPoints, pt, combinationDistanceSq){
-		for(var i=0; i<contactPoints.length;i++){
-			var contactPoint=contactPoints[i]
+		for(var i=0,cpsl=contactPoints.length;i<cpsl;i++){
+			var contactPoint=contactPoints[i];
 			if (contactPoint.subtract(pt).lengthSquared < combinationDistanceSq){
 				contactPoint = JNumber3D.getDivideVector(contactPoint.add(pt), 2);
 				return false;
@@ -84,7 +85,7 @@
 		}
 		contactPoints.push(pt);
 		return true;
-	}
+	};
 
 	CollDetectBoxBox.prototype.getBox2BoxEdgesIntersectionPoints=function(contactPoint, box0, box1, newState){
 		var num = 0;
@@ -94,8 +95,8 @@
 		var boxPts = box1.getCornerPoints(box1State);
 		var boxEdges = box1.get_edges();
 		var outObj;
-
-		for(var i=0;i<boxEdges.length;i++){
+		
+		for(var i=0,bel=boxEdges.length;i<bel;i++){
 			boxEdge=boxEdges[i];
 			outObj = {};
 			seg = new JSegment(boxPts[boxEdge.ind0], boxPts[boxEdge.ind1].subtract(boxPts[boxEdge.ind0]));
@@ -106,13 +107,13 @@
 			}
 		}
 		return num;
-	}
+	};
 
 	CollDetectBoxBox.prototype.getBoxBoxIntersectionPoints=function(contactPoint, box0, box1, newState){
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box0, box1, newState);
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box1, box0, newState);
 		return contactPoint.length;
-	}
+	};
 	
 	/*
 	* Original Author: Olivier renault
@@ -121,7 +122,7 @@
 	CollDetectBoxBox.prototype.getPointPointContacts=function(PA, PB, CA, CB){
 		CA.push(PA.clone());
 		CB.push(PB.clone());
-	}
+	};
 
 	CollDetectBoxBox.prototype.getPointEdgeContacts=function(PA, PB0, PB1, CA, CB){
 		var B0A = PA.subtract(PB0);
@@ -136,7 +137,7 @@
 
 		CA.push(PA.clone());
 		CB.push(PB0.add(JNumber3D.getScaleVector(BD, t)));
-	}
+	};
 
 	CollDetectBoxBox.prototype.getPointFaceContacts=function(PA, BN, BD, CA, CB){
 		var dist = PA.dotProduct(BN) - BD;
@@ -145,7 +146,7 @@
 		this.addPoint(CB, PA.subtract(JNumber3D.getScaleVector(BN, dist)), combinationDist);
 		//CA.push(PA.clone());
 		//CB.push(PA.subtract(JNumber3D.getScaleVector(BN, dist)));
-	}
+	};
 
 	CollDetectBoxBox.prototype.getEdgeEdgeContacts=function(PA0, PA1, PB0, PB1, CA, CB){
 		var AD = PA1.subtract(PA0);
@@ -161,7 +162,7 @@
 		}
 
 		this.getPointEdgeContacts(PA0.add(JNumber3D.getScaleVector(AD, at)), PB0, PB1, CA, CB);
-	}
+	};
 
 	CollDetectBoxBox.prototype.getPolygonContacts=function(Clipper, Poly, CA, CB){
 		if (!this.polygonClip(Clipper, Poly, CB)){
@@ -171,11 +172,11 @@
 		var clipper_d = Clipper[0].dotProduct(ClipperNormal);
 
 		var temp = [];
-		for(var i=0; i<CB.length;i++){
+		for(var i=0,cbl=CB.length;i<cbl;i++){
 			cb=CB[i];
 			this.getPointFaceContacts(cb, ClipperNormal, clipper_d, temp, CA);
 		}
-	}
+	};
 
 	
 	CollDetectBoxBox.prototype.polygonClip=function(axClipperVertices, axPolygonVertices, axClippedPolygon){
@@ -188,19 +189,18 @@
 		var N;
 		var D;
 		var temp = axPolygonVertices.concat();
-		var len = axClipperVertices.length;
-		for (var ip1 = 0; ip1 < len; i = ip1, ip1++){
+		for (var ip1=0,len=axClipperVertices.length;ip1<len;i=ip1,ip1++){
 			D = axClipperVertices[ip1].subtract(axClipperVertices[i]);
 			N = D.crossProduct(ClipperNormal);
 			var dis = axClipperVertices[i].dotProduct(N);
 
-			if (!this.planeClip(temp, axClippedPolygon, N, dis)){
+			if (!this.planeClip(temp, axClippedPolygon, N, dis))
 				return false;
-			}
+
 			temp = axClippedPolygon.concat();
 		}
 		return true;
-	}
+	};
 
 	CollDetectBoxBox.prototype.planeClip=function(A, B, xPlaneNormal, planeD){
 		var bBack = [];
@@ -208,13 +208,15 @@
 		var bFrontVerts = false;
 
 		var side;
+		
 		for (var s in A){
 			side = A[s].dotProduct(xPlaneNormal) - planeD;
 			bBack[s] = (side < 0) ? true : false;
 			bBackVerts = bBackVerts || bBack[s];
 			bFrontVerts = bBackVerts || !bBack[s];
+			debug+=s+',';
 		}
-
+		
 		if (!bBackVerts){
 			return false;
 		}
@@ -248,7 +250,7 @@
 		}
 
 		return true;
-	}
+	};
 
 	CollDetectBoxBox.prototype.collDetect=function(info, collArr){
 		var box0 = info.body0;
@@ -335,12 +337,14 @@
 		}else{
 			this.boxSortCollDetect(info, collArr, box0, box1, N, minDepth);
 		}
-	}
+	};
 	
 	CollDetectBoxBox.prototype.boxEdgesCollDetect=function(info, collArr, box0, box1, N, depth){
 		var contactPointsFromOld = true;
 		var contactPoints = [];
-		combinationDist = 0.5 * Math.min(Math.min(box0.get_sideLengths().x, box0.get_sideLengths().y, box0.get_sideLengths().z), Math.min(box1.get_sideLengths().x, box1.get_sideLengths().y, box1.get_sideLengths().z));
+		var mmin = Math.min;
+		
+		combinationDist = 0.5 * mmin(mmin(box0.get_sideLengths().x, box0.get_sideLengths().y, box0.get_sideLengths().z), mmin(box1.get_sideLengths().x, box1.get_sideLengths().y, box1.get_sideLengths().z));
 		combinationDist *= combinationDist;
 
 		if (depth > -JNumber3D.NUM_TINY){
@@ -369,7 +373,7 @@
 				box1ReqPosition = box1.get_currentState().position;
 			}
         
-			for(var i=0; i<contactPoints.length;i++){
+			for(var i=0, cpl=contactPoints.length; i<cpl;i++){
 				contactPoint=contactPoints[i];
 				cpInfo = new CollPointInfo();
 				cpInfo.r0 = contactPoint.subtract( box0ReqPosition);
@@ -384,15 +388,16 @@
 			collInfo.pointInfo = collPts;
 
 			var mat = new MaterialProperties();
-			mat.set_restitution(Math.sqrt(box0.get_material().get_restitution() * box1.get_material().get_restitution()));
-			mat.set_friction(Math.sqrt(box0.get_material().get_friction() * box1.get_material().get_friction()));
+			var msqrt = Math.sqrt;
+			mat.set_restitution(msqrt(box0.get_material().get_restitution() * box1.get_material().get_restitution()));
+			mat.set_friction(msqrt(box0.get_material().get_friction() * box1.get_material().get_friction()));
 			collInfo.mat = mat;
 			collArr.push(collInfo);
 
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
 		}
-	}
+	};
 
 	CollDetectBoxBox.prototype.boxSortCollDetect=function(info, collArr, box0, box1, N, depth){
 		var contactA = [];
@@ -401,8 +406,9 @@
 		var supportVertB = box1.getSupportVertices(JNumber3D.getScaleVector(N, -1));
 		var iNumVertsA = supportVertA.length;
 		var iNumVertsB = supportVertB.length;
+		var mmin = Math.min;
 
-		combinationDist = 0.2 * Math.min(Math.min(box0.get_sideLengths().x, box0.get_sideLengths().y, box0.get_sideLengths().z), Math.min(box1.get_sideLengths().x, box1.get_sideLengths().y, box1.get_sideLengths().z));
+		combinationDist = 0.2 * mmin(mmin(box0.get_sideLengths().x, box0.get_sideLengths().y, box0.get_sideLengths().z), mmin(box1.get_sideLengths().x, box1.get_sideLengths().y, box1.get_sideLengths().z));
 		combinationDist *= combinationDist;
 
 		if (iNumVertsA == 1){
@@ -472,15 +478,16 @@
 		collInfo.pointInfo = collPts;
 
 		var mat = new MaterialProperties();
-		mat.set_restitution(Math.sqrt(box0.get_material().get_restitution() * box1.get_material().get_restitution()));
-		mat.set_friction(Math.sqrt(box0.get_material().get_friction() * box1.get_material().get_friction()));
+		var msqrt = Math.sqrt;
+		mat.set_restitution(msqrt(box0.get_material().get_restitution() * box1.get_material().get_restitution()));
+		mat.set_friction(msqrt(box0.get_material().get_friction() * box1.get_material().get_friction()));
 		collInfo.mat = mat;
 		collArr.push(collInfo);
 
 		info.body0.collisions.push(collInfo);
 		info.body1.collisions.push(collInfo);
-	}
+	};
 	
 	jigLib.CollDetectBoxBox=CollDetectBoxBox;
 	
-})(jigLib)
+})(jigLib);

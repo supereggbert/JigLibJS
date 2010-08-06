@@ -4,11 +4,11 @@
 	/**
 	* @author Paul Brunt
 	*/
-	var Vector3D=function(x,y,z,w){
-		if(x) this.x=x;
-		if(y) this.y=y;
-		if(z) this.z=z;
-		if(w)	this.w=w;
+	var Vector3D=function(x,y,z,w){ 
+		var n = arguments.length;
+		if (n==0) return;
+		else if (n>=3) { this.x=x; this.y=y; this.z=z; }
+		if (n==4) this.w=w;
 	}
 	Vector3D.prototype.x=0;
 	Vector3D.prototype.y=0;

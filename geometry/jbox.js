@@ -110,7 +110,7 @@
 		var transform = JMatrix3D.getTranslationMatrix(state.position.x, state.position.y, state.position.z);
 		transform = JMatrix3D.getAppendMatrix3D(state.get_orientation(), transform);
                         
-		for(var i=0;i<this._points.length;i++){
+		for(var i=0, pl=this._points.length; i<pl; i++){
 			var _point=this._points[i];
 			vertex = new Vector3D(_point.x, _point.y, _point.z);
 			JMatrix3D.multiplyVector(transform, vertex);

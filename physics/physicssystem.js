@@ -48,7 +48,7 @@
 		this._collisionSystem = new CollisionSystem();
 
 		this.setGravity(JNumber3D.getScaleVector(Vector3D.Y_AXIS, -10));
-	}
+	};
 	
 	PhysicsSystem.prototype._currentPhysicsSystem=null;
 
@@ -79,21 +79,21 @@
 			PhysicsSystem._currentPhysicsSystem = new PhysicsSystem();
 		}
 		return PhysicsSystem._currentPhysicsSystem;
-	}
+	};
 	
 	PhysicsSystem.prototype.getAllExternalForces=function(dt){
-		for(var i=0;i<this._bodies.length;i++){
+		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			this._bodies[i].addExternalForces(dt);
 		}
 
-		for(var i=0;i<this._controllers.length;i++){
+		for(var i=0, cl=this._controllers.length; i<cl; i++){
 			this._controllers[i].updateController(dt);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.getCollisionSystem=function(){
 		return _collisionSystem;
-	}
+	};
 
 	PhysicsSystem.prototype.setGravity=function(gravity){
 		this._gravity = gravity;
@@ -108,20 +108,20 @@
 		if (Math.abs(this._gravity.z) > Math.abs(JNumber3D.toArray(this._gravity)[this._gravityAxis])){
 			this._gravityAxis = 2;
 		}
-	}
+	};
 
 	// global gravity acceleration
 	PhysicsSystem.prototype.get_gravity=function(){
 		return this._gravity;
-	}
+	};
 
 	PhysicsSystem.prototype.get_gravityAxis=function(){
 		return this._gravityAxis;
-	}
+	};
 
 	PhysicsSystem.prototype.get_bodys=function(){
 		return this._bodies;
-	}
+	};
 
 	// Add a rigid body to the simulation
 	PhysicsSystem.prototype.addBody=function(body){
@@ -129,53 +129,53 @@
 			this._bodies.push(body);
 			this._collisionSystem.addCollisionBody(body);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.removeBody=function(body){
 		if (this.findBody(body)){
 			this._bodies.splice(this._bodies.indexOf(body), 1);
 			this._collisionSystem.removeCollisionBody(body);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.removeAllBodys=function(){
 		this._bodies = [];
 		this._collisionSystem.removeAllCollisionBodys();
-	}
+	};
 
 	// Add a constraint to the simulation
 	PhysicsSystem.prototype.addConstraint=function(constraint){
 		if (!this.findConstraint(constraint)){
 			this._constraints.push(constraint);
 		}
-	}
+	};
 	
 	PhysicsSystem.prototype.removeConstraint=function(constraint){
 		if (this.findConstraint(constraint)){
 			this._constraints.splice(this._constraints.indexOf(constraint), 1);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.removeAllConstraints=function(){
 		this._constraints = [];
-	}
+	};
 
 	// Add a physics controlled to the simulation
 	PhysicsSystem.prototype.addController=function(controller){
 		if (!this.findController(controller)){
 			this._controllers.push(controller);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.removeController=function(controller){
 		if (this.findController(controller)){
 			this._controllers.splice(this._controllers.indexOf(controller), 1);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.removeAllControllers=function(){
 		this._controllers = [];
-	}
+	};
 
 	PhysicsSystem.prototype.setSolverType=function(type){
 		switch (type)
@@ -193,7 +193,7 @@
 				this.processContactFn = this.processCollision;
 				return;
 			case "ACCUMULATED":
-				this.preProcessCollisionFn = this.preProcessCollisionNormal;
+				this.preProcessCollisionFn = this.preProcessCollisionAccumulated;
 				this.preProcessContactFn = this.preProcessCollisionAccumulated;
 				this.processCollisionFn = this.processCollision;
 				this.processContactFn = this.processCollisionAccumulated;
@@ -205,34 +205,31 @@
 				this.processContactFn = this.processCollision;
 				return;
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.findBody=function(body){
-		for(var i=0;i<this._bodies.length;i++){
-			if(body==this._bodies[i]){
+		for(var i=0, bl=this._bodies.length; i<bl; i++){
+			if(body==this._bodies[i])
 				return true;
-			}
 		}
 		return false;
-	}
+	};
 
 	PhysicsSystem.prototype.findConstraint=function(constraint){
-		for(var i=0;i<this._constraints.length;i++){
-			if(constraint==this._constraints[i]){
+		for(var i=0, cl=this._constraints.length; i<cl; i++){
+			if(constraint==this._constraints[i])
 				return true;
-			}
 		}
 		return false;
-	}
+	};
 
 	PhysicsSystem.prototype.findController=function(controller){
-		for(var i=0;i<this._controllers.length;i++){
-			if(controller==this._controllers[i]){
+		for(var i=0, cl=this._controllers.length; i<cl; i++){
+			if(controller==this._controllers[i])
 				return true;
-			}
 		}
 		return false;
-	}
+	};
 
 	// fast-but-inaccurate pre-processor
 	PhysicsSystem.prototype.preProcessCollisionFast=function(collision, dt){
@@ -304,7 +301,7 @@
 				ptInfo.minSeparationVel = this._maxVelMag;
 			}
 		}
-	}
+	};
 
 	// Special pre-processor for the normal solver
 	PhysicsSystem.prototype.preProcessCollisionNormal=function(collision, dt){
@@ -353,7 +350,7 @@
 			}
 		}
 
-	}
+	};
 
 	// Special pre-processor for the accumulated solver
 	PhysicsSystem.prototype.preProcessCollisionAccumulated=function(collision, dt){
@@ -366,6 +363,7 @@
 
 		var tempV;
 		var ptInfo;
+		var initMinAllowedPen;
 		var approachScale = 0;
 		var numTiny = JNumber3D.NUM_TINY;
 		var allowedPenetration = JConfig.allowedPenetration;
@@ -373,6 +371,7 @@
 		var len = collision.pointInfo.length;
 		for (var i = 0; i < len; i++){
 			ptInfo = collision.pointInfo[i];
+			initMinAllowedPen = ptInfo.initialPenetration - allowedPenetration;
 			if (!body0.get_movable()){
 				ptInfo.denominator = 0;
 			}else{
@@ -390,15 +389,16 @@
 				ptInfo.denominator = numTiny;
 			}
 			if (ptInfo.initialPenetration > allowedPenetration){
-				ptInfo.minSeparationVel = (ptInfo.initialPenetration -allowedPenetration) / timescale;
+				ptInfo.minSeparationVel = initMinAllowedPen / timescale;
 			}else{
-				approachScale = -0.1 * (ptInfo.initialPenetration - allowedPenetration) / allowedPenetration;
-				if (approachScale < numTiny){
+				approachScale = -0.1 * initMinAllowedPen / allowedPenetration;
+				
+				if (approachScale < numTiny)
 					approachScale = numTiny;
-				}else if (approachScale > 1){
+				else if (approachScale > 1)
 					approachScale = 1;
-				}
-				ptInfo.minSeparationVel = approachScale * (ptInfo.initialPenetration - allowedPenetration) / Math.max(dt, numTiny);
+				
+				ptInfo.minSeparationVel = approachScale * initMinAllowedPen / Math.max(dt, numTiny);
 			}
 
 			ptInfo.accumulatedNormalImpulse = 0;
@@ -408,10 +408,10 @@
 			var bestDistSq = 0.04;
 			var bp = new BodyPair(body0, body1, new Vector3D(), new Vector3D());
 
-			for(var j=0;j<this._cachedContacts.length;j++){
-				if (!(bp.body0 == this._cachedContacts[j].pair.body0 && bp.body1 == this._cachedContacts[j].pair.body1)){
+			for(var j=0, ccl=this._cachedContacts.length; j<ccl; j++){
+				if (!(bp.body0 == this._cachedContacts[j].pair.body0 && bp.body1 == this._cachedContacts[j].pair.body1))
 					continue;
-				}
+				
 				var distSq = (this._cachedContacts[j].pair.body0 == body0) ? this._cachedContacts[j].pair.r.subtract(ptInfo.r0).lengthSquared : this._cachedContacts[j].pair.r.subtract(ptInfo.r1).lengthSquared;
 
 				if (distSq < bestDistSq){
@@ -437,7 +437,7 @@
 				body1.applyBodyWorldImpulseAux(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
 			}
 		}
-	}
+	};
 	
 	/* Handle an individual collision by classifying it, calculating
 	impulse, applying impulse and updating the velocities of the
@@ -526,7 +526,7 @@
 			body1.setConstraintsAndCollisionsUnsatisfied();
 		}
 		return gotOne;
-	}
+	};
 
 	// Accumulated and clamp impulses
 	PhysicsSystem.prototype.processCollisionAccumulated=function(collision, dt){
@@ -640,16 +640,16 @@
 			body1.setConstraintsAndCollisionsUnsatisfied();
 		}
 		return gotOne;
-	}
+	};
 	
 	PhysicsSystem.prototype.updateContactCache=function(){
 		this._cachedContacts = [];
 		var ptInfo;
 		var fricImpulse;
 		var contact;
-		for(var i=0;i<this._collisions.length;i++){			var collInfo=this._collisions[i];
-			for (var j in this._collisions[i].pointInfo){
-				ptInfo = this._collisions[i].pointInfo[j];
+		for(var i=0, cl=this._collisions.length; i<cl; i++){			var collInfo=this._collisions[i];
+			for (var j in collInfo.pointInfo){
+				ptInfo = collInfo.pointInfo[j];
 				fricImpulse = (collInfo.objInfo.body0.id > collInfo.objInfo.body1.id) ? ptInfo.accumulatedFrictionImpulse : JNumber3D.getScaleVector(ptInfo.accumulatedFrictionImpulse, -1);
 
 				contact = new ContactData();
@@ -659,24 +659,24 @@
 				this._cachedContacts.push(contact);
 			}
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.handleAllConstraints=function(dt, iter, forceInelastic){
 		var origNumCollisions = this._collisions.length;
 		var collInfo;
 		var _constraint;
-		for(var i=0;i<this._constraints.length;i++){
-                        this._constraints[i].preApply(dt);
+		for(var i=0, cl=this._constraints.length; i<cl; i++){
+        	this._constraints[i].preApply(dt);
 		}
 
 		if (forceInelastic){
-			for(var i=0;i<this._collisions.length;i++){
+			for(var i=0, cl=this._collisions.length; i<cl; i++){
 				this.preProcessContactFn(this._collisions[i], dt);
 				this._collisions[i].mat.set_restitution(0);
 				this._collisions[i].satisfied=false;
 			}
 		}else{
-			for(var i=0;i<this._collisions.length;i++){
+			for(var i=0, cl=this._collisions.length; i<cl;i++){
 				this.preProcessCollisionFn(this._collisions[i], dt);
 			}
 		}
@@ -687,8 +687,8 @@
 		for (var step = 0; step < iter; step++){
 			gotOne = false;
 
-			for(var i=0;i<this._collisions.length;i++){
-				collInfo=this._collisions[i]
+			for(var i=0, cl=this._collisions.length; i<cl;i++){
+				collInfo=this._collisions[i];
 				if (!collInfo.satisfied){
 					if (forceInelastic){
 						flag = this.processContactFn(collInfo, dt);
@@ -699,7 +699,7 @@
 					}
 				}
 			}
-			for(var i=0;i<this._constraints.length;i++){
+			for(var i=0, cl=this._constraints.length; i<cl; i++){
 				var _constraint=this._constraints[i];
 				if (!_constraint.get_satisfied()){
 					flag = _constraint.apply(dt);
@@ -726,7 +726,7 @@
 				break;
 			}
 		}
-	}
+	};
 	
 	PhysicsSystem.prototype.activateObject=function(body){
 		if (!body.get_movable() || body.isActive){
@@ -750,18 +750,18 @@
 				this.activateObject(other_body);
 			}
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.dampAllActiveBodies=function(){
-		for(var i=0;i<this._activeBodies.length;i++){
+		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
 			_activeBody.dampForDeactivation();
-                }
-	}
+        }
+	};
 
 	PhysicsSystem.prototype.tryToActivateAllFrozenObjects=function(){
-		for(var i=0;i<this._bodies.length;i++){
-			var _body=this._bodies[i]
+		for(var i=0, bl=this._bodies.length; i<bl; i++){
+			var _body=this._bodies[i];
 			if (!_body.isActive){
 				if (_body.getShouldBeActive()){
 					this.activateObject(_body);
@@ -774,12 +774,12 @@
 				}
 			}	
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.activateAllFrozenObjectsLeftHanging=function(){
 		var other_body;
-                for(var i=0;i<this._bodies.length;i++){
-			var _body=this._bodies[i]
+        for(var i=0, bl=this._bodies.length; i<bl; i++){
+			var _body=this._bodies[i];
 			if (_body.isActive){
 				_body.doMovementActivations();
 				if (_body.collisions.length > 0){
@@ -795,92 +795,94 @@
 				}
 			}
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.updateAllVelocities=function(dt){
-		for(var i=0;i<this._activeBodies.length;i++){
+		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
 			_activeBody.updateVelocity(dt);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.updateAllPositions=function(dt){
-		for(var i=0;i<this._activeBodies.length;i++){
+		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
 			_activeBody.updatePositionWithAux(dt);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.notifyAllPostPhysics=function(dt){
-                for(var i=0;i<this._bodies.length;i++){
+        for(var i=0, abl=this._bodies.length; i<abl; i++){
 			_body=this._bodies[i];
 			_body.postPhysics(dt);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.updateAllObject3D=function(){
-		for(var i=0;i<this._bodies.length;i++){
+		for(var i=0, abl=this._bodies.length; i<abl; i++){
 			_body=this._bodies[i];
 			_body.updateObject3D();
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.limitAllVelocities=function(){
-		for(var i=0;i<this._activeBodies.length;i++){
+		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
 			_activeBody.limitVel();
 			_activeBody.limitAngVel();
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.tryToFreezeAllObjects=function(dt){
-		for(var i=0;i<this._activeBodies.length;i++){
+		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
 			_activeBody.tryToFreeze(dt);
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.detectAllCollisions=function(dt){
-		for(var i=0;i<this._activeBodies.length;i++){
+		for (var i=0, abl=this._activeBodies.length; i<abl; i++)
+		{
 			_activeBody=this._activeBodies[i];
 			_activeBody.storeState();
 		}
 		
 		this.updateAllVelocities(dt);
 		this.updateAllPositions(dt);
-
-		for(var i=0;i<this._bodies.length;i++){
+		
+		for (var i=0, bl=this._bodies.length; i<bl; i++)
+		{
 			_body=this._bodies[i];
 			_body.collisions = [];
 		}
-			
+		
 		this._collisions = [];
 		this._collisionSystem.detectAllCollisions(this._activeBodies, this._collisions);
-
-		for(var i=0;i<this._activeBodies.length;i++){
+		
+		for (var i=0, abl=this._activeBodies.length; i<abl; i++)
+		{
 			_activeBody=this._activeBodies[i];
 			_activeBody.restoreState();
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.copyAllCurrentStatesToOld=function(){
-		for(var i=0;i<this._bodies.length;i++){
+		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			_body=this._bodies[i];
-			if (_body.isActive || _body.getVelChanged()){
+			if (_body.isActive || _body.getVelChanged())
 				_body.copyCurrentStateToOld();
-			}
 		}
-	}
+	};
 
 	PhysicsSystem.prototype.findAllActiveBodies=function(){
 		this._activeBodies = [];
                 
-		for(var i=0;i<this._bodies.length;i++){
+		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			var _body=this._bodies[i];			if (_body.isActive){
 				this._activeBodies.push(_body);
 			}
 		}
-	}
+	};
 
 	// Integrates the system forwards by dt - the caller is
 	// responsible for making sure that repeated calls to this use
@@ -910,14 +912,14 @@
 		if (JConfig.solverType == "ACCUMULATED"){
 			this.updateContactCache();
 		}
-		for(var i=0;i<this._bodies.length;i++){
+		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			_body=this._bodies[i];
 			_body.clearForces();
 		}
 
 		this._doingIntegration = false;
-	}
+	};
 	
 	jigLib.PhysicsSystem=PhysicsSystem;
 	
-})(jigLib)
+})(jigLib);

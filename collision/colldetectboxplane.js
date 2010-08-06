@@ -69,7 +69,8 @@
 		var oldPt;
 		var newDepth;
 		var oldDepth;
-		for (var i in newPts){
+		
+		for (var i=0; i<8; i++){
 			newPt = newPts[i];
 			oldPt = oldPts[i];
 			newDepth = -1 * plane.pointPlaneDistance(newPt);

@@ -105,7 +105,7 @@
 		var info;
 		var fu;
 
-		for(var i=0;i<this.collBody.length;i++){
+		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
 			if (body != _collBody && this.checkCollidables(body, _collBody) && this.detectionFunctors[body.get_type()][_collBody.get_type()] != undefined){
 				info = new CollDetectInfo();
@@ -124,7 +124,7 @@
 		var bodyID;
 		var bodyType;
                         
-		for(var i=0; i<bodies.length;i++){
+		for(var i=0, bl=bodies.length; i<bl; i++){
 			var _body=bodies[i];
 			bodyID = _body.id;
 			bodyType = _body.get_type();
@@ -157,7 +157,7 @@
 
 		var obj= {};
 
-		for(var i=0;i <this.collBody.length;i++){
+		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
 			if (_collBody != ownerBody && segmentBounding(seg, _collBody)){
 				if (_collBody.segmentIntersect(obj, seg, _collBody.get_currentState())){
@@ -171,14 +171,14 @@
 			}
 		}
 
-		if (out.fracOut > 1){
+		if (out.fracOut > 1)
 			return false;
-		}
-		if (out.fracOut < 0){
+		
+		if (out.fracOut < 0)
 			out.fracOut = 0;
-		}else if (out.fracOut > 1){
+		else if (out.fracOut > 1)
 			out.fracOut = 1;
-		}
+		
 		return true;
 	}
 
@@ -200,11 +200,10 @@
 	}
 
         CollisionSystem.prototype.findBody=function(body){
-		for(var i=0;i<this.collBody.length;i++){
+		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
-			if (body == _collBody){
+			if (body == _collBody)
 				return true;
-			}
 		}
 		return false;
 	}
@@ -214,18 +213,16 @@
 			return true;
 		}
 		var nonCollidables=body0.get_nonCollidables();
-		for(var i=0;i<nonCollidables.length;i++){
+		for(var i=0, ncl=nonCollidables.length; i<ncl; i++){
 			var _body0=nonCollidables[i];
-			if (body1 == _body0){
+			if (body1 == _body0)
 				return false;
-			}
 		}
 		nonCollidables=body1.get_nonCollidables();
-		for(var i=0;i<nonCollidables.length;i++){
+		for(var i=0, ncl=nonCollidables.length; i<ncl; i++){
 			var _body1=nonCollidables[i];
-			if (body0 == _body1){
+			if (body0 == _body1)
 				return false;
-			}
 		}
 		return true;
 	}

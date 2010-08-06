@@ -125,7 +125,7 @@
 
 	JCar.prototype.addExternalForces=function(dt){
 		wheels=this.get_wheels();
-		for(var i=0;i<wheels.length;i++){
+		for(var i=0, wl=wheels.length; i<wl; i++){
 			wheels[i].addForcesToCar(dt);
 		}
 	}
@@ -133,7 +133,7 @@
 	// Update stuff at the end of physics
 	JCar.prototype.postPhysics=function(dt){
 		wheels=this.get_wheels();
-		for(var i=0;i<wheels.length;i++){
+		for(var i=0, wl=wheels.length; i<wl; i++){
 			wheels[i].update(dt);
 		}
 
@@ -162,7 +162,7 @@
 
 		var alpha = Math.abs(this._maxSteerAngle * this._steering);
 		var angleSgn = (this._steering > 0) ? 1 : -1;
-		for(var i=0;i<this._steerWheels.length;i++){
+		for(var i=0, swl=this._steerWheels.length; i<swl; i++){
 			var _steerWheel=this._steerWheels[i];
 			_steerWheel.setSteerAngle(angleSgn * alpha);
 		}
@@ -171,14 +171,13 @@
 	JCar.prototype.getNumWheelsOnFloor=function(){
 		var count = 0;
 		wheels=this.get_wheels();
-		for(var i=0;i<wheels.length;i++){
+		for(var i=0, wl=wheels.length; i<wl; i++){
 			wheels[i].update(dt);
-			if (wheels[i].getOnFloor()){
+			if (wheels[i].getOnFloor())
 				count++;
-			}
 		}
 		return count;
-	}	
+	}
 	
 	jigLib.JCar=JCar;
 	

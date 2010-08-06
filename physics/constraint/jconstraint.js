@@ -57,18 +57,18 @@
 
 	// register with the physics system
 	JConstraint.prototype.enableConstraint=function(){
-		if (this._constraintEnabled){
+		if (this._constraintEnabled)
 			return;
-		}
+		
 		this._constraintEnabled = true;
 		jigLib.PhysicsSystem.getInstance().addConstraint(this);
 	}
 
 	// deregister from the physics system
 	JConstraint.prototype.disableConstraint=function(){
-		if (!this._constraintEnabled){
+		if (!this._constraintEnabled)
 			return;
-		}
+		
 		this._constraintEnabled = false;
 		jigLib.PhysicsSystem.getInstance().removeConstraint(this);
 	}
