@@ -26,11 +26,11 @@
 	var Vector3D=jigLib.Vector3D;
 	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JSegment=jigLib.JSegment;
-        var JConfig=jigLib.JConfig;
-        var JSphere=jigLib.JSphere;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JSegment=jigLib.JSegment;
+	var JConfig=jigLib.JConfig;
+	var JSphere=jigLib.JSphere;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var PhysicsState=jigLib.PhysicsState;
 	var EdgeData=jigLib.EdgeData;
@@ -58,7 +58,7 @@
 		var obj1Min = obj1.min;
 		var obj1Max = obj1.max;
 		var mmin = Math.min;
-                        
+		
 		if (obj0Min > (obj1Max + JConfig.collToll + JNumber3D.NUM_TINY) || obj1Min > (obj0Max + JConfig.collToll + JNumber3D.NUM_TINY)){
 			out.flag = true;
 			return true;
@@ -68,8 +68,8 @@
 		}else if ((obj1Max > obj0Max) && (obj0Min > obj1Min)){
 			out.depth = mmin(obj1Max - obj0Min, obj0Max - obj1Min);
 		}else{
-			out.depth = mmin(obj0Max, obj1Max);
-			out.depth -= Math.max(obj0Min, obj1Min);
+			out.depth = (obj0Max < obj1Max) ? obj0Max : obj1Max;
+			out.depth -= (obj0Min > obj1Min) ? obj0Min : obj1Min;
 		}
 		out.flag = false;
 		return false;
@@ -101,9 +101,8 @@
 			outObj = {};
 			seg = new JSegment(boxPts[boxEdge.ind0], boxPts[boxEdge.ind1].subtract(boxPts[boxEdge.ind0]));
 			if (box0.segmentIntersect(outObj, seg, box0State)){
-				if (this.addPoint(contactPoint, outObj.posOut, combinationDist)){
+				if (this.addPoint(contactPoint, outObj.posOut, combinationDist))
 					num += 1;
-				}
 			}
 		}
 		return num;
@@ -129,11 +128,10 @@
 		var BD = PB1.subtract(PB0);
 
 		var t = B0A.dotProduct(BD) / BD.dotProduct(BD);
-		if (t < 0){
+		if (t < 0)
 			t = 0;
-		}else if (t > 1){
+		else if (t > 1)
 			t = 1;
-		}
 
 		CA.push(PA.clone());
 		CB.push(PB0.add(JNumber3D.getScaleVector(BD, t)));
@@ -155,19 +153,18 @@
 		var M = N.crossProduct(BD);
 		var md = M.dotProduct(PB0);
 		var at = (md - PA0.dotProduct(M)) / AD.dotProduct(M);
-		if (at < 0){
+		if (at < 0)
 			at = 0;
-		}else if (at > 1){
+		else if (at > 1)
 			at = 1;
-		}
 
 		this.getPointEdgeContacts(PA0.add(JNumber3D.getScaleVector(AD, at)), PB0, PB1, CA, CB);
 	};
 
 	CollDetectBoxBox.prototype.getPolygonContacts=function(Clipper, Poly, CA, CB){
-		if (!this.polygonClip(Clipper, Poly, CB)){
+		if (!this.polygonClip(Clipper, Poly, CB))
 			return;
-		}
+
 		var ClipperNormal = JNumber3D.getNormal(Clipper[0], Clipper[1], Clipper[2]);
 		var clipper_d = Clipper[0].dotProduct(ClipperNormal);
 
@@ -217,9 +214,9 @@
 			debug+=s+',';
 		}
 		
-		if (!bBackVerts){
+		if (!bBackVerts)
 			return false;
-		}
+
 		if (!bFrontVerts){
 			for (s in A)
 			{
@@ -233,16 +230,16 @@
 		var max = (A.length > 2) ? A.length : 1;
 		for (var ip1 = 0; ip1 < max; i = ip1, ip1++){
 			if (bBack[i]){
-				if (n >= MAX_SUPPORT_VERTS){
+				if (n >= MAX_SUPPORT_VERTS)
 					return true;
-				}
+
 				B[n++] = A[i].clone();
 			}
 
 			if (int(bBack[ip1]) ^ int(bBack[i])){
-				if (n >= MAX_SUPPORT_VERTS){
+				if (n >= MAX_SUPPORT_VERTS)
 					return true;
-				}
+
 				var D = A[ip1].subtract(A[i]);
 				var t = (planeD - A[i].dotProduct(xPlaneNormal)) / D.dotProduct(xPlaneNormal);
 				B[n++] = A[i].add(JNumber3D.getScaleVector(D, t));
@@ -256,17 +253,15 @@
 		var box0 = info.body0;
 		var box1 = info.body1;
 
-		if (!box0.hitTestObject3D(box1)){
+		if (!box0.hitTestObject3D(box1))
 			return;
-		}
-                        
-		if (JConfig.aabbDetection && !box0.get_boundingBox().overlapTest(box1.get_boundingBox())) {
+						
+		if (JConfig.aabbDetection && !box0.get_boundingBox().overlapTest(box1.get_boundingBox())) 
 			return;
-		}
 
 		var numTiny = JNumber3D.NUM_TINY;
 		var numHuge = JNumber3D.NUM_HUGE;
-                        
+						
 		var dirs0Arr = box0.get_currentState().getOrientationCols();
 		var dirs1Arr = box1.get_currentState().getOrientationCols();
 
@@ -296,14 +291,13 @@
 			_overlapDepth.depth = numHuge;
 
 			l2 = axes[i].get_lengthSquared();
-			if (l2 < numTiny){
+			if (l2 < numTiny)
 				continue;
-			}
+
 			var ax = axes[i].clone();
 			ax.normalize();
-			if (this.disjoint(overlapDepths[i], ax, box0, box1)){
+			if (this.disjoint(overlapDepths[i], ax, box0, box1))
 				return;
-			}
 		}
 
 		// The box overlap, find the separation depth closest to 0.
@@ -312,9 +306,8 @@
 		axesLength = axes.length;
 		for (i = 0; i < axesLength; i++){
 			l2 = axes[i].get_lengthSquared();
-			if (l2 < numTiny){
+			if (l2 < numTiny)
 				continue;
-			}
 
 			// If this axis is the minimum, select it
 			if (overlapDepths[i].depth < minDepth){
@@ -322,21 +315,20 @@
 				minAxis = i|0;
 			}
 		}
-		if (minAxis == -1){
+		if (minAxis == -1)
 			return;
-		}
+
 		// Make sure the axis is facing towards the box0. if not, invert it
 		var N = axes[minAxis].clone();
-		if (box1.get_currentState().position.subtract(box0.get_currentState().position).dotProduct(N) > 0){
+		if (box1.get_currentState().position.subtract(box0.get_currentState().position).dotProduct(N) > 0)
 			N = JNumber3D.getScaleVector(N, -1);
-		}
+
 		N.normalize();
 
-		if (JConfig.boxCollisionsType == "EDGEBASE"){
+		if (JConfig.boxCollisionsType == "EDGEBASE")
 			this.boxEdgesCollDetect(info, collArr, box0, box1, N, minDepth);
-		}else{
+		else
 			this.boxSortCollDetect(info, collArr, box0, box1, N, minDepth);
-		}
 	};
 	
 	CollDetectBoxBox.prototype.boxEdgesCollDetect=function(info, collArr, box0, box1, N, depth){
@@ -347,9 +339,9 @@
 		combinationDist = 0.5 * mmin(mmin(box0.get_sideLengths().x, box0.get_sideLengths().y, box0.get_sideLengths().z), mmin(box1.get_sideLengths().x, box1.get_sideLengths().y, box1.get_sideLengths().z));
 		combinationDist *= combinationDist;
 
-		if (depth > -JNumber3D.NUM_TINY){
+		if (depth > -JNumber3D.NUM_TINY)
 			this.getBoxBoxIntersectionPoints(contactPoints, box0, box1, false);
-		}
+
 		if (contactPoints.length == 0){
 			contactPointsFromOld = false;
 			this.getBoxBoxIntersectionPoints(contactPoints, box0, box1, true);
@@ -364,7 +356,7 @@
 			var box0ReqPosition;
 			var box1ReqPosition;
 			var cpInfo;
-                                
+								
 			if (contactPointsFromOld){
 				box0ReqPosition = box0.get_oldState().position;
 				box1ReqPosition = box1.get_oldState().position;
@@ -372,7 +364,7 @@
 				box0ReqPosition = box0.get_currentState().position;
 				box1ReqPosition = box1.get_currentState().position;
 			}
-        
+		
 			for(var i=0, cpl=contactPoints.length; i<cpl;i++){
 				contactPoint=contactPoints[i];
 				cpInfo = new CollPointInfo();
@@ -446,12 +438,11 @@
 				this.getPolygonContacts(supportVertA, supportVertB, contactA, contactB);
 			}
 		}
-		if (contactB.length > contactA.length){
+		if (contactB.length > contactA.length)
 			contactA = contactB;
-		}
-		if (contactA.length > contactB.length){
+
+		if (contactA.length > contactB.length)
 			contactB = contactA;
-		}
 
 		var cpInfo;
 		var collPts = [];

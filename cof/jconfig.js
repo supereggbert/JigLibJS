@@ -14,6 +14,6 @@
                 numPenetrationRelaxationTimesteps: 10, // number of timesteps to resolve penetration over
                 numCollisionIterations: 4, // number of collision iterations
                 numContactIterations: 4 // number of contact iterations
-	}
+	};
 	 
-})(jigLib)
+})(jigLib);
