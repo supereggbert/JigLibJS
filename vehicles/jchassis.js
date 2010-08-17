@@ -24,10 +24,10 @@
  */
 
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	
 	var JMatrix3D=jigLib.JMatrix3D;
-    var JNumber3D=jigLib.JNumber3D;
-    var JBox=jigLib.JBox;
+	var JNumber3D=jigLib.JNumber3D;
+	var JBox=jigLib.JBox;
 
 	var JChassis=function(car, skin, width, depth, height){
 		if(width==null) width=40;

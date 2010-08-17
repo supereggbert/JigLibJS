@@ -5,14 +5,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of GLGE nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of GLGE nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  * @fileOverview
- * @name GLGE.math.js
+ * @name GLGE_math.js
  */
 
  if(!window["GLGE"]){
@@ -39,55 +39,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 (function(GLGE){
-/*
-WebGLFloatArray.prototype.glData=function(){return this}
-WebGLFloatArray.prototype.toString=function(){return this[0]+","+this[1]+","+this[2]+","+this[3]+","+this[4]+","+this[5]+","+this[6]+","+this[7]+","+this[8]+","+this[9]+","+this[10]+","+this[11]+","+this[12]+","+this[13]+","+this[14]+","+this[15];}
-WebGLFloatArray.prototype.e=function(i,j){
-	if(!j){
-		return this[i-1];
-	}else{
-		return this[((i-1)*4+(j-1))];
-	}
-}*/
-
-/*Array.prototype.glData=function(){
-	if(!this.gldata){
-		this.gldata=new WebGLFloatArray(this);
-	}
-	return this.gldata;
-}*/
-/*Array.prototype.e=function(i,j){
-	if(!j){
-		return this[i-1];
-	}else{
-		return this[((i-1)*4+(j-1))];
-	}
-}
-Array.prototype["e"]=Array.prototype.e;
-*/
 
 GLGE.Vec=function(array) {
-    return array.slice(0);
+	return array.slice(0);
 }
 
 /**
-* @class The Vec3 Class creates a vector 
+* The Vec3 Class creates a vector 
 * @param {Array} array An array of 3 floats
 */
 GLGE.Vec3=function(x,y,z){
-    return [x,y,z];
+	return [x,y,z];
 }
 
 /**
-* @class The Vec4 Class creates a vector 
+* The Vec4 Class creates a vector 
 * @param {Array} array An array of 4 floats
 */
 GLGE.Vec4=function(x,y,z,w){
-    return [x,y,z,w];
+	return [x,y,z,w];
 }
 
 /**
-* @class Gets the nth element (1 indexed) from the array
+* Gets the nth element (1 indexed) from the array
 * @param {Array} v A vector with 4 elements
 * @param {number} i The index from one 
 */
@@ -95,7 +69,7 @@ GLGE.get1basedVec4=function(v,i){
 	return v[i-1];
 };
 /**
-* @class Gets the nth element (1 indexed) from the array
+* Gets the nth element (1 indexed) from the array
 * @param {Array} v A vector with 3 elements
 * @param {number} i The index from one 
 */
@@ -104,7 +78,7 @@ GLGE.get1basedVec3=function(v,i){
 };
 
 /**
-* @class Gets the nth element (1 indexed) from the array
+* Gets the nth element (1 indexed) from the array
 * @param {Array} v A vector with 4 elements
 * @param {number} i The index from one 
 */
@@ -112,7 +86,7 @@ GLGE.getVec4=function(v,i){
 	return v[i];
 };
 /**
-* @class Gets the nth element (1 indexed) from the array
+* Gets the nth element (1 indexed) from the array
 * @param {Array} v A vector with 3 elements
 * @param {number} i The index from one 
 */
@@ -128,7 +102,7 @@ GLGE.getVec3=function(v,i){
 * * @param {Array} b The second value to add
 */
 GLGE.addVec4=function(a,b) {
-    return [a[0]+b[0],a[1]+b[1],a[2]+b[2],a[3]+b[3]];
+	return [a[0]+b[0],a[1]+b[1],a[2]+b[2],a[3]+b[3]];
 }
 /**
 * Adds a GLGE.Vec3 to this GLGE.Vec3
@@ -136,7 +110,7 @@ GLGE.addVec4=function(a,b) {
 * @param {Array} b The second value to add
 */
 GLGE.addVec3=function(a,b) {
-    return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+	return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];
 }
 
 
@@ -146,7 +120,7 @@ GLGE.addVec3=function(a,b) {
 * * @param {Array} b The second value to subtract from the first
 */
 GLGE.subVec4=function(a,b) {
-    return [a[0]-b[0],a[1]-b[1],a[2]-b[2],a[3]-b[3]];
+	return [a[0]-b[0],a[1]-b[1],a[2]-b[2],a[3]-b[3]];
 }
 /**
 * Adds a GLGE.Vec3 to this GLGE.Vec3
@@ -154,7 +128,7 @@ GLGE.subVec4=function(a,b) {
 * @param {Array} b The second value to subtract from the first
 */
 GLGE.subVec3=function(a,b) {
-    return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+	return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];
 }
 
 
@@ -164,7 +138,7 @@ GLGE.subVec3=function(a,b) {
 * @param {Array} b the second value to dot
 */
 GLGE.dotVec3=function(a,b) {
-    return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+	return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
 }
 
 
@@ -174,7 +148,7 @@ GLGE.dotVec3=function(a,b) {
 * @param {Array} b the second value to dot
 */
 GLGE.dotVec4=function(a,b) {
-    return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3];
+	return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3];
 }
 
 /**
@@ -183,7 +157,7 @@ GLGE.dotVec4=function(a,b) {
 * @param {Number} b the scalar
 */
 GLGE.scaleVec4=function(a,b) {
-    return [a[0]*b,a[1]*b,a[2]*b,a[3]*b];
+	return [a[0]*b,a[1]*b,a[2]*b,a[3]*b];
 }
 
 /**
@@ -192,7 +166,7 @@ GLGE.scaleVec4=function(a,b) {
 * @param {Number} b the scalar
 */
 GLGE.scaleVec3=function(a,b) {
-    return [a[0]*b,a[1]*b,a[2]*b];
+	return [a[0]*b,a[1]*b,a[2]*b];
 }
 
 
@@ -203,8 +177,8 @@ GLGE.scaleVec3=function(a,b) {
 */
 GLGE.crossVec3=function(a,b) {
   return [a[1]*b[2]-a[2]*b[1],
-          a[2]*b[0]-a[0]*b[2],
-          a[0]*b[1]-a[1]*b[0]];
+		  a[2]*b[0]-a[0]*b[2],
+		  a[0]*b[1]-a[1]*b[0]];
 }
 
 /**
@@ -212,12 +186,12 @@ GLGE.crossVec3=function(a,b) {
 * @param {Array} a the vector3 to be unitized
 */
 GLGE.toUnitVec3=function(a) {
-    var sq=a[0]*a[0]+a[1]*a[1]+a[2]*a[2];
-    var f=1.0;
-    if (sq>0) {
-        f=Math.pow(sq,0.5);
-    }
-    return [a[0]/f,a[1]/f,a[2]/f];
+	var sq=a[0]*a[0]+a[1]*a[1]+a[2]*a[2];
+	var f=1.0;
+	if (sq>0) {
+		f=Math.pow(sq,0.5);
+	}
+	return [a[0]/f,a[1]/f,a[2]/f];
 };
 
 /**
@@ -225,12 +199,12 @@ GLGE.toUnitVec3=function(a) {
 * @param {Array} a the vector4 to be unitized
 */
 GLGE.toUnitVec4=function(a) {
-    var sq=a[0]*a[0]+a[1]*a[1]+a[2]*a[2]+a[3]*a[3];
-    var f=1.0;
-    if (sq>0) {
-        f=Math.pow(sq,0.5);
-    }
-    return [a[0]/f,a[1]/f,a[2]/f,a[3]/f];
+	var sq=a[0]*a[0]+a[1]*a[1]+a[2]*a[2]+a[3]*a[3];
+	var f=1.0;
+	if (sq>0) {
+		f=Math.pow(sq,0.5);
+	}
+	return [a[0]/f,a[1]/f,a[2]/f,a[3]/f];
 };
 
 
@@ -239,7 +213,7 @@ GLGE.toUnitVec4=function(a) {
 * @param {Array} a the vector to be measured
 */
 GLGE.lengthVec3=function(a) {
-    return Math.pow(a[0]*a[0]+a[1]*a[1]+a[2]*a[2],0.5);
+	return Math.pow(a[0]*a[0]+a[1]*a[1]+a[2]*a[2],0.5);
 };
 
 /**
@@ -248,7 +222,7 @@ GLGE.lengthVec3=function(a) {
 * @param {Array} b the second vector
 */
 GLGE.distanceVec3=function(a,b){
-    return GLGE.lengthVec3(GLGE.subVec3(a,b));
+	return GLGE.lengthVec3(GLGE.subVec3(a,b));
 };
 
 /**
@@ -256,7 +230,7 @@ GLGE.distanceVec3=function(a,b){
 * @param {Array} a the vector to be measured
 */
 GLGE.lengthVec4=function(a,b) {
-    return Math.pow(a[0]*a[0]+a[1]*a[1]+a[2]*a[2]+a[3]*a[3],0.5);
+	return Math.pow(a[0]*a[0]+a[1]*a[1]+a[2]*a[2]+a[3]*a[3],0.5);
 };
 
 /**
@@ -265,7 +239,7 @@ GLGE.lengthVec4=function(a,b) {
 * @param {Array} b the second vector
 */
 GLGE.distanceVec4=function(a,b){
-    return GLGE.lengthVec4(GLGE.subVec4(a,b));
+	return GLGE.lengthVec4(GLGE.subVec4(a,b));
 };
 
 
@@ -275,14 +249,14 @@ GLGE.distanceVec4=function(a,b){
 * @param {Array} b the second vector
 */
 GLGE.angleVec3=function(a,b){
-    a=GLGE.toUnitVec3(a);
-    b=GLGE.toUnitVec3(b);
-    d=GLGE.dotVec3(a,b);
-    if (d<-1)
-        d=-1;
-    if (d>1)
-        d=1;
-    return Math.acos(d);
+	a=GLGE.toUnitVec3(a);
+	b=GLGE.toUnitVec3(b);
+	d=GLGE.dotVec3(a,b);
+	if (d<-1)
+		d=-1;
+	if (d>1)
+		d=1;
+	return Math.acos(d);
 };
 
 /**
@@ -291,94 +265,103 @@ GLGE.angleVec3=function(a,b){
 * @param {Array} b the second vector
 */
 GLGE.angleVec4=function(a,b){
-    a=GLGE.toUnitVec4(a);
-    b=GLGE.toUnitVec4(b);
-    d=GLGE.dotVec4(a,b);
-    if (d<-1)
-        d=-1;
-    if (d>1)
-        d=1;
-    return Math.acos(d);
+	a=GLGE.toUnitVec4(a);
+	b=GLGE.toUnitVec4(b);
+	d=GLGE.dotVec4(a,b);
+	if (d<-1)
+		d=-1;
+	if (d>1)
+		d=1;
+	return Math.acos(d);
 };
 
 GLGE_math_use_webgl_float=false;
 
 /**
-* @class The Mat class creates a matrix from an array
+* The Mat class creates a matrix from an array
 * @param {Array} array An array of 9 or 16 floats
 */
 GLGE.Mat3=GLGE_math_use_webgl_float?function(array) {
-    if (array.length==9) {
-        return new WebGLFloatArray(array);
-    }else if (array.length==16) {
-        return new WebGLFloatArray([array[0],array[1],array[2],array[4],array[5],array[6],array[8],array[9],array[10]]);        
-    }else {
+	if (array.length==9) {
+		return new WebGLFloatArray(array);
+	}else if (array.length==16) {
+		return new WebGLFloatArray([array[0],array[1],array[2],array[4],array[5],array[6],array[8],array[9],array[10]]);		
+	}else {
 		throw "invalid matrix length";
-    }
+	}
 }:function(array) {
-    var retval;
-    if (array.length==9) {
-        retval=array.slice(0);
-    }else if (array.length==16) {
-        retval=[array[0],array[1],array[2],array[4],array[5],array[6],array[8],array[9],array[10]];
-    }else {
+	var retval;
+	if (array.length==9) {
+		retval=array.slice(0);
+	}else if (array.length==16) {
+		retval=[array[0],array[1],array[2],array[4],array[5],array[6],array[8],array[9],array[10]];
+	}else {
 		throw "invalid matrix length";
-    }    
-    retval.get=function(i){return this[i];};
-    return retval;
+	}	
+	retval.get=function(i){return this[i];};
+	return retval;
 };
 GLGE.Mat=GLGE_math_use_webgl_float?function(array) {
-    return new WebGLFloatArray(array);
+	return new WebGLFloatArray(array);
 }:function(array){
-    var retval=array.slice(0);
-    retval.get=function(i){return this[i];};
-    return retval;
+	var retval=array.slice(0);
+	retval.get=function(i){return this[i];};
+	return retval;
 };
 GLGE.Mat4=function(array) {
-    var retval;
-    if (array.length==9) {
-        retval=[array[0],array[1],array[2],0,array[3],array[4],array[5],0,array[6],array[7],array[8],0,0,0,0,1];
-    }else if (array.length==16) {
-        retval=array.slice(0);
-    }else {
-        throw "invalid matrix length";
-    }
-    retval.get=function(i){return this[i];};
-    return retval;
+	var retval;
+	if (array.length==9) {
+		retval=[array[0],array[1],array[2],0,array[3],array[4],array[5],0,array[6],array[7],array[8],0,0,0,0,1];
+	}else if (array.length==16) {
+		retval=array.slice(0);
+	}else {
+		throw "invalid matrix length";
+	}
+	retval.get=function(i){return this[i];};
+	return retval;
 };
 /**
 * Finds the determinate of the matrix
 * @returns {number} the determinate
 */
 GLGE.determinantMat4=function(m) {
-    return m[12] * m[9] * m[6] * m[3] - m[8] * m[13] * m[6] * m[3] - m[12] * m[5] * m[10] * m[3] + m[4] * m[13] * m[10] * m[3] + m[8] * m[5] * m[14] * m[3] - m[4] * m[9] * m[14] * m[3] - m[12] * m[9] * m[2] * m[7] + m[8] * m[13] * m[2] * m[7] + m[12] * m[1] * m[10] * m[7] - m[0] * m[13] * m[10] * m[7] - m[8] * m[1] * m[14] * m[7] + m[0] * m[9] * m[14] * m[7] + m[12] * m[5] * m[2] * m[11] - m[4] * m[13] * m[2] * m[11] - m[12] * m[1] * m[6] * m[11] + m[0] * m[13] * m[6] * m[11] + m[4] * m[1] * m[14] * m[11] - m[0] * m[5] * m[14] * m[11] - m[8] * m[5] * m[2] * m[15] + m[4] * m[9] * m[2] * m[15] + m[8] * m[1] * m[6] * m[15] - m[0] * m[9] * m[6] * m[15] - m[4] * m[1] * m[10] * m[15] + m[0] * m[5] * m[10] * m[15];
+	return m[12] * m[9] * m[6] * m[3] - m[8] * m[13] * m[6] * m[3] - m[12] * m[5] * m[10] * m[3] + m[4] * m[13] * m[10] * m[3] + m[8] * m[5] * m[14] * m[3] - m[4] * m[9] * m[14] * m[3] - m[12] * m[9] * m[2] * m[7] + m[8] * m[13] * m[2] * m[7] + m[12] * m[1] * m[10] * m[7] - m[0] * m[13] * m[10] * m[7] - m[8] * m[1] * m[14] * m[7] + m[0] * m[9] * m[14] * m[7] + m[12] * m[5] * m[2] * m[11] - m[4] * m[13] * m[2] * m[11] - m[12] * m[1] * m[6] * m[11] + m[0] * m[13] * m[6] * m[11] + m[4] * m[1] * m[14] * m[11] - m[0] * m[5] * m[14] * m[11] - m[8] * m[5] * m[2] * m[15] + m[4] * m[9] * m[2] * m[15] + m[8] * m[1] * m[6] * m[15] - m[0] * m[9] * m[6] * m[15] - m[4] * m[1] * m[10] * m[15] + m[0] * m[5] * m[10] * m[15];
 };
 
 /**
 * Finds the inverse of the matrix
 * @returns {GLGE.Mat} the inverse
 */
-GLGE.inverseMat4=function(m2){
-	var m=GLGE.transposeMat4(m2);
-	//cache the inverse, no point in a calc everytime
-	var det=GLGE.determinantMat4(m);
-	return GLGE.Mat([
-		(m[9] * m[14] * m[7] - m[13] * m[10] * m[7] + m[13] * m[6] * m[11] - m[5] * m[14] * m[11] - m[9] * m[6] * m[15] + m[5] * m[10] * m[15])/det,
-		(m[12] * m[10] * m[7] - m[8] * m[14] * m[7] - m[12] * m[6] * m[11] + m[4] * m[14] * m[11] + m[8] * m[6] * m[15] - m[4] * m[10] * m[15])/det,
-		(m[8] * m[13] * m[7] - m[12] * m[9] * m[7] + m[12] * m[5] * m[11] - m[4] * m[13] * m[11] - m[8] * m[5] * m[15] + m[4] * m[9] * m[15])/det,
-		(m[12] * m[9] * m[6] - m[8] * m[13] * m[6] - m[12] * m[5] * m[10] + m[4] * m[13] * m[10] + m[8] * m[5] * m[14] - m[4] * m[9] * m[14])/det,
-		(m[13] * m[10] * m[3] - m[9] * m[14] * m[3] - m[13] * m[2] * m[11] + m[1] * m[14] * m[11] + m[9] * m[2] * m[15] - m[1] * m[10] * m[15])/det,
-		(m[8] * m[14] * m[3] - m[12] * m[10] * m[3] + m[12] * m[2] * m[11] - m[0] * m[14] * m[11] - m[8] * m[2] * m[15] + m[0] * m[10] * m[15])/det,
-		(m[12] * m[9] * m[3] - m[8] * m[13] * m[3] - m[12] * m[1] * m[11] + m[0] * m[13] * m[11] + m[8] * m[1] * m[15] - m[0] * m[9] * m[15])/det,
-		(m[8] * m[13] * m[2] - m[12] * m[9] * m[2] + m[12] * m[1] * m[10] - m[0] * m[13] * m[10] - m[8] * m[1] * m[14] + m[0] * m[9] * m[14])/det,
-		(m[5] * m[14] * m[3] - m[13] * m[6] * m[3] + m[13] * m[2] * m[7] - m[1] * m[14] * m[7] - m[5] * m[2] * m[15] + m[1] * m[6] * m[15])/det,
-		(m[12] * m[6] * m[3] - m[4] * m[14] * m[3] - m[12] * m[2] * m[7] + m[0] * m[14] * m[7] + m[4] * m[2] * m[15] - m[0] * m[6] * m[15])/det,
-		(m[4] * m[13] * m[3] - m[12] * m[5] * m[3] + m[12] * m[1] * m[7] - m[0] * m[13] * m[7] - m[4] * m[1] * m[15] + m[0] * m[5] * m[15])/det,
-		(m[12] * m[5] * m[2] - m[4] * m[13] * m[2] - m[12] * m[1] * m[6] + m[0] * m[13] * m[6] + m[4] * m[1] * m[14] - m[0] * m[5] * m[14])/det,
-		(m[9] * m[6] * m[3] - m[5] * m[10] * m[3] - m[9] * m[2] * m[7] + m[1] * m[10] * m[7] + m[5] * m[2] * m[11] - m[1] * m[6] * m[11])/det,
-		(m[4] * m[10] * m[3] - m[8] * m[6] * m[3] + m[8] * m[2] * m[7] - m[0] * m[10] * m[7] - m[4] * m[2] * m[11] + m[0] * m[6] * m[11])/det,
-		(m[8] * m[5] * m[3] - m[4] * m[9] * m[3] - m[8] * m[1] * m[7] + m[0] * m[9] * m[7] + m[4] * m[1] * m[11] - m[0] * m[5] * m[11])/det,
-		(m[4] * m[9] * m[2] - m[8] * m[5] * m[2] + m[8] * m[1] * m[6] - m[0] * m[9] * m[6] - m[4] * m[1] * m[10] + m[0] * m[5] * m[10])/det]);
+GLGE.inverseMat4=function(mat){
+	// Cache the matrix values (makes for huge speed increases!)
+	var a00 = mat[0], a01 = mat[1], a02 = mat[2], a03 = mat[3];
+	var a10 = mat[4], a11 = mat[5], a12 = mat[6], a13 = mat[7];
+	var a20 = mat[8], a21 = mat[9], a22 = mat[10], a23 = mat[11];
+	var a30 = mat[12], a31 = mat[13], a32 = mat[14], a33 = mat[15];
+	
+	var d = a30*a21*a12*a03 - a20*a31*a12*a03 - a30*a11*a22*a03 + a10*a31*a22*a03 +
+			a20*a11*a32*a03 - a10*a21*a32*a03 - a30*a21*a02*a13 + a20*a31*a02*a13 +
+			a30*a01*a22*a13 - a00*a31*a22*a13 - a20*a01*a32*a13 + a00*a21*a32*a13 +
+			a30*a11*a02*a23 - a10*a31*a02*a23 - a30*a01*a12*a23 + a00*a31*a12*a23 +
+			a10*a01*a32*a23 - a00*a11*a32*a23 - a20*a11*a02*a33 + a10*a21*a02*a33 +
+			a20*a01*a12*a33 - a00*a21*a12*a33 - a10*a01*a22*a33 + a00*a11*a22*a33;
+	
+	return [ (a21*a32*a13 - a31*a22*a13 + a31*a12*a23 - a11*a32*a23 - a21*a12*a33 + a11*a22*a33)/d,
+	(a31*a22*a03 - a21*a32*a03 - a31*a02*a23 + a01*a32*a23 + a21*a02*a33 - a01*a22*a33)/d,
+	(a11*a32*a03 - a31*a12*a03 + a31*a02*a13 - a01*a32*a13 - a11*a02*a33 + a01*a12*a33)/d,
+	(a21*a12*a03 - a11*a22*a03 - a21*a02*a13 + a01*a22*a13 + a11*a02*a23 - a01*a12*a23)/d,
+	(a30*a22*a13 - a20*a32*a13 - a30*a12*a23 + a10*a32*a23 + a20*a12*a33 - a10*a22*a33)/d,
+	(a20*a32*a03 - a30*a22*a03 + a30*a02*a23 - a00*a32*a23 - a20*a02*a33 + a00*a22*a33)/d,
+	(a30*a12*a03 - a10*a32*a03 - a30*a02*a13 + a00*a32*a13 + a10*a02*a33 - a00*a12*a33)/d,
+	(a10*a22*a03 - a20*a12*a03 + a20*a02*a13 - a00*a22*a13 - a10*a02*a23 + a00*a12*a23)/d,
+	(a20*a31*a13 - a30*a21*a13 + a30*a11*a23 - a10*a31*a23 - a20*a11*a33 + a10*a21*a33)/d,
+	(a30*a21*a03 - a20*a31*a03 - a30*a01*a23 + a00*a31*a23 + a20*a01*a33 - a00*a21*a33)/d,
+	(a10*a31*a03 - a30*a11*a03 + a30*a01*a13 - a00*a31*a13 - a10*a01*a33 + a00*a11*a33)/d,
+	(a20*a11*a03 - a10*a21*a03 - a20*a01*a13 + a00*a21*a13 + a10*a01*a23 - a00*a11*a23)/d,
+	(a30*a21*a12 - a20*a31*a12 - a30*a11*a22 + a10*a31*a22 + a20*a11*a32 - a10*a21*a32)/d,
+	(a20*a31*a02 - a30*a21*a02 + a30*a01*a22 - a00*a31*a22 - a20*a01*a32 + a00*a21*a32)/d,
+	(a30*a11*a02 - a10*a31*a02 - a30*a01*a12 + a00*a31*a12 + a10*a01*a32 - a00*a11*a32)/d,
+	(a10*a21*a02 - a20*a11*a02 + a20*a01*a12 - a00*a21*a12 - a10*a01*a22 + a00*a11*a22)/d]
 };
 
 /**
@@ -387,43 +370,43 @@ GLGE.inverseMat4=function(m2){
 */
 GLGE.mulMat4Vec4=function(mat1,vec2){
 	return GLGE.Vec4(mat1[0]*vec2[0]+mat1[1]*vec2[1]+mat1[2]*vec2[2]+mat1[3]*vec2[3],
-			          mat1[4]*vec2[0]+mat1[5]*vec2[1]+mat1[6]*vec2[2]+mat1[7]*vec2[3],
-			          mat1[8]*vec2[0]+mat1[9]*vec2[1]+mat1[10]*vec2[2]+mat1[11]*vec2[3],
-			          mat1[12]*vec2[0]+mat1[13]*vec2[1]+mat1[14]*vec2[2]+mat1[15]*vec2[3]);
+					  mat1[4]*vec2[0]+mat1[5]*vec2[1]+mat1[6]*vec2[2]+mat1[7]*vec2[3],
+					  mat1[8]*vec2[0]+mat1[9]*vec2[1]+mat1[10]*vec2[2]+mat1[11]*vec2[3],
+					  mat1[12]*vec2[0]+mat1[13]*vec2[1]+mat1[14]*vec2[2]+mat1[15]*vec2[3]);
 };
-     
+	 
 /**
 * multiplies a Mat4 by a scalar value
 * @returns {GLGE.Mat} the matrix multiplication of the matrices
 */
 GLGE.scaleMat4=function(m,value) {
-    return GLGE.Mat([m[0]*value,m[1]*value,m[2]*value,m[3]*value,
-                                m[4]*value,m[5]*value,m[6]*value,m[7]*value,
-                                m[8]*value,m[9]*value,m[10]*value,m[11]*value,
-                                m[12]*value,m[13]*value,m[14]*value,m[15]*value]);
+	return GLGE.Mat([m[0]*value,m[1]*value,m[2]*value,m[3]*value,
+								m[4]*value,m[5]*value,m[6]*value,m[7]*value,
+								m[8]*value,m[9]*value,m[10]*value,m[11]*value,
+								m[12]*value,m[13]*value,m[14]*value,m[15]*value]);
 };
 /**
 * multiplies a Mat4 by a scalar value in place without allocation
 * @returns {GLGE.Mat} the input matrix, modified
 */
 GLGE.scaleInPlaceMat4=function(m,value) {
-    m.set(0,m[0]*value);
-    m.set(1,m[1]*value);
-    m.set(2,m[2]*value);
-    m.set(3,m[3]*value);
-    m.set(4,m[4]*value);
-    m.set(5,m[5]*value);
-    m.set(6,m[6]*value);
-    m.set(7,m[7]*value);
-    m.set(8,m[8]*value);
-    m.set(9,m[9]*value);
-    m.set(10,m[10]*value);
-    m.set(11,m[11]*value);
-    m.set(12,m[12]*value);
-    m.set(13,m[13]*value);
-    m.set(14,m[14]*value);
-    m.set(15,m[15]*value);
-    return m;
+	m.set(0,m[0]*value);
+	m.set(1,m[1]*value);
+	m.set(2,m[2]*value);
+	m.set(3,m[3]*value);
+	m.set(4,m[4]*value);
+	m.set(5,m[5]*value);
+	m.set(6,m[6]*value);
+	m.set(7,m[7]*value);
+	m.set(8,m[8]*value);
+	m.set(9,m[9]*value);
+	m.set(10,m[10]*value);
+	m.set(11,m[11]*value);
+	m.set(12,m[12]*value);
+	m.set(13,m[13]*value);
+	m.set(14,m[14]*value);
+	m.set(15,m[15]*value);
+	return m;
 };
 
 /**
@@ -431,23 +414,23 @@ GLGE.scaleInPlaceMat4=function(m,value) {
 * @returns {GLGE.Mat} the first input matrix, modified to be added
 */
 GLGE.addInPlaceMat4=function(m,value) {
-    m.set(0,m[0]+value[0]);
-    m.set(1,m[1]+value[1]);
-    m.set(2,m[2]+value[2]);
-    m.set(3,m[3]+value[3]);
-    m.set(4,m[4]+value[4]);
-    m.set(5,m[5]+value[5]);
-    m.set(6,m[6]+value[6]);
-    m.set(7,m[7]+value[7]);
-    m.set(8,m[8]+value[8]);
-    m.set(9,m[9]+value[9]);
-    m.set(10,m[10]+value[10]);
-    m.set(11,m[11]+value[11]);
-    m.set(12,m[12]+value[12]);
-    m.set(13,m[13]+value[13]);
-    m.set(14,m[14]+value[14]);
-    m.set(15,m[15]+value[15]);
-    return m;
+	m.set(0,m[0]+value[0]);
+	m.set(1,m[1]+value[1]);
+	m.set(2,m[2]+value[2]);
+	m.set(3,m[3]+value[3]);
+	m.set(4,m[4]+value[4]);
+	m.set(5,m[5]+value[5]);
+	m.set(6,m[6]+value[6]);
+	m.set(7,m[7]+value[7]);
+	m.set(8,m[8]+value[8]);
+	m.set(9,m[9]+value[9]);
+	m.set(10,m[10]+value[10]);
+	m.set(11,m[11]+value[11]);
+	m.set(12,m[12]+value[12]);
+	m.set(13,m[13]+value[13]);
+	m.set(14,m[14]+value[14]);
+	m.set(15,m[15]+value[15]);
+	return m;
 };
 
 
@@ -458,22 +441,22 @@ GLGE.addInPlaceMat4=function(m,value) {
 */
 GLGE.addMat4=function(m,value) {
 return GLGE.Mat([m[0]+value[0],
-                 m[1]+value[1],
-                 m[2]+value[2],
-                 m[3]+value[3],
-                 m[4]+value[4],
-                 m[5]+value[5],
-                 m[6]+value[6],
-                 m[7]+value[7],
-                 m[8]+value[8],
-                 m[9]+value[9],
-                 m[10]+value[10],
-                 m[11]+value[11],
-                 m[12]+value[12],
-                 m[13]+value[13],
-                 m[14]+value[14],
-                 m[15]+value[15]]);
-    return m;
+				 m[1]+value[1],
+				 m[2]+value[2],
+				 m[3]+value[3],
+				 m[4]+value[4],
+				 m[5]+value[5],
+				 m[6]+value[6],
+				 m[7]+value[7],
+				 m[8]+value[8],
+				 m[9]+value[9],
+				 m[10]+value[10],
+				 m[11]+value[11],
+				 m[12]+value[12],
+				 m[13]+value[13],
+				 m[14]+value[14],
+				 m[15]+value[15]]);
+	return m;
 };
 
 
@@ -483,23 +466,23 @@ return GLGE.Mat([m[0]+value[0],
 * @returns {GLGE.Mat} the first input matrix, modified to have the second subtacted
 */
 GLGE.subInPlaceMat4=function(m,value) {
-    m.set(0,m[0]-value[0]);
-    m.set(1,m[1]-value[1]);
-    m.set(2,m[2]-value[2]);
-    m.set(3,m[3]-value[3]);
-    m.set(4,m[4]-value[4]);
-    m.set(5,m[5]-value[5]);
-    m.set(6,m[6]-value[6]);
-    m.set(7,m[7]-value[7]);
-    m.set(8,m[8]-value[8]);
-    m.set(9,m[9]-value[9]);
-    m.set(10,m[10]-value[10]);
-    m.set(11,m[11]-value[11]);
-    m.set(12,m[12]-value[12]);
-    m.set(13,m[13]-value[13]);
-    m.set(14,m[14]-value[14]);
-    m.set(15,m[15]-value[15]);
-    return m;
+	m.set(0,m[0]-value[0]);
+	m.set(1,m[1]-value[1]);
+	m.set(2,m[2]-value[2]);
+	m.set(3,m[3]-value[3]);
+	m.set(4,m[4]-value[4]);
+	m.set(5,m[5]-value[5]);
+	m.set(6,m[6]-value[6]);
+	m.set(7,m[7]-value[7]);
+	m.set(8,m[8]-value[8]);
+	m.set(9,m[9]-value[9]);
+	m.set(10,m[10]-value[10]);
+	m.set(11,m[11]-value[11]);
+	m.set(12,m[12]-value[12]);
+	m.set(13,m[13]-value[13]);
+	m.set(14,m[14]-value[14]);
+	m.set(15,m[15]-value[15]);
+	return m;
 };
 
 
@@ -510,22 +493,22 @@ GLGE.subInPlaceMat4=function(m,value) {
 */
 GLGE.subMat4=function(m,value) {
 return GLGE.Mat([m[0]-value[0],
-                 m[1]-value[1],
-                 m[2]-value[2],
-                 m[3]-value[3],
-                 m[4]-value[4],
-                 m[5]-value[5],
-                 m[6]-value[6],
-                 m[7]-value[7],
-                 m[8]-value[8],
-                 m[9]-value[9],
-                 m[10]-value[10],
-                 m[11]-value[11],
-                 m[12]-value[12],
-                 m[13]-value[13],
-                 m[14]-value[14],
-                 m[15]-value[15]]);
-    return m;
+				 m[1]-value[1],
+				 m[2]-value[2],
+				 m[3]-value[3],
+				 m[4]-value[4],
+				 m[5]-value[5],
+				 m[6]-value[6],
+				 m[7]-value[7],
+				 m[8]-value[8],
+				 m[9]-value[9],
+				 m[10]-value[10],
+				 m[11]-value[11],
+				 m[12]-value[12],
+				 m[13]-value[13],
+				 m[14]-value[14],
+				 m[15]-value[15]]);
+	return m;
 };
 
 
@@ -534,57 +517,65 @@ return GLGE.Mat([m[0]-value[0],
 * @param {object} value An GLGE.Mat, GLGE.vec or Array
 * @returns {GLGE.Mat|GLGE.Vec}
 */
-GLGE.mulMat4=function(mat1,mat2){
-	return GLGE.Mat4([
-				mat2[0] * mat1[0]+mat2[4] * mat1[1]+mat2[8] * mat1[2]+mat2[12] * mat1[3],
-				mat2[1] * mat1[0]+mat2[5] * mat1[1]+mat2[9] * mat1[2]+mat2[13] * mat1[3],
-				mat2[2] * mat1[0]+mat2[6] * mat1[1]+mat2[10] * mat1[2]+mat2[14] * mat1[3],
-				mat2[3] * mat1[0]+mat2[7] * mat1[1]+mat2[11] * mat1[2]+mat2[15] * mat1[3],
-				
-				mat2[0] * mat1[4]+mat2[4] * mat1[5]+mat2[8] * mat1[6]+mat2[12] * mat1[7],
-				mat2[1] * mat1[4]+mat2[5] * mat1[5]+mat2[9] * mat1[6]+mat2[13] * mat1[7],
-				mat2[2] * mat1[4]+mat2[6] * mat1[5]+mat2[10] * mat1[6]+mat2[14] * mat1[7],
-				mat2[3] * mat1[4]+mat2[7] * mat1[5]+mat2[11] * mat1[6]+mat2[15] * mat1[7],
-				
-				mat2[0] * mat1[8]+mat2[4] * mat1[9]+mat2[8] * mat1[10]+mat2[12] * mat1[11],
-				mat2[1] * mat1[8]+mat2[5] * mat1[9]+mat2[9] * mat1[10]+mat2[13] * mat1[11],
-				mat2[2] * mat1[8]+mat2[6] * mat1[9]+mat2[10] * mat1[10]+mat2[14] * mat1[11],
-				mat2[3] * mat1[8]+mat2[7] * mat1[9]+mat2[11] * mat1[10]+mat2[15] * mat1[11],
-				
-				
-				mat2[0] * mat1[12]+mat2[4] * mat1[13]+mat2[8] * mat1[14]+mat2[12] * mat1[15],
-				mat2[1] * mat1[12]+mat2[5] * mat1[13]+mat2[9] * mat1[14]+mat2[13] * mat1[15],
-				mat2[2] * mat1[12]+mat2[6] * mat1[13]+mat2[10] * mat1[14]+mat2[14] * mat1[15],
-				mat2[3] * mat1[12]+mat2[7] * mat1[13]+mat2[11] * mat1[14]+mat2[15] * mat1[15]]);
+GLGE.mulMat4=function(mat2,mat1){
+
+	var a00 = mat1[0], a01 = mat1[1], a02 = mat1[2], a03 = mat1[3];
+	var a10 = mat1[4], a11 = mat1[5], a12 = mat1[6], a13 = mat1[7];
+	var a20 = mat1[8], a21 = mat1[9], a22 = mat1[10], a23 = mat1[11];
+	var a30 = mat1[12], a31 = mat1[13], a32 = mat1[14], a33 = mat1[15];
+	
+	var b00 = mat2[0], b01 = mat2[1], b02 = mat2[2], b03 = mat2[3];
+	var b10 = mat2[4], b11 = mat2[5], b12 = mat2[6], b13 = mat2[7];
+	var b20 = mat2[8], b21 = mat2[9], b22 = mat2[10], b23 = mat2[11];
+	var b30 = mat2[12], b31 = mat2[13], b32 = mat2[14], b33 = mat2[15];
+	return [b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
+		b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
+		b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32,
+		b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33,
+		
+		b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30,
+		b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31,
+		b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32,
+		b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33,
+		
+		b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30,
+		b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31,
+		b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32,
+		b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33,
+		
+		b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30,
+		b30 * a01 + b31 * a11 + b32 * a21 + b33 * a31,
+		b30 * a02 + b31 * a12 + b32 * a22 + b33 * a32,
+		b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33];
 };
 
 GLGE.transposeInPlaceMat4=function(m) {
-    var v=m[1];
-    m.set(1,m[4]);
-    m.set(4,v);
+	var v=m[1];
+	m.set(1,m[4]);
+	m.set(4,v);
 
 
-    v=m[8];
-    m.set(8,m[2]);
-    m.set(2,v);
-    
+	v=m[8];
+	m.set(8,m[2]);
+	m.set(2,v);
+	
 
-    v=m[3];
-    m.set(3,m[12]);
-    m.set(12,v);
+	v=m[3];
+	m.set(3,m[12]);
+	m.set(12,v);
 
-    v=m[9];
-    m.set(9,m[6]);
-    m.set(6,v);
+	v=m[9];
+	m.set(9,m[6]);
+	m.set(6,v);
 
-    v=m[13];
-    m.set(13,m[7]);
-    m.set(7,v);
+	v=m[13];
+	m.set(13,m[7]);
+	m.set(7,v);
 
-    v=m[14];
-    m.set(14,m[11]);
-    m.set(11,v);
-    
+	v=m[14];
+	m.set(14,m[11]);
+	m.set(11,v);
+	
 };
 
 /**
@@ -592,10 +583,10 @@ GLGE.transposeInPlaceMat4=function(m) {
 * @returns {GLGE.Mat} the transposed matrix
 */
 GLGE.transposeMat4=function(m) {
-    return GLGE.Mat4([m[0],m[4],m[8],m[12],
-		              m[1],m[5],m[9],m[13],
-		              m[2],m[6],m[10],m[14],
-		              m[3],m[7],m[11],m[15]]);
+	return GLGE.Mat4([m[0],m[4],m[8],m[12],
+					  m[1],m[5],m[9],m[13],
+					  m[2],m[6],m[10],m[14],
+					  m[3],m[7],m[11],m[15]]);
 };
 
 /**
@@ -630,9 +621,9 @@ GLGE.mat4gl=function(mat,glarray){
 */
 GLGE.set1basedMat4=function(m,i,j,value){
 	m[(i-1)*4+(j-1)]=value;
-    if(m.glData!==undefined){
-        delete m.glData;
-    }
+	if(m.glData!==undefined){
+		delete m.glData;
+	}
 };
 
 /**
@@ -643,9 +634,9 @@ GLGE.set1basedMat4=function(m,i,j,value){
 */
 GLGE.setMat4=function(m,i,j,value){
 	m[i*4+j]=value;
-    if(m.glData!==undefined){
-        delete m.glData;
-    }
+	if(m.glData!==undefined){
+		delete m.glData;
+	}
 };
 
 /**
@@ -665,7 +656,7 @@ GLGE.get1basedMat4=function(m,i,j){
 * @returns {number} the value at the given index
 */
 GLGE.getMat4=function(m,i,j){
-	return m.get(i*4+j);
+	return m[i*4+j];
 };
 /**
 * gets the a webgl float array for this Matrix, once generated it will cache it so it doesn't need to recreate everytime
@@ -673,8 +664,8 @@ GLGE.getMat4=function(m,i,j){
 * @private
 */
 GLGE.glDataMat4=function(m) {
-    m.glArray=new WebGLFloatArray(m);
-    return m.glArray;
+	m.glArray=new WebGLFloatArray(m);
+	return m.glArray;
 };
 /**
  * Creates an identity matrix
@@ -720,9 +711,9 @@ GLGE.translateMatrix=function(value){
  * @returns {GLGE.Mat} the scale matrix
  */
 GLGE.scaleMatrix=function(value){
-    var x;
-    var y;
-    var z;
+	var x;
+	var y;
+	var z;
 	if(arguments.length==3){
 		x=arguments[0];
 		y=arguments[1];
@@ -781,9 +772,9 @@ GLGE.ROT_ZYX=6;
  * @returns {GLGE.Mat} the rotation matrix
  */
 GLGE.rotateMatrix=function(value,type) {
-    var x;
-    var y;
-    var z;
+	var x;
+	var y;
+	var z;
 	if(arguments.length>2){
 		x=arguments[0];
 		y=arguments[1];
@@ -834,48 +825,48 @@ GLGE.rotateMatrix=function(value,type) {
 
 
 GLGE.angleAxis=function(angle, axis) {
-    var xmx,ymy,zmz,xmy,ymz,zmx,xms,yms,zms;
+	var xmx,ymy,zmz,xmy,ymz,zmx,xms,yms,zms;
 	axis=[axis[0],axis[1],axis[2],0];
 
-        var x = axis[0];
-        var y = axis[1];
-        var z = axis[2];
+		var x = axis[0];
+		var y = axis[1];
+		var z = axis[2];
 	
-	        
-        var cos = Math.cos(angle);
-        var cosi = 1.0 - cos;
+			
+		var cos = Math.cos(angle);
+		var cosi = 1.0 - cos;
 	var sin = Math.sin(angle);
  
 	xms = x * sin;yms = y * sin;zms = z * sin;
-        xmx = x * x;ymy = y * y;zmz = z * z;
-        xmy = x * y;ymz = y * z;zmx = z * x;
- 
+		xmx = x * x;ymy = y * y;zmz = z * z;
+		xmy = x * y;ymz = y * z;zmx = z * x;
+	
 	var matrix = [(cosi * xmx) + cos,(cosi * xmy) - zms,(cosi * zmx) + yms,0,
 			(cosi * xmy) + zms,(cosi * ymy) + cos,(cosi * ymz) - xms,0,
 			(cosi * zmx) - yms,(cosi * ymz) + xms,(cosi * zmz) + cos,0,
 			0,0,0,1];
 
-        return GLGE.Mat(matrix);
+		return GLGE.Mat(matrix);
 };
 
 GLGE.quatRotation=function(qx,qy,qz,qw){
 	return GLGE.Mat([
-	                    1 - 2*qy*qy - 2*qz*qz,2*qx*qy - 2*qz*qw,2*qx*qz + 2*qy*qw,0,
-	                    2*qx*qy + 2*qz*qw,1 - 2*qx*qx - 2*qz*qz,2*qy*qz - 2*qx*qw,0,
-	                    2*qx*qz - 2*qy*qw,2*qy*qz + 2*qx*qw,1 - 2*qx*qx - 2*qy*qy,0,
-	                    0,0,0,1
-	                ]);
+						1 - 2*qy*qy - 2*qz*qz,2*qx*qy - 2*qz*qw,2*qx*qz + 2*qy*qw,0,
+						2*qx*qy + 2*qz*qw,1 - 2*qx*qx - 2*qz*qz,2*qy*qz - 2*qx*qw,0,
+						2*qx*qz - 2*qy*qw,2*qy*qz + 2*qx*qw,1 - 2*qx*qx - 2*qy*qy,0,
+						0,0,0,1
+					]);
 };
 
 GLGE.makeOrtho=function(left,right,bottom,top,near,far){
 	var x = -(right+left)/(right-left);
 	var y = -(top+bottom)/(top-bottom);
 	var z = -(far+near)/(far-near);
-    
-        return GLGE.Mat([2/(right-left), 0, 0, x,
-               0, 2/(top-bottom), 0, y,
-               0, 0, -2/(far-near), z,
-               0, 0, 0, 1]);
+	
+		return GLGE.Mat([2/(right-left), 0, 0, x,
+			   0, 2/(top-bottom), 0, y,
+			   0, 0, -2/(far-near), z,
+			   0, 0, 0, 1]);
 };
 
 GLGE.makeFrustum=function(left,right,bottom,top,near,far){
@@ -886,9 +877,9 @@ GLGE.makeFrustum=function(left,right,bottom,top,near,far){
 	var c = -(far+near)/(far-near);
 	var d = -2*far*near/(far-near);
 	return GLGE.Mat([x, 0, a, 0,
-		       0, y, b, 0,
-		       0, 0, c, d,
-		       0, 0, -1, 0]);
+			   0, y, b, 0,
+			   0, 0, c, d,
+			   0, 0, -1, 0]);
 };
 
 GLGE.makePerspective=function(fovy, aspect, near, far){
@@ -917,32 +908,32 @@ GLGE.matrix2Scale=function(m){
 
 
 GLGE.rotationMatrix2Quat=function(m){
-	var tr = m.e(1,1) + m.e(2,2) + m.e(3,3)+1.0;
+	var tr = m[0] + m[5] + m[10]+1.0;
 	var S,x,y,z,w;
 
 	if (tr > 0) { 
 		S = 0.5/Math.sqrt(tr); 
 		w = 0.25 / S;
-		x = (m.e(3,2) - m.e(2,3)) * S;
-		y = (m.e(1,3) - m.e(3,1)) * S; 
-		z = (m.e(2,1) - m.e(1,2)) * S; 
-	} else if ((m.e(1,1) > m.e(2,2))&&(m.e(1,1) > m.e(3,3))) { 
-		S = Math.sqrt(1.0 + m.e(1,1) - m.e(2,2) - m.e(3,3)) * 2; 
-		w = (m.e(3,2) - m.e(2,3)) / S;
+		x = (m[9] - m[6]) * S;
+		y = (m[2] - m[8]) * S; 
+		z = (m[4] - m[1]) * S; 
+	} else if ((m[0] > m[5])&&(m[0] > m[10])) { 
+		S = Math.sqrt(1.0 + m[0] - m[5] - m[10]) * 2; 
+		w = (m[9] - m[6]) / S;
 		x = 0.25 / S;
-		y = (m.e(1,2) + m.e(2,1)) / S; 
-		z = (m.e(1,3) + m.e(3,1)) / S; 
-	} else if (m.e(2,2) > m.e(3,3)) { 
-		S = Math.sqrt(1.0 + m.e(2,2) - m.e(1,1) - m.e(3,3)) * 2;
-		w = (m.e(1,3) - m.e(3,1)) / S;
-		x = (m.e(1,2) + m.e(2,1)) / S; 
+		y = (m[1] + m[4]) / S; 
+		z = (m[2] + m[8]) / S; 
+	} else if (m[5] > m[10]) { 
+		S = Math.sqrt(1.0 + m[5] - m[0] - m[10]) * 2;
+		w = (m[2] - m[8]) / S;
+		x = (m[1] + m[4]) / S; 
 		y = 0.25 / S;
-		z = (m.e(2,3) + m.e(3,2)) / S; 
+		z = (m[6] + m[9]) / S; 
 	} else { 
-		S = Math.sqrt(1.0 + m.e(3,3) - m.e(1,1) - m.e(2,2)) * 2; 
-		w = (m.e(2,1) - m.e(1,2)) / S;
-		x = (m.e(1,3) + m.e(3,1)) / S;
-		y = (m.e(2,3) + m.e(3,2)) / S;
+		S = Math.sqrt(1.0 + m[10] - m[0] - m[5]) * 2; 
+		w = (m[4] - m[1]) / S;
+		x = (m[2] + m[8]) / S;
+		y = (m[6] + m[9]) / S;
 		z = 0.25 / S;
 	}
 	var N=Math.sqrt(x*x+y*y+z*z+w*w)
@@ -951,50 +942,151 @@ GLGE.rotationMatrix2Quat=function(m){
 }
 
 
+
+//returns plane as array [X,Y,Z,D]
+GLGE.rayToPlane=function(origin,dir){
+	var dirnorm=GLGE.toUnitVec3(dir);
+	return [dirnorm[0],dirnorm[1],dirnorm[2],GLGE.dotVec3(origin,dirnorm)];
+}
+
+GLGE.rayIntersectPlane=function(origin,dir,plane){
+	var planeN=[plane[0],plane[1],plane[2]];
+	var planeD=plane[3];
+	var vdir=GLGE.dotVec3(planeN,dir);
+	if(vdir<=0){
+		//ray in wrong direction
+		return false;
+	}
+	var vo=-(GLGE.dotVec3(planeN,origin)+planeD);
+	var t=vo/vdir;
+	if(t<=0){
+		return false;
+	}
+	return GLGE.addVec3(origin,GLGE.scaleVec3(dir,t));
+}
+//assumes perspective projection
+GLGE.screenToDirection=function(x,y,width,height,proj){
+	xcoord =  -( ( ( 2 * x ) / width ) - 1 ) / proj[0];
+	ycoord =( ( ( 2 * y ) / height ) - 1 ) / proj[5];
+	zcoord =  1;
+	return GLGE.toUnitVec3([xcoord,ycoord,zcoord]);
+}
+
+GLGE.BoundingVolume=function(minX,maxX,minY,maxY,minZ,maxZ){
+	var dims=[maxX-minX,maxY-minY,maxZ-minZ];
+	this.dims=dims;
+	this.center=[dims[0]/2+minX,dims[1]/2+minY,dims[2]/2+minZ];
+}
+
+//returns the center of the bounding area
+GLGE.BoundingVolume.prototype.getCenter=function(matrix){
+	return GLGE.mulMat4Vec4(matrix,this.center);
+}
+
+//returns box point
+GLGE.BoundingVolume.prototype.getBoxPoint=function(matrix,point){
+	var coord=[this.dims[0]/2*point[0]+this.center[0],this.dims[1]/2*point[1]+this.center[1],this.dims[2]/2*point[2]+this.center[2]];
+	return GLGE.mulMat4Vec4(matrix,coord);
+}
+
+//returns the radius of a bounding sphere
+GLGE.BoundingVolume.prototype.getSphereRadius=function(){
+	return Math.pow((this.dims[0]*this.dims[0]+this.dims[1]*this.dims[1]+this.dims[2]*this.dims[2])/2,0.5);
+}
+
+//adds an additional bounding volume to resize the current and returns the result
+GLGE.BoundingVolume.prototype.addBoundingVolume=function(vol){
+	var minX=Math.min(this.center[0]-this.dims[0]/2,vol.center[0]-vol.dims[0]/2);
+	var maxX=Math.max(this.center[0]+this.dims[0]/2,vol.center[0]+vol.dims[0]/2);
+	var minY=Math.min(this.center[1]-this.dims[1]/2,vol.center[1]-vol.dims[1]/2);
+	var maxY=Math.max(this.center[1]+this.dims[1]/2,vol.center[1]+vol.dims[1]/2);
+	var minZ=Math.min(this.center[2]-this.dims[2]/2,vol.center[2]-vol.dims[2]/2);
+	var maxZ=Math.max(this.center[2]+this.dims[2]/2,vol.center[2]+vol.dims[2]/2);
+	var dims=[maxX-minX,maxY-minY,maxZ-minZ];
+	this.dims=dims;
+	this.center=[dims[0]/2+minX,dims[1]/2+minY,dims[2]/2+minZ];
+}
+
+//scales a volume based on a transform matrix
+GLGE.BoundingVolume.prototype.applyMatrixScale=function(matrix){
+	var scaleX=GLGE.lengthVec3([matrix[0],matrix[4],matrix[8]]);
+	var scaleY=GLGE.lengthVec3([matrix[1],matrix[5],matrix[9]]);
+	var scaleZ=GLGE.lengthVec3([matrix[2],matrix[6],matrix[10]]);
+	var minX=(this.center[0]-this.dims[0]/2)*scaleX;
+	var maxX=(this.center[0]+this.dims[0]/2)*scaleX;
+	var minY=(this.center[1]-this.dims[1]/2)*scaleY;
+	var maxY=(this.center[1]+this.dims[1]/2)*scaleY;
+	var minZ=(this.center[2]-this.dims[2]/2)*scaleZ;
+	var maxZ=(this.center[2]+this.dims[2]/2)*scaleZ;
+	var dims=[maxX-minX,maxY-minY,maxZ-minZ];
+	this.dims=dims;
+	this.center=[dims[0]/2+minX,dims[1]/2+minY,dims[2]/2+minZ];
+}
+
+GLGE.BoundingVolume.prototype.clone=function(){
+	var minX=this.center[0]-this.dims[0]/2;
+	var maxX=this.center[0]+this.dims[0]/2;
+	var minY=this.center[1]-this.dims[1]/2;
+	var maxY=this.center[1]+this.dims[1]/2;
+	var minZ=this.center[2]-this.dims[2]/2;
+	var maxZ=this.center[2]+this.dims[2]/2;
+	return new GLGE.BoundingVolume(minX,maxX,minY,maxY,minZ,maxZ);
+}
+
+GLGE.BoundingVolume.prototype.toString=function(){
+	var minX=this.center[0]-this.dims[0]/2;
+	var maxX=this.center[0]+this.dims[0]/2;
+	var minY=this.center[1]-this.dims[1]/2;
+	var maxY=this.center[1]+this.dims[1]/2;
+	var minZ=this.center[2]-this.dims[2]/2;
+	var maxZ=this.center[2]+this.dims[2]/2;
+	return [minX,maxX,minY,maxY,minZ,maxZ].toString();
+}
+
+
 function GLGE_mathUnitTest() {
-    var a=GLGE.Vec([1,2,3,4]);
-    var b=GLGE.Vec4(GLGE.getVec4(a,3),
-                    GLGE.get1basedVec4(a,3),
-                    GLGE.getVec4(a,1),
-                    GLGE.getVec4(a,0));
-    var c=GLGE.identMatrix();
-    var d=GLGE.mulMat4Vec4(c,b);
-    if (GLGE.getVec4(d,0)!=4||
-        GLGE.getVec4(d,1)!=3||
-        GLGE.getVec4(d,2)!=2||
-        GLGE.getVec4(d,3)!=1) {
-        throw "Unit Test 1 failed MatVecMul "+d;
-    }
-    var m=GLGE.Mat4([3,4,5,0,.5,.75,0,0,.75,.5,0,0,.25,.25,1,1]);
-    var m1=GLGE.Mat4([2,1,8,2,1,4,3,2,1,.5,6.5,2,8,3,1,.25]);
-    var mm1=GLGE.mulMat4(m,m1);
-    var am1=GLGE.Mat4([15,21.5,68.5,24,
-                       1.75,3.5,6.25,2.5,
-                       2,2.75,7.5,2.5,
-                       9.75,4.75,10.25,3.25]);
+	var a=GLGE.Vec([1,2,3,4]);
+	var b=GLGE.Vec4(GLGE.getVec4(a,3),
+					GLGE.get1basedVec4(a,3),
+					GLGE.getVec4(a,1),
+					GLGE.getVec4(a,0));
+	var c=GLGE.identMatrix();
+	var d=GLGE.mulMat4Vec4(c,b);
+	if (GLGE.getVec4(d,0)!=4||
+		GLGE.getVec4(d,1)!=3||
+		GLGE.getVec4(d,2)!=2||
+		GLGE.getVec4(d,3)!=1) {
+		throw "Unit Test 1 failed MatVecMul "+d;
+	}
+	var m=GLGE.Mat4([3,4,5,0,.5,.75,0,0,.75,.5,0,0,.25,.25,1,1]);
+	var m1=GLGE.Mat4([2,1,8,2,1,4,3,2,1,.5,6.5,2,8,3,1,.25]);
+	var mm1=GLGE.mulMat4(m,m1);
+	var am1=GLGE.Mat4([15,21.5,68.5,24,
+					   1.75,3.5,6.25,2.5,
+					   2,2.75,7.5,2.5,
+					   9.75,4.75,10.25,3.25]);
+	for (var i=0;i<4;++i) {
+		for (var j=0;j<4;++j) {	  
+			var diff=GLGE.getMat4(mm1,i,j)-GLGE.getMat4(am1,i,j);
+			if (diff<.000001&&diff>-.000001) {				
 
-    for (var i=0;i<4;++i) {
-        for (var j=0;j<4;++j) {      
-            var diff=GLGE.getMat4(mm1,i,j)-GLGE.getMat4(am1,i,j);
-            if (diff<.000001&&diff>-.000001) {                
-
-            }else {
-                throw "Unit Test 1 failed Multiplication "+GLGE.getMat4(k,i,j)+" != "+GLGE.getMat4(c,i,j);      
-            }
-        }
-    }
-    var inv = GLGE.inverseMat4(m);
-    var k = GLGE.mulMat4(m,inv);
-    var l = GLGE.mulMat4(inv,m);
-    for (var i=0;i<4;++i) {
-        for (var j=0;j<4;++j) {      
-            var diff=GLGE.getMat4(k,i,j)-GLGE.getMat4(c,i,j);
-            if (diff<.0001&&diff>-.0001) {                
-            }else {
-                throw "Unit Test 1 failed Inverse "+GLGE.getMat4(k,i,j)+" != "+GLGE.getMat4(c,i,j);   
-            }
-        }
-    }
+			}else {
+				throw "Unit Test 1 failed Multiplication "+GLGE.getMat4(mm1,i,j)+" != "+GLGE.getMat4(am1,i,j);	  
+			}
+		}
+	}
+	var inv = GLGE.inverseMat4(m);
+	var k = GLGE.mulMat4(m,inv);
+	var l = GLGE.mulMat4(inv,m);
+	for (var i=0;i<4;++i) {
+		for (var j=0;j<4;++j) {	  
+			var diff=GLGE.getMat4(k,i,j)-GLGE.getMat4(c,i,j);
+			if (diff<.0001&&diff>-.0001) {				
+			}else {
+				throw "Unit Test 1 failed Inverse "+GLGE.getMat4(k,i,j)+" != "+GLGE.getMat4(c,i,j);   
+			}
+		}
+	}
 }
 GLGE_mathUnitTest() ;
 

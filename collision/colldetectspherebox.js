@@ -24,13 +24,13 @@ distribution.
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JSphere=jigLib.JSphere;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JSphere=jigLib.JSphere;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	var CollPointInfo=jigLib.CollPointInfo;
@@ -43,7 +43,7 @@ distribution.
 	}
 	jigLib.extends(CollDetectSphereBox,jigLib.CollDetectFunctor);
 	
-                
+				
 	CollDetectSphereBox.prototype.collDetect=function(info, collArr){
 		var tempBody;
 		if(info.body0.get_type()=="BOX") {
@@ -51,7 +51,7 @@ distribution.
 			info.body0=info.body1;
 			info.body1=tempBody;
 		}
-                        
+						
 		var sphere = info.body0;
 		var box = info.body1;		
 		if (!sphere.hitTestObject3D(box)) {
@@ -65,48 +65,50 @@ distribution.
 
 		var oldBoxPoint={};
 		var newBoxPoint={};
-                        
+						
 		var oldDist = box.getDistanceToPoint(box.get_oldState(), oldBoxPoint, sphere.get_oldState().position);
 		var newDist = box.getDistanceToPoint(box.get_currentState(), newBoxPoint, sphere.get_currentState().position);
-                        
+						
 		var oldDepth = sphere.get_radius() - oldDist;
 		var newDepth = sphere.get_radius() - newDist;
 		if (Math.max(oldDepth, newDepth) > -JConfig.collToll) {
 			var dir;
 			var collPts = [];
 			if (oldDist < -JNumber3D.NUM_TINY) {
-				dir = oldBoxPoint.pos.subtract(sphere.get_oldState().position).subtract(oldBoxPoint.pos);
-				dir.normalize();
+				dir = Vector3DUtil.subtract(Vector3DUtil.subtract(oldBoxPoint.pos, 
+																  sphere.get_oldState().position), 
+											oldBoxPoint.pos);
+				Vector3DUtil.normalize(dir);
 			}else if (oldDist > JNumber3D.NUM_TINY) {
-				dir = sphere.get_oldState().position.subtract(oldBoxPoint.pos);
-				dir.normalize();
+				dir = Vector3DUtil.subtract(sphere.get_oldState().position, oldBoxPoint.pos);
+				Vector3DUtil.normalize(dir);
 			}else{
-				dir = sphere.get_oldState().position.subtract(box.get_oldState().position);
-				dir.normalize();
+				dir = Vector3DUtil.subtract(sphere.get_oldState().position, box.get_oldState().position);
+				Vector3DUtil.normalize(dir);
 			}
-                                
+								
 			var cpInfo = new CollPointInfo();
-			cpInfo.r0 = oldBoxPoint.pos.subtract(sphere.get_oldState().position);
-			cpInfo.r1 = oldBoxPoint.pos.subtract(box.get_oldState().position);
+			cpInfo.r0 = Vector3DUtil.subtract(oldBoxPoint.pos, sphere.get_oldState().position);
+			cpInfo.r1 = Vector3DUtil.subtract(oldBoxPoint.pos, box.get_oldState().position);
 			cpInfo.initialPenetration = oldDepth;
 			collPts.push(cpInfo);
-                                
+								
 			var collInfo=new CollisionInfo();
 			collInfo.objInfo=info;
 			collInfo.dirToBody = dir;
 			collInfo.pointInfo = collPts;
-                                
+								
 			var mat = new MaterialProperties();
 			mat.set_restitution(Math.sqrt(sphere.get_material().get_restitution() * box.get_material().get_restitution()));
 			mat.set_friction(Math.sqrt(sphere.get_material().get_friction() * box.get_material().get_friction()));
 			collInfo.mat = mat;
 			collArr.push(collInfo);
-                                
+								
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
 		}
-	}
+	};
 	
 	jigLib.CollDetectSphereBox=CollDetectSphereBox;
 	
-})(jigLib)
+})(jigLib);

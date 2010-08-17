@@ -23,7 +23,7 @@
  * @link http://code.google.com/p/jiglibflash
  */
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	
 	
 	var CachedImpulse=function(_normalImpulse, _normalImpulseAux, _frictionImpulse){
 		this.normalImpulse = _normalImpulse;

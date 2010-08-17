@@ -1,14 +1,14 @@
 (function(jigLib){
 	/**
-         * Represents a mesh from a 3D engine inside JigLib.
-         * Its implementation shold allow to get and set a Matrix3D on
-         * the original object.
-         *
-         * In the implementation, JMatrix3D should be translated into
-         * the type proper for a given engine.
-         *
-         * @author bartekd
-         */
+		 * Represents a mesh from a 3D engine inside JigLib.
+		 * Its implementation shold allow to get and set a Matrix3D on
+		 * the original object.
+		 *
+		 * In the implementation, JMatrix3D should be translated into
+		 * the type proper for a given engine.
+		 *
+		 * @author bartekd
+		 */
 	var Matrix3D=jigLib.Matrix3D;
 	
 	function ISkin3D(){

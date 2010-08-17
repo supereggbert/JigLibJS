@@ -24,10 +24,10 @@ distribution.
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
 	var RigidBody=jigLib.RigidBody;
 
 	// pointOnBody is in body coords
@@ -37,13 +37,13 @@ distribution.
 		this._pointOnBody = pointOnBody;
 		this._worldPosition = worldPosition;
 		body.addConstraint(this);
-	}
+	};
 	jigLib.extends(JConstraintWorldPoint,jigLib.JConstraint);
 
 	JConstraintWorldPoint.prototype.minVelForProcessing = 0.001;
 	JConstraintWorldPoint.prototype.allowedDeviation = 0.01;
 	JConstraintWorldPoint.prototype.timescale = 4;
-                
+				
 	JConstraintWorldPoint.prototype._body=null;
 	JConstraintWorldPoint.prototype._pointOnBody=null;
 	JConstraintWorldPoint.prototype._worldPosition=null;
@@ -51,57 +51,58 @@ distribution.
 
 	JConstraintWorldPoint.prototype.set_worldPosition=function(pos){
 		this._worldPosition = pos;
-	}
-                
+	};
+				
 	JConstraintWorldPoint.prototype.get_worldPosition=function(){
 		return this._worldPosition;
-	}
-                
+	};
+				
 	JConstraintWorldPoint.prototype.apply=function(dt){
 		this.set_satisfied(true);
 
-		var worldPos = this._pointOnBody.clone();
+		var worldPos = this._pointOnBody.slice(0);
 		JMatrix3D.multiplyVector(this._body.get_currentState().get_orientation(), worldPos);
-		worldPos = worldPos.add(this._body.get_currentState().position);
-		var R = worldPos.subtract(this._body.get_currentState().position);
-		var currentVel = this._body.get_currentState().linVelocity.add(this._body.get_currentState().rotVelocity.crossProduct(R));
-                        
+		worldPos = Vector3DUtil.add(worldPos, this._body.get_currentState().position);
+		var R = Vector3DUtil.subtract(worldPos, this._body.get_currentState().position);
+		var currentVel = Vector3DUtil.add(this._body.get_currentState().linVelocity, 
+										  Vector3DUtil.crossProduct(this._body.get_currentState().rotVelocity, R));
+						
 		var desiredVel;
 		var deviationDir;
-		var deviation= worldPos.subtract(this._worldPosition);
-		var deviationDistance = deviation.get_length();
+		var deviation= Vector3DUtil.subtract(worldPos, this._worldPosition);
+		var deviationDistance = Vector3DUtil.get_length(deviation);
 		if (deviationDistance > allowedDeviation) {
 			deviationDir = JNumber3D.getDivideVector(deviation, deviationDistance);
 			desiredVel = JNumber3D.getScaleVector(deviationDir, (this.allowedDeviation - deviationDistance) / (this.timescale * dt));
 		} else {
-			desiredVel = new Vector3D();
+			desiredVel = [0,0,0,0];
 		}
-                        
-		var N = currentVel.subtract(desiredVel);
-		var normalVel = N.get_length();
+						
+		var N = Vector3DUtil.subtract(currentVel, desiredVel);
+		var normalVel = Vector3DUtil.get_length(N);
 		if (normalVel < minVelForProcessing) {
 			return false;
 		}
 		N = JNumber3D.getDivideVector(N, normalVel);
-                        
-		var tempV = R.crossProduct(N);
+						
+		var tempV = Vector3DUtil.crossProduct(R, N);
 		JMatrix3D.multiplyVector(this._body.get_worldInvInertia(), tempV);
-		var denominator= this._body.get_invMass() + N.dotProduct(tempV.crossProduct(R));
-                         
+		var denominator= this._body.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, R));
+						 
 		if (denominator < JNumber3D.NUM_TINY) {
 			return false;
 		}
-                         
+						 
 		var normalImpulse = -normalVel / denominator;
-                        
+						
 		this._body.applyWorldImpulse(JNumber3D.getScaleVector(N, normalImpulse), worldPos);
-                        
+						
 		this._body.setConstraintsAndCollisionsUnsatisfied();
 		this.set_satisfied(true);
-                        
+						
 		return true;
-	}
+	};
 	
 	jigLib.JConstraintWorldPoint=JConstraintWorldPoint;
 	
-})(jigLib)
+})(jigLib);

@@ -1,15 +1,17 @@
 (function(jigLib){
 
-        var PlaneData=function(pos, nor){
-		this.position = pos.clone();
-		this.normal = nor.clone();
-		this.distance = this.position.dotProduct(this._normal);
-	}
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	
+	var PlaneData=function(pos, nor){
+		this.position = pos.slice(0);
+		this.normal = nor.slice(0);
+		this.distance = Vector3DUtil.dotProduct(this.position, this._normal);
+	};
 	
 	PlaneData.prototype.pointPlaneDistance=function(pt){
-		return normal.dotProduct(pt) - distance;
-	}
+		return Vector3DUtil.dotProduct(normal, pt) - distance;
+	};
 		
 	jigLib.PlaneData=PlaneData;
 	
-})(jigLib)
+})(jigLib);

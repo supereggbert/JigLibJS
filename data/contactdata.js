@@ -1,11 +1,11 @@
 (function(jigLib){
 	/**
-         * @author katopz
-         */
+		 * @author katopz
+		 */
 	var ContactData=function(){
 	}
 	ContactData.prototype.pair=null;
-        ContactData.prototype.impulse=null;
+		ContactData.prototype.impulse=null;
 	
 	jigLib.ContactData=ContactData;
 })(jigLib)

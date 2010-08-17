@@ -24,21 +24,21 @@
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JTerrain=jigLib.JTerrain;
-        var JBox=jigLib.JBox;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JTerrain=jigLib.JTerrain;
+	var JBox=jigLib.JBox;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	
-        var CollDetectBoxTerrain=function(){
+	var CollDetectBoxTerrain=function(){
 		this.name = "BoxTerrain";
 		this.type0 = "BOX";
 		this.type1 = "TERRAIN";
-	}
+	};
 	jigLib.extends(CollDetectBoxTerrain,jigLib.CollDetectFunctor);
 	
 	CollDetectBoxTerrain.prototype.collDetect=function(info, collArr){
@@ -48,40 +48,40 @@
 			info.body0 = info.body1;
 			info.body1 = tempBody;
 		}
-                        
+						
 		var box = info.body0;
 		var terrain = info.body1;
-                        
+						
 		var oldPts = box.getCornerPoints(box.oldState);
 		var newPts = box.getCornerPoints(box.currentState);
-		var collNormal = new Vector3D();
-                        
+		var collNormal = [0,0,0,0];
+						
 		var obj;
 		var dist;
 		var newPt;
 		var oldPt;
-                        
+						
 		var collPts = [];
 		var cpInfo;
-                        
+						
 		for (var i = 0; i < 8; i++ ) {
 			newPt = newPts[i];
 			obj = terrain.getHeightAndNormalByPoint(newPt);
-                                
+								
 			if (obj.height < JConfig.collToll) {
 				oldPt = oldPts[i];
 				dist = terrain.getHeightByPoint(oldPt);
-				collNormal = collNormal.add(obj.normal);
+				collNormal = Vector3DUtil.add(collNormal, obj.normal);
 				cpInfo = new CollPointInfo();
-				cpInfo.r0 = oldPt.subtract(box.oldState.position);
-				cpInfo.r1 = oldPt.subtract(terrain.oldState.position);
+				cpInfo.r0 = Vector3DUtil.subtract(oldPt, box.oldState.position);
+				cpInfo.r1 = Vector3DUtil.subtract(oldPt, terrain.oldState.position);
 				cpInfo.initialPenetration = -dist;
 				collPts.push(cpInfo);
 			}
 		}
-                        
+						
 		if (collPts.length > 0) {
-			collNormal.normalize();
+			Vector3DUtil.normalize(collNormal);
 			var collInfo = new CollisionInfo();
 			collInfo.objInfo = info;
 			collInfo.dirToBody = collNormal;
@@ -93,9 +93,9 @@
 			collArr.push(collInfo);
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
-		}
-	}
+		};
+	};
 	
 	jigLib.CollDetectBoxTerrain=CollDetectBoxTerrain;
 	
-})(jigLib)
+})(jigLib);

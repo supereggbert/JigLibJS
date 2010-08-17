@@ -7,95 +7,95 @@
 	var Vector3D=function(x,y,z,w){ 
 		var n = arguments.length;
 		if (n==0) return;
-		else if (n>=3) { this.x=x; this.y=y; this.z=z; }
-		if (n==4) this.w=w;
+		else if (n>=3) { this[0]=x; this[1]=y; this[2]=z; }
+		if (n==4) this[3]=w;
 	};
 	
 	Vector3D.X_AXIS=new Vector3D(1,0,0);
 	Vector3D.Y_AXIS=new Vector3D(0,1,0);
 	Vector3D.Z_AXIS=new Vector3D(0,0,1);
 	
-	Vector3D.prototype.x=0;
-	Vector3D.prototype.y=0;
-	Vector3D.prototype.z=0;
-	Vector3D.prototype.w=0;
+	Vector3D.prototype[0]=0;
+	Vector3D.prototype[1]=0;
+	Vector3D.prototype[2]=0;
+	Vector3D.prototype[3]=0;
 	
 	Vector3D.prototype.add=function(v){
-		return new Vector3D(this.x+v.x,this.y+v.y,this.z+v.z,this.w+this.w);
+		return new Vector3D(this[0]+v[0],this[1]+v[1],this[2]+v[2],this[3]+this[3]);
 	};
 	
 	Vector3D.prototype.subtract=function(v){
-		return new Vector3D(this.x-v.x,this.y-v.y,this.z-v.z,this.w-this.w);
+		return new Vector3D(this[0]-v[0],this[1]-v[1],this[2]-v[2],this[3]-this[3]);
 	};
 	
 	Vector3D.prototype.decrementBy=function(v){
-		this.x-=v.x;
-		this.y-=v.y;
-		this.z-=v.z;
-		this.w-=v.w;
+		this[0]-=v[0];
+		this[1]-=v[1];
+		this[2]-=v[2];
+		this[3]-=v[3];
 	};
 	
 	Vector3D.prototype.IncrementBy=function(v){
-		this.x+=v.x;
-		this.y+=v.y;
-		this.z+=v.z;
-		this.w+=v.w;
+		this[0]+=v[0];
+		this[1]+=v[1];
+		this[2]+=v[2];
+		this[3]+=v[3];
 	};
 	
 	Vector3D.prototype.dotProduct=function(v){
-		return this.x*v.x+this.y*v.y+this.z*v.z;
+		return this[0]*v[0]+this[1]*v[1]+this[2]*v[2];
 	};
 	
 	Vector3D.prototype.crossProduct=function(v){
-		return new Vector3D(this.y*v.z-this.z*v.y,this.z*v.x-this.x*v.z,this.x*v.y-this.y*v.x);
+		return new Vector3D(this[1]*v[2]-this[2]*v[1],this[2]*v[0]-this[0]*v[2],this[0]*v[1]-this[1]*v[0]);
 	};
 	
 	Vector3D.prototype.get_length=function(){
-		var a=[this.x,this.y,this.z];
+		var a=[this[0],this[1],this[2]];
 		var sq=a[0]*a[0]+a[1]*a[1]+a[2]*a[2];
 		var f=0.0;
-		if (sq>0) {
+		if (sq>0) 
 			f=Math.pow(sq,0.5);
-		}
+
 		return f;
 	};
 	
-	Vector3D.prototype.get_lengthSquared=function(){		var a=[this.x,this.y,this.z];
+	Vector3D.prototype.get_lengthSquared=function(){		var a=[this[0],this[1],this[2]];
 		var sq=a[0]*a[0]+a[1]*a[1]+a[2]*a[2];
 		return sq;
 	};
 	
 	Vector3D.prototype.normalize=function(){
 		f=this.get_length();
-		this.x/=f;
-		this.y/=f;
-		this.z/=f;
+		this[0]/=f;
+		this[1]/=f;
+		this[2]/=f;
 		return f;
 	};
 	
 	Vector3D.prototype.clone=function(v){
-		return new Vector3D(this.x,this.y,this.z,this.w);
+		return new Vector3D(this[0],this[1],this[2],this[3]);
 	};
 	
 	Vector3D.prototype.negate=function(v){
-		this.x*=-1;
-		this.y*=-1;
-		this.z*=-1;
+		this[0]*=-1;
+		this[1]*=-1;
+		this[2]*=-1;
 		return;
 	};
 	
 	Vector3D.prototype.scaleBy=function(s){
-		this.x*=s;
-		this.y*=s;
-		this.z*=s;
+		this[0]*=s;
+		this[1]*=s;
+		this[2]*=s;
 		return;
 	};
 	
 	Vector3D.prototype.project=function(){
-		this.x/=this.w;
-		this.y/=this.w;
-		this.z/=this.w;
-		this.w=1;
+		this[0]/=this[3];
+		this[1]/=this[3];
+		this[2]/=this[3];
+		this[3]=1;
 		return;
 	};
 	
@@ -109,16 +109,16 @@
 	};
 	
 	Vector3D.prototype.equals=function(a, allFour){
-		var out = (this.x==a.x && this.y==a.y  && this.z==a.z);
+		var out = (this[0]==a[0] && this[1]==a[1]  && this[2]==a[2]);
 		if (!out) return false;
-		if (allFour) return this.w==a.w;
+		if (allFour) return this[3]==a[3];
 		return true;
 	};
-    
+	
 	Vector3D.prototype.angleBetween=Vector3D.angleBetween;
 	
 	Vector3D.prototype.toString=function(){
-		return "["+([this.x,this.y,this.z].toString())+"]";
+		return "["+([this[0],this[1],this[2]].toString())+"]";
 	};
 	
 	jigLib.Vector3D=Vector3D;

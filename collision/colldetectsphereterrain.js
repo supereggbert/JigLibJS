@@ -24,21 +24,21 @@
  */
 
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JSphere=jigLib.JSphere;
-        var JTerrain=jigLib.JTerrain;
-        var MaterialProperties=jigLib.MaterialProperties;
-        var RigidBody=jigLib.RigidBody;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JSphere=jigLib.JSphere;
+	var JTerrain=jigLib.JTerrain;
+	var MaterialProperties=jigLib.MaterialProperties;
+	var RigidBody=jigLib.RigidBody;
 	
 	var CollDetectSphereTerrain=function(){ 
 		this.name = "SphereTerrain";
 		this.type0 = "SPHERE";
 		this.type1 = "TERRAIN";
-	}
+	};
 	jigLib.extends(CollDetectSphereTerrain,jigLib.CollDetectFunctor);
 	CollDetectSphereTerrain.prototype.collDetect=function(info, collArr){
 		var tempBody;
@@ -50,21 +50,21 @@
 
 		var sphere = info.body0;
 		var terrain = info.body1;
-                        
+						
 		var obj = terrain.getHeightAndNormalByPoint(sphere.currentState.position);
 		if (obj.height < JConfig.collToll + sphere.radius) {
 			var dist = terrain.getHeightByPoint(sphere.oldState.position);
 			var depth = sphere.radius - dist;
-                                
-			var Pt = sphere.oldState.position.subtract(JNumber3D.getScaleVector(obj.normal, sphere.radius));
-                                
+								
+			var Pt = Vector3DUtil.subtract(sphere.oldState.position, JNumber3D.getScaleVector(obj.normal, sphere.radius));
+								
 			var collPts = [];
 			var cpInfo = new CollPointInfo();
-			cpInfo.r0 = Pt.subtract(sphere.oldState.position);
-			cpInfo.r1 = Pt.subtract(terrain.oldState.position);
+			cpInfo.r0 = Vector3DUtil.subtract(Pt, sphere.oldState.position);
+			cpInfo.r1 = Vector3DUtil.subtract(Pt, terrain.oldState.position);
 			cpInfo.initialPenetration = depth;
 			collPts.push(cpInfo);
-                                
+								
 			var collInfo = new CollisionInfo();
 			collInfo.objInfo = info;
 			collInfo.dirToBody = obj.normal;
@@ -77,6 +77,6 @@
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
 		}
-	}
+	};
 	jigLib.CollDetectSphereTerrain=CollDetectSphereTerrain;
-})(jigLib)
+})(jigLib);

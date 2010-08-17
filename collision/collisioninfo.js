@@ -29,12 +29,12 @@
 	var CollisionInfo=function(){
 		this.mat=new MaterialProperties();
 		this.pointInfo=[];
-	}
+	};
 	CollisionInfo.prototype.mat=null;
-        CollisionInfo.prototype.objInfo=null;
-        CollisionInfo.prototype.dirToBody=null;
-        CollisionInfo.prototype.pointInfo=null;
-        CollisionInfo.prototype.satisfied=null;
+		CollisionInfo.prototype.objInfo=null;
+		CollisionInfo.prototype.dirToBody=null;
+		CollisionInfo.prototype.pointInfo=null;
+		CollisionInfo.prototype.satisfied=null;
 	
 	jigLib.CollisionInfo=CollisionInfo;
-})(jigLib)
+})(jigLib);

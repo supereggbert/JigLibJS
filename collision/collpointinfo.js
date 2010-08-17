@@ -24,25 +24,25 @@
  */
  (function(jigLib){
 
-	var Vector3D=jigLib.Vector3D;
+	
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
+		var JNumber3D=jigLib.JNumber3D;
+		var JConstraint=jigLib.JConstraint;
 
 	var CollPointInfo=function(){
-		this.accumulatedFrictionImpulse=new Vector3D();
-	}
+		this.accumulatedFrictionImpulse=[0,0,0,0];
+	};
 	CollPointInfo.prototype.initialPenetration=null;
-        CollPointInfo.prototype.r0;
-        CollPointInfo.prototype.r1;
-        CollPointInfo.prototype.position;
+		CollPointInfo.prototype.r0;
+		CollPointInfo.prototype.r1;
+		CollPointInfo.prototype.position;
 
-        CollPointInfo.prototype.minSeparationVel = 0;
-        CollPointInfo.prototype.denominator = 0;
+		CollPointInfo.prototype.minSeparationVel = 0;
+		CollPointInfo.prototype.denominator = 0;
 
-        CollPointInfo.prototype.accumulatedNormalImpulse = 0;
-        CollPointInfo.prototype.accumulatedNormalImpulseAux = 0;
-        CollPointInfo.prototype.accumulatedFrictionImpulse = null;
+		CollPointInfo.prototype.accumulatedNormalImpulse = 0;
+		CollPointInfo.prototype.accumulatedNormalImpulseAux = 0;
+		CollPointInfo.prototype.accumulatedFrictionImpulse = null;
 	
 	jigLib.CollPointInfo=CollPointInfo;
-})(jigLib)
+})(jigLib);

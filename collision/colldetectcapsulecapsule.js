@@ -24,23 +24,23 @@
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JCapsule=jigLib.JCapsule;
-        var JSegment=jigLib.JSegment;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JCapsule=jigLib.JCapsule;
+	var JSegment=jigLib.JSegment;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
 
-        var CollDetectCapsuleCapsule=function(){
+		var CollDetectCapsuleCapsule=function(){
 		this.name = "CapsuleCapsule";
 		this.type0 = "CAPSULE";
 		this.type1 = "CAPSULE";
-	}
+	};
 	jigLib.extends(CollDetectCapsuleCapsule,jigLib.CollDetectFunctor);
 
 	CollDetectCapsuleCapsule.prototype.collDetect=function(info, collArr){
@@ -50,7 +50,7 @@
 		if (!capsule0.hitTestObject3D(capsule1)) {
 			return;
 		}
-                        
+						
 		if (JConfig.aabbDetection && !capsule0.get_boundingBox().overlapTest(capsule1.get_boundingBox())) {
 			return;
 		}
@@ -58,11 +58,11 @@
 		var collPts = [];
 		var cpInfo;
 
-		var averageNormal = new Vector3D();
-		var oldSeg0= new JSegment(capsule0.getEndPos(capsule0.get_oldState()), JNumber3D.getScaleVector(capsule0.get_oldState().getOrientationCols()[1], -capsule0.get_length()));
-		var newSeg0= new JSegment(capsule0.getEndPos(capsule0.get_currentState()), JNumber3D.getScaleVector(capsule0.get_currentState().getOrientationCols()[1], -capsule0.get_length()));
-		var oldSeg1= new JSegment(capsule1.getEndPos(capsule1.get_oldState()), JNumber3D.getScaleVector(capsule1.get_oldState().getOrientationCols()[1], -capsule1.get_length()));
-		var newSeg1 = new JSegment(capsule1.getEndPos(capsule1.get_currentState()), JNumber3D.getScaleVector(capsule1.get_currentState().getOrientationCols()[1], -capsule1.get_length()));
+		var averageNormal = [0,0,0,0];
+		var oldSeg0= new JSegment(capsule0.getEndPos(capsule0.get_oldState()), JNumber3D.getScaleVector(capsule0.get_oldState().getOrientationCols()[1], -Vector3DUtil.get_length(capsule0)));
+		var newSeg0= new JSegment(capsule0.getEndPos(capsule0.get_currentState()), JNumber3D.getScaleVector(capsule0.get_currentState().getOrientationCols()[1], -Vector3DUtil.get_length(capsule0)));
+		var oldSeg1= new JSegment(capsule1.getEndPos(capsule1.get_oldState()), JNumber3D.getScaleVector(capsule1.get_oldState().getOrientationCols()[1], -Vector3DUtil.get_length(capsule1)));
+		var newSeg1 = new JSegment(capsule1.getEndPos(capsule1.get_currentState()), JNumber3D.getScaleVector(capsule1.get_currentState().getOrientationCols()[1], -Vector3DUtil.get_length(capsule1)));
 
 		var radSum = capsule0.get_radius() + capsule1.get_radius();
 
@@ -75,31 +75,31 @@
 			var pos0 = oldSeg0.getPoint(oldObj.t0);
 			var pos1 = oldSeg1.getPoint(oldObj.t1);
 
-			var delta = pos0.subtract(pos1);
+			var delta = Vector3DUtil.subtract(pos0, pos1);
 			var dist = Math.sqrt(oldDistSq);
 			var depth = radSum - dist;
 
 			if (dist > JNumber3D.NUM_TINY){
 				delta = JNumber3D.getDivideVector(delta, dist);
 			}else{
-				delta = Vector3D.Y_AXIS;
+				delta = Vector3DUtil.Y_AXIS;
 				JMatrix3D.multiplyVector(JMatrix3D.getRotationMatrix(0, 0, 1, 360 * Math.random()), delta);
 			}
 
-			var worldPos = pos1.add(JNumber3D.getScaleVector(delta, capsule1.get_radius() - 0.5 * depth));
-			averageNormal = averageNormal.add(delta);
+			var worldPos = Vector3DUtil.add(pos1, JNumber3D.getScaleVector(delta, capsule1.get_radius() - 0.5 * depth));
+			averageNormal = Vector3DUtil.add(averageNormal, delta);
 
 			cpInfo = new CollPointInfo();
-			cpInfo.r0 = worldPos.subtract(capsule0.get_oldState().position);
-			cpInfo.r1 = worldPos.subtract(capsule1.get_oldState().position);
+			cpInfo.r0 = Vector3DUtil.subtract(worldPos, capsule0.get_oldState().position);
+			cpInfo.r1 = Vector3DUtil.subtract(worldPos, capsule1.get_oldState().position);
 			cpInfo.initialPenetration = depth;
 			collPts.push(cpInfo);
 		}
 
-		oldSeg0 = new JSegment(capsule0.getBottomPos(capsule0.get_oldState()), JNumber3D.getScaleVector(capsule0.get_oldState().getOrientationCols()[1], capsule0.get_length()));
-		newSeg0 = new JSegment(capsule0.getBottomPos(capsule0.get_currentState()), JNumber3D.getScaleVector(capsule0.get_currentState().getOrientationCols()[1], capsule0.get_length()));
-		oldSeg1 = new JSegment(capsule1.getBottomPos(capsule1.get_oldState()), JNumber3D.getScaleVector(capsule1.get_oldState().getOrientationCols()[1], capsule1.get_length()));
-		newSeg1 = new JSegment(capsule1.getBottomPos(capsule1.get_currentState()), JNumber3D.getScaleVector(capsule1.get_currentState().getOrientationCols()[1], capsule1.get_length()));
+		oldSeg0 = new JSegment(capsule0.getBottomPos(capsule0.get_oldState()), JNumber3D.getScaleVector(capsule0.get_oldState().getOrientationCols()[1], Vector3DUtil.get_length(capsule0)));
+		newSeg0 = new JSegment(capsule0.getBottomPos(capsule0.get_currentState()), JNumber3D.getScaleVector(capsule0.get_currentState().getOrientationCols()[1], Vector3DUtil.get_length(capsule0)));
+		oldSeg1 = new JSegment(capsule1.getBottomPos(capsule1.get_oldState()), JNumber3D.getScaleVector(capsule1.get_oldState().getOrientationCols()[1], Vector3DUtil.get_length(capsule1)));
+		newSeg1 = new JSegment(capsule1.getBottomPos(capsule1.get_currentState()), JNumber3D.getScaleVector(capsule1.get_currentState().getOrientationCols()[1], Vector3DUtil.get_length(capsule1)));
 
 		oldObj = {};
 		oldDistSq = oldSeg0.segmentSegmentDistanceSq(oldObj, oldSeg1);
@@ -110,30 +110,30 @@
 			pos0 = oldSeg0.getPoint(oldObj.t0);
 			pos1 = oldSeg1.getPoint(oldObj.t1);
 
-			delta = pos0.subtract(pos1);
+			delta = Vector3DUtil.subtract(pos0, pos1);
 			dist = Math.sqrt(oldDistSq);
 			depth = radSum - dist;
 
 			if (dist > JNumber3D.NUM_TINY){
 				delta = JNumber3D.getDivideVector(delta, dist);
 			}else{
-				delta = Vector3D.Y_AXIS;
+				delta = Vector3DUtil.Y_AXIS;
 				JMatrix3D.multiplyVector(JMatrix3D.getRotationMatrix(0, 0, 1, 360 * Math.random()), delta);
 			}
 
-			worldPos = pos1.add(JNumber3D.getScaleVector(delta, capsule1.get_radius() - 0.5 * depth));
-			averageNormal = averageNormal.add(delta);
+			worldPos = Vector3DUtil.add(pos1, JNumber3D.getScaleVector(delta, capsule1.get_radius() - 0.5 * depth));
+			averageNormal = Vector3DUtil.add(averageNormal, delta);
 
 			cpInfo = new CollPointInfo();
-			cpInfo.r0 = worldPos.subtract(capsule0.get_oldState().position);
-			cpInfo.r1 = worldPos.subtract(capsule1.get_oldState().position);
+			cpInfo.r0 = Vector3DUtil.subtract(worldPos, capsule0.get_oldState().position);
+			cpInfo.r1 = Vector3DUtil.subtract(worldPos, capsule1.get_oldState().position);
 			cpInfo.initialPenetration = depth;
 			collPts.push(cpInfo);
 
 		}
 
 		if (collPts.length > 0){
-			averageNormal.normalize();
+			Vector3DUtil.normalize(averageNormal);
 			var collInfo = new CollisionInfo();
 			collInfo.objInfo = info;
 			collInfo.dirToBody = averageNormal;
@@ -148,8 +148,8 @@
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
 		}
-	}
+	};
 	
 	jigLib.CollDetectCapsuleCapsule=CollDetectCapsuleCapsule;
 	
-})(jigLib)
+})(jigLib);

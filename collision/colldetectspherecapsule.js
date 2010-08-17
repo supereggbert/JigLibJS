@@ -24,14 +24,14 @@
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JSphere=jigLib.JSphere;
-        var JSegment=jigLib.JSegment;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JSphere=jigLib.JSphere;
+	var JSegment=jigLib.JSegment;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	var CollPointInfo=jigLib.CollPointInfo;
@@ -41,7 +41,7 @@
 		this.name = "SphereCapsule";
 		this.type0 = "SPHERE";
 		this.type1 = "CAPSULE";
-	}
+	};
 	jigLib.extends(CollDetectSphereCapsule,jigLib.CollDetectFunctor);
 	
 	CollDetectSphereCapsule.prototype.collDetect=function(info, collArr){
@@ -58,13 +58,13 @@
 		if (!sphere.hitTestObject3D(capsule)){
 			return;
 		}
-                        
+						
 		if (JConfig.aabbDetection && !sphere.get_boundingBox().overlapTest(capsule.get_boundingBox())) {
 			return;
 		}
 
-		var oldSeg = new JSegment(capsule.getBottomPos(capsule.get_oldState()), JNumber3D.getScaleVector(capsule.get_oldState().getOrientationCols()[1], capsule.get_length() + 2 * capsule.get_radius()));
-		var newSeg = new JSegment(capsule.getBottomPos(capsule.get_currentState()), JNumber3D.getScaleVector(capsule.get_currentState().getOrientationCols()[1], capsule.get_length() + 2 * capsule.get_radius()));
+		var oldSeg = new JSegment(capsule.getBottomPos(capsule.get_oldState()), JNumber3D.getScaleVector(capsule.get_oldState().getOrientationCols()[1], Vector3DUtil.get_length(capsule) + 2 * capsule.get_radius()));
+		var newSeg = new JSegment(capsule.getBottomPos(capsule.get_currentState()), JNumber3D.getScaleVector(capsule.get_currentState().getOrientationCols()[1], Vector3DUtil.get_length(capsule) + 2 * capsule.get_radius()));
 		var radSum = sphere.get_radius() + capsule.get_radius();
 
 		var oldObj = {};
@@ -74,7 +74,7 @@
 
 		if (Math.min(oldDistSq, newDistSq) < Math.pow(radSum + JConfig.collToll, 2)){
 			var segPos = oldSeg.getPoint(oldObj.t);
-			var delta = sphere.get_oldState().position.subtract(segPos);
+			var delta = Vector3DUtil.subtract(sphere.get_oldState().position, segPos);
 
 			var dist = Math.sqrt(oldDistSq);
 			var depth = radSum - dist;
@@ -82,16 +82,16 @@
 			if (dist > JNumber3D.NUM_TINY){
 				delta = JNumber3D.getDivideVector(delta, dist);
 			}else{
-				delta = Vector3D.Y_AXIS;
+				delta = Vector3DUtil.Y_AXIS;
 				JMatrix3D.multiplyVector(JMatrix3D.getRotationMatrix(0, 0, 1, 360 * Math.random()), delta);
 			}
 
-			var worldPos = segPos.add(JNumber3D.getScaleVector(delta, capsule.get_radius() - 0.5 * depth));
+			var worldPos = Vector3DUtil.add(segPos, JNumber3D.getScaleVector(delta, capsule.get_radius() - 0.5 * depth));
 
 			var collPts = [];
 			var cpInfo = new CollPointInfo();
-			cpInfo.r0 = worldPos.subtract(sphere.get_oldState().position);
-			cpInfo.r1 = worldPos.subtract(capsule.get_oldState().position);
+			cpInfo.r0 = Vector3DUtil.subtract(worldPos, sphere.get_oldState().position);
+			cpInfo.r1 = Vector3DUtil.subtract(worldPos, capsule.get_oldState().position);
 			cpInfo.initialPenetration = depth;
 			collPts.push(cpInfo);
 
@@ -109,8 +109,8 @@
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
 		}
-	}
+	};
 	
-	jigLib.CollDetectSphereCapsule=CollDetectSphereCapsule
+	jigLib.CollDetectSphereCapsule=CollDetectSphereCapsule;
 	
-})(jigLib)
+})(jigLib);

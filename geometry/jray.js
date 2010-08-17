@@ -24,21 +24,21 @@
  */
 
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
+	var JNumber3D=jigLib.JNumber3D;
 	
 	var JRay=function(_origin, _dir){
 		this.origin = _origin;
 		this.dir = _dir;
-	}
+	};
 	JRay.prototype.origin=null;
 	JRay.prototype.dir=null;
 	
 	JRay.prototype.getOrigin=function(t){
-		return this.origin.add(JNumber3D.getScaleVector(this.dir, t));
-	}
+		return Vector3DUtil.add(this.origin, JNumber3D.getScaleVector(this.dir, t));
+	};
 	
 	jigLib.JRay=JRay;
 	
-})(jigLib)
+})(jigLib);

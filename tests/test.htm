@@ -44,22 +44,22 @@
 		{
 			var x = 0;
 			var n = a / 26;
-			var caseTest = a % 8;    
+			var caseTest = a % 8;	
 			
 			do {
 			
-			    switch (caseTest)
-			    {
-				    case 0: x++;
-				    case 7: x++;
-				    case 6: x++;
-				    case 5: x++;
-				    case 4: x++;
-				    case 3: x++;
-				    case 2: x++;
-				    case 1: x++;
-			    }
-			    caseTest=0;
+				switch (caseTest)
+				{
+					case 0: x++;
+					case 7: x++;
+					case 6: x++;
+					case 5: x++;
+					case 4: x++;
+					case 3: x++;
+					case 2: x++;
+					case 1: x++;
+				}
+				caseTest=0;
 			}
 			while (--n > 0);
 			
@@ -466,7 +466,7 @@
 			var arr = [];
 			var start = new Date();
 			
-			for (var i=10000000; i--;)
+			for (var i=1000000; i--;)
 			{
 				arr.push(new simpleVO(i,i,i,i));
 			}
@@ -481,7 +481,7 @@
 			var arr = [];
 			var start = new Date();
 			
-			for (var i=10000000; i--;)
+			for (var i=1000000; i--;)
 			{
 				arr.push(new complexVO(i,i,i,i));
 			}
@@ -496,7 +496,7 @@
 			var arr = [];
 			var start = new Date();
 			
-			for (var i=10000000; i--;)
+			for (var i=1000000; i--;)
 			{
 				arr.push([i,i,i,i]);
 			}
@@ -511,7 +511,7 @@
 			var arr = [];
 			var start = new Date();
 			
-			for (var i=10000000; i--;)
+			for (var i=1000000; i--;)
 			{
 				arr.push({x:i,y:i,z:i,w:i});
 			}
@@ -519,6 +519,21 @@
 			arr = null;
 
 			document.getElementById('debug').innerHTML = 'arrays: '+t2;
+		}
+
+		function testAllVOs()
+		{
+			var out='';
+			testSimpleVOs();
+			out += document.getElementById('debug').innerHTML+'<br />';
+			testComplexVOs();
+			out += document.getElementById('debug').innerHTML+'<br />';
+			testArrays();
+			out += document.getElementById('debug').innerHTML+'<br />';
+			testObjects();
+			out += document.getElementById('debug').innerHTML+'<br />';
+			testAllVOs();
+			out += document.getElementById('debug').innerHTML+'<br />';
 		}
 	</script>
 	<div>
@@ -634,6 +649,52 @@
 	</script>
 	<div>
 		<button onClick="testMathMinVsTernary();">Math.min vs ternary</button>
+	</div>
+	<br />
+	
+	
+	<script type="text/javascript">
+		function isnanTest()
+		{
+			var start = new Date();
+			var x;
+			var i=99999999;
+			do { 
+				x=(!isNaN(i)) ? i : 0; 
+			} while (i--);
+			return new Date()-start;
+		}
+		function boolConvTest()
+		{
+			var start = new Date();
+			var x;
+			var i=99999999;
+			do { 
+				x=(i) ? i : 0; 
+			} while (i--);
+			return new Date()-start;
+		}
+		function equalsnanTest()
+		{
+			var start = new Date();
+			var x;
+			var i=99999999;
+			do { 
+				x=(i!=NaN) ? i : 0; 
+			} while (i--);
+			return new Date()-start;
+		}
+		function testIsNaNVsBoolConv()
+		{
+			var a=isnanTest();
+			var b=boolConvTest();
+			var c=equalsnanTest();
+			var out = 'isNaN: '+a+'<br />boolean conversion: '+b+'<br />==NaN: '+c;
+			document.getElementById('debug').innerHTML = out;
+		}
+	</script>
+	<div>
+		<button onClick="testIsNaNVsBoolConv();">isNaN vs boolean conversion vs ==NaN</button>
 	</div>
 	<br />
 	

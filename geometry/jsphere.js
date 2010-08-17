@@ -24,12 +24,12 @@
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var ISkin3D=jigLib.ISkin3D;
-        var PhysicsState=jigLib.PhysicsState;
+	var JNumber3D=jigLib.JNumber3D;
+	var ISkin3D=jigLib.ISkin3D;
+	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 
 	var JSphere=function(skin, r){
@@ -39,7 +39,7 @@
 		this._boundingSphere = this._radius;
 		this.set_mass(1);
 		this.updateBoundingBox();
-	}
+	};
 	jigLib.extends(JSphere,jigLib.RigidBody);
 	JSphere.prototype.name=null;
 	JSphere.prototype._radius=null;
@@ -50,32 +50,32 @@
 		this.setInertia(this.getInertiaProperties(this.get_mass()));
 		this.setActive();
 		this.updateBoundingBox();
-	}
+	};
 
 	JSphere.prototype.get_radius=function(){
 		return this._radius;
-	}
+	};
 
 	JSphere.prototype.segmentIntersect=function(out, seg, state){
 		out.fracOut = 0;
-		out.posOut = new Vector3D();
-		out.normalOut = new Vector3D();
+		out.posOut = [0,0,0,0];
+		out.normalOut = [0,0,0,0];
 
 		var frac = 0;
 		var r = seg.delta;
-		var s = seg.origin.subtract(state.position);
+		var s = Vector3DUtil.subtract(seg.origin, state.position);
 
 		var radiusSq = this._radius * this._radius;
 		var rSq = r.lengthSquared;
 		if (rSq < radiusSq){
 			out.fracOut = 0;
-			out.posOut = seg.origin.clone();
-			out.normalOut = out.posOut.subtract(state.position);
-			out.normalOut.normalize();
+			out.posOut = seg.origin.slice(0);
+			out.normalOut = Vector3DUtil.subtract(out.posOut, state.position);
+			Vector3DUtil.normalize(out.normalOut);
 			return true;
 		}
 
-		var sDotr = s.dotProduct(r);
+		var sDotr = Vector3DUtil.dotProduct(s, r);
 		var sSq = s.lengthSquared;
 		var sigma = sDotr * sDotr - rSq * (sSq - radiusSq);
 		if (sigma < 0){
@@ -90,21 +90,21 @@
 		frac = Math.max(lambda1, 0);
 		out.fracOut = frac;
 		out.posOut = seg.getPoint(frac);
-		out.normalOut = out.posOut.subtract(state.position);
-		out.normalOut.normalize();
+		out.normalOut = Vector3DUtil.subtract(out.posOut, state.position);
+		Vector3DUtil.normalize(out.normalOut);
 		return true;
-	}
+	};
 
 	JSphere.prototype.getInertiaProperties=function(m){
 		var Ixx = 0.4 * m * this._radius * this._radius;
 		return JMatrix3D.getScaleMatrix(Ixx, Ixx, Ixx);
-	}
-                
+	};
+				
 	JSphere.prototype.updateBoundingBox=function(){
 		this._boundingBox.clear();
 		this._boundingBox.addSphere(this);
-	}
+	};
 	
 	jigLib.JSphere=JSphere;
 	
-})(jigLib)
+})(jigLib);

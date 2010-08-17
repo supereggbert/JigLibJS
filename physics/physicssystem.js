@@ -25,8 +25,7 @@
 
  
 (function(jigLib){
-
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JConfig=jigLib.JConfig;
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
@@ -47,7 +46,7 @@
 		this._cachedContacts = [];
 		this._collisionSystem = new CollisionSystem();
 
-		this.setGravity(JNumber3D.getScaleVector(Vector3D.Y_AXIS, -10));
+		this.setGravity(JNumber3D.getScaleVector(Vector3DUtil.Y_AXIS, -10));
 	};
 	
 	PhysicsSystem.prototype._currentPhysicsSystem=null;
@@ -97,15 +96,15 @@
 
 	PhysicsSystem.prototype.setGravity=function(gravity){
 		this._gravity = gravity;
-		if (this._gravity.x == this._gravity.y && this._gravity.y == this._gravity.z)
+		if (this._gravity[0] == this._gravity[1] && this._gravity[1] == this._gravity[2])
 			this._gravityAxis = -1;
 
 		this._gravityAxis = 0;
 		
-		if (Math.abs(this._gravity.y) > Math.abs(this._gravity.z))
+		if (Math.abs(this._gravity[1]) > Math.abs(this._gravity[2]))
 			this._gravityAxis = 1;
 
-		if (Math.abs(this._gravity.z) > Math.abs(JNumber3D.toArray(this._gravity)[this._gravityAxis]))
+		if (Math.abs(this._gravity[2]) > Math.abs(JNumber3D.toArray(this._gravity)[this._gravityAxis]))
 			this._gravityAxis = 2;
 	};
 
@@ -236,14 +235,14 @@
 		var numTiny = JNumber3D.NUM_TINY;
 
 		if (ptNum > 1){
-			var avR0 = new Vector3D();
-			var avR1 = new Vector3D();
+			var avR0 = [0,0,0,0];
+			var avR1 = [0,0,0,0];
 			var avDepth = 0;
 
 			for (var i = 0; i < ptNum; i++){
 				ptInfo = collision.pointInfo[i];
-				avR0 = avR0.add(ptInfo.r0);
-				avR1 = avR1.add(ptInfo.r1);
+				avR0 = Vector3DUtil.add(avR0, ptInfo.r0);
+				avR1 = Vector3DUtil.add(avR1, ptInfo.r1);
 				avDepth += ptInfo.initialPenetration;
 			}
 			avR0 = JNumber3D.getDivideVector(avR0, ptNum);
@@ -262,14 +261,14 @@
 		if (!body0.get_movable()){
 			ptInfo.denominator = 0;
 		}else{
-			tempV = ptInfo.r0.crossProduct(N);
+			tempV = Vector3DUtil.crossProduct(ptInfo.r0, N);
 			JMatrix3D.multiplyVector(body0.get_worldInvInertia(), tempV);
-			ptInfo.denominator = body0.get_invMass() + N.dotProduct(tempV.crossProduct(ptInfo.r0));
+			ptInfo.denominator = body0.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r0));
 		}
 		if (body1.get_movable()){
-			tempV = ptInfo.r1.crossProduct(N);
+			tempV = Vector3DUtil.crossProduct(ptInfo.r1, N);
 			JMatrix3D.multiplyVector(body1.get_worldInvInertia(), tempV);
-			ptInfo.denominator += (body1.get_invMass() + N.dotProduct(tempV.crossProduct(ptInfo.r1)));
+			ptInfo.denominator += (body1.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r1)));
 		}
 		if (ptInfo.denominator < numTiny)
 			ptInfo.denominator = numTiny;
@@ -308,15 +307,15 @@
 			if (!body0.get_movable()){
 				ptInfo.denominator = 0;
 			}else{
-				tempV = ptInfo.r0.crossProduct(N);
+				tempV = Vector3DUtil.crossProduct(ptInfo.r0, N);
 				JMatrix3D.multiplyVector(body0.get_worldInvInertia(), tempV);
-				ptInfo.denominator = body0.get_invMass() + N.dotProduct(tempV.crossProduct(ptInfo.r0));
+				ptInfo.denominator = body0.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r0));
 			}
 
 			if (body1.get_movable()){
-				tempV = ptInfo.r1.crossProduct(N);
+				tempV = Vector3DUtil.crossProduct(ptInfo.r1, N);
 				JMatrix3D.multiplyVector(body1.get_worldInvInertia(), tempV);
-				ptInfo.denominator += (body1.get_invMass() + N.dotProduct(tempV.crossProduct(ptInfo.r1)));
+				ptInfo.denominator += (body1.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r1)));
 			}
 
 			if (ptInfo.denominator < JNumber3D.NUM_TINY)
@@ -360,15 +359,15 @@
 			if (!body0.get_movable()){
 				ptInfo.denominator = 0;
 			}else{
-				tempV = ptInfo.r0.crossProduct(N);
+				tempV = Vector3DUtil.crossProduct(ptInfo.r0, N);
 				JMatrix3D.multiplyVector(body0.get_worldInvInertia(), tempV);
-				ptInfo.denominator = body0.get_invMass() + N.dotProduct(tempV.crossProduct(ptInfo.r0));
+				ptInfo.denominator = body0.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r0));
 			}
 
 			if (body1.get_movable()){
-				tempV = ptInfo.r1.crossProduct(N);
+				tempV = Vector3DUtil.crossProduct(ptInfo.r1, N);
 				JMatrix3D.multiplyVector(body1.get_worldInvInertia(), tempV);
-				ptInfo.denominator += (body1.get_invMass() + N.dotProduct(tempV.crossProduct(ptInfo.r1)));
+				ptInfo.denominator += (body1.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r1)));
 			}
 			if (ptInfo.denominator < numTiny) ptInfo.denominator = numTiny;
 
@@ -386,16 +385,17 @@
 
 			ptInfo.accumulatedNormalImpulse = 0;
 			ptInfo.accumulatedNormalImpulseAux = 0;
-			ptInfo.accumulatedFrictionImpulse = new Vector3D();
+			ptInfo.accumulatedFrictionImpulse = [0,0,0,0];
 
 			var bestDistSq = 0.04;
-			var bp = new BodyPair(body0, body1, new Vector3D(), new Vector3D());
+			var bp = new BodyPair(body0, body1, [0,0,0,0], [0,0,0,0]);
 
 			for(var j=0, ccl=this._cachedContacts.length; j<ccl; j++){
 				if (!(bp.body0 == this._cachedContacts[j].pair.body0 && bp.body1 == this._cachedContacts[j].pair.body1))
 					continue;
 				
-				var distSq = (this._cachedContacts[j].pair.body0 == body0) ? this._cachedContacts[j].pair.r.subtract(ptInfo.r0).lengthSquared : this._cachedContacts[j].pair.r.subtract(ptInfo.r1).lengthSquared;
+				var distSq = (this._cachedContacts[j].pair.body0 == body0)  ? Vector3DUtil.subtract(this._cachedContacts[j].pair.r, ptInfo.r0).lengthSquared 
+																			: Vector3DUtil.subtract(this._cachedContacts[j].pair.r, ptInfo.r1).lengthSquared;
 
 				if (distSq < bestDistSq){
 					bestDistSq = distSq;
@@ -411,7 +411,7 @@
 			var impulse;
 			if (ptInfo.accumulatedNormalImpulse != 0){
 				impulse = JNumber3D.getScaleVector(N, ptInfo.accumulatedNormalImpulse);
-				impulse = impulse.add(ptInfo.accumulatedFrictionImpulse);
+				impulse = Vector3DUtil.add(impulse, ptInfo.accumulatedFrictionImpulse);
 				body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
 				body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
 			}
@@ -453,7 +453,7 @@
 			Vr0 = body0.getVelocity(ptInfo.r0);
 			Vr1 = body1.getVelocity(ptInfo.r1);
 
-			normalVel = Vr0.subtract(Vr1).dotProduct(N);
+			normalVel = Vector3DUtil.dotProduct(Vector3DUtil.subtract(Vr0, Vr1), N);
 			if (normalVel > ptInfo.minSeparationVel)
 				continue;
 
@@ -474,24 +474,24 @@
 			body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
 
 			var tempV;
-			var VR = Vr0.subtract(Vr1);
-			var tangent_vel = VR.subtract(JNumber3D.getScaleVector(N, VR.dotProduct(N)));
-			var tangent_speed = tangent_vel.get_length();
+			var VR = Vector3DUtil.subtract(Vr0, Vr1);
+			var tangent_vel = Vector3DUtil.subtract(VR, JNumber3D.getScaleVector(N, Vector3DUtil.dotProduct(VR, N)));
+			var tangent_speed = Vector3DUtil.get_length(tangent_vel);
 
 			if (tangent_speed > this._minVelForProcessing){
 				var T = JNumber3D.getScaleVector(JNumber3D.getDivideVector(tangent_vel, tangent_speed), -1);
 				var denominator = 0;
 
 				if (body0.get_movable()){
-					tempV = ptInfo.r0.crossProduct(T);
+					tempV = Vector3DUtil.crossProduct(ptInfo.r0, T);
 					JMatrix3D.multiplyVector(body0.get_worldInvInertia(), tempV);
-					denominator = body0.get_invMass() + T.dotProduct(tempV.crossProduct(ptInfo.r0));
+					denominator = body0.get_invMass() + Vector3DUtil.dotProduct(T, Vector3DUtil.crossProduct(tempV, ptInfo.r0));
 				}
 
 				if (body1.get_movable()){
-					tempV = ptInfo.r1.crossProduct(T);
+					tempV = Vector3DUtil.crossProduct(ptInfo.r1, T);
 					JMatrix3D.multiplyVector(body1.get_worldInvInertia(), tempV);
-					denominator += (body1.get_invMass() + T.dotProduct(tempV.crossProduct(ptInfo.r1)));
+					denominator += (body1.get_invMass() + Vector3DUtil.dotProduct(T, Vector3DUtil.crossProduct(tempV, ptInfo.r1)));
 				}
 
 				if (denominator > JNumber3D.NUM_TINY){
@@ -533,7 +533,7 @@
 
 			Vr0 = body0.getVelocity(ptInfo.r0);
 			Vr1 = body1.getVelocity(ptInfo.r1);
-			normalVel = Vr0.subtract(Vr1).dotProduct(N);
+			normalVel = Vector3DUtil.dotProduct(Vector3DUtil.subtract(Vr0, Vr1), N);
 
 			deltaVel = -normalVel;
 			if (ptInfo.minSeparationVel < 0)
@@ -556,7 +556,7 @@
 
 			Vr0 = body0.getVelocityAux(ptInfo.r0);
 			Vr1 = body1.getVelocityAux(ptInfo.r1);
-			normalVel = Vr0.subtract(Vr1).dotProduct(N);
+			normalVel = Vector3DUtil.dotProduct(Vector3DUtil.subtract(Vr0, Vr1), N);
 
 			deltaVel = -normalVel;
 			if (ptInfo.minSeparationVel > 0)
@@ -581,28 +581,28 @@
 				Vr0 = body0.getVelocity(ptInfo.r0);
 				Vr1 = body1.getVelocity(ptInfo.r1);
 				var tempV;
-				var VR = Vr0.subtract(Vr1);
-				var tangent_vel = VR.subtract(JNumber3D.getScaleVector(N, VR.dotProduct(N)));
+				var VR = Vector3DUtil.subtract(Vr0, Vr1);
+				var tangent_vel = Vector3DUtil.subtract(VR, JNumber3D.getScaleVector(N, Vector3DUtil.dotProduct(VR, N)));
 				var tangent_speed = tangent_vel.length;
 				if (tangent_speed > this._minVelForProcessing){
 					var T= JNumber3D.getScaleVector(JNumber3D.getDivideVector(tangent_vel, tangent_speed), -1);
 					var denominator = 0;
 					if (body0.get_movable()){
-						tempV = ptInfo.r0.crossProduct(T);
+						tempV = Vector3DUtil.crossProduct(ptInfo.r0, T);
 						JMatrix3D.multiplyVector(body0.get_worldInvInertia(), tempV);
-						denominator = body0.invMass + T.dotProduct(tempV.crossProduct(ptInfo.r0));
+						denominator = body0.invMass + Vector3DUtil.dotProduct(T, Vector3DUtil.crossProduct(tempV, ptInfo.r0));
 					}
 					if (body1.get_movable()){
-						tempV = ptInfo.r1.crossProduct(T);
+						tempV = Vector3DUtil.crossProduct(ptInfo.r1, T);
 						JMatrix3D.multiplyVector(body1.get_worldInvInertia(), tempV);
-						denominator += (body1.invMass + T.dotProduct(tempV.crossProduct(ptInfo.r1)));
+						denominator += (body1.invMass + Vector3DUtil.dotProduct(T, Vector3DUtil.crossProduct(tempV, ptInfo.r1)));
 					}
 					if (denominator > JNumber3D.NUM_TINY){
 						var impulseToReverse = tangent_speed / denominator;
 						var frictionImpulseVec = JNumber3D.getScaleVector(T, impulseToReverse);
 
-						var origAccumulatedFrictionImpulse = ptInfo.accumulatedFrictionImpulse.clone();
-						ptInfo.accumulatedFrictionImpulse = ptInfo.accumulatedFrictionImpulse.add(frictionImpulseVec);
+						var origAccumulatedFrictionImpulse = ptInfo.accumulatedFrictionImpulse.slice(0);
+						ptInfo.accumulatedFrictionImpulse = Vector3DUtil.add(ptInfo.accumulatedFrictionImpulse, frictionImpulseVec);
 
 						var AFIMag = ptInfo.accumulatedFrictionImpulse.length;
 						var maxAllowedAFIMag = collision.mat.friction * ptInfo.accumulatedNormalImpulse;
@@ -610,7 +610,7 @@
 						if (AFIMag > JNumber3D.NUM_TINY && AFIMag > maxAllowedAFIMag)
 							ptInfo.accumulatedFrictionImpulse = JNumber3D.getScaleVector(ptInfo.accumulatedFrictionImpulse, maxAllowedAFIMag / AFIMag);
 
-						var actualFrictionImpulse = ptInfo.accumulatedFrictionImpulse.subtract(origAccumulatedFrictionImpulse);
+						var actualFrictionImpulse = Vector3DUtil.subtract(ptInfo.accumulatedFrictionImpulse, origAccumulatedFrictionImpulse);
 
 						body0.applyBodyWorldImpulse(actualFrictionImpulse, ptInfo.r0);
 						body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(actualFrictionImpulse, -1), ptInfo.r1);
@@ -727,7 +727,7 @@
 				other_body = this._collisions[i].objInfo.body1;
 				thisBody_normal = JNumber3D.getScaleVector(this._collisions[i].dirToBody, -1);
 			}
-			if (!other_body.isActive && other_body.get_force().dotProduct(thisBody_normal) < -JNumber3D.NUM_TINY)
+			if (!other_body.isActive && Vector3DUtil.dotProduct(other_body.get_force(), thisBody_normal) < -JNumber3D.NUM_TINY)
 				this.activateObject(other_body);
 		}
 	};
@@ -747,8 +747,8 @@
 					this.activateObject(_body);
 				}else{
 					if (_body.getVelChanged()){
-						_body.setVelocity(new Vector3D());
-						_body.setAngVel(new Vector3D());
+						_body.setVelocity([0,0,0,0]);
+						_body.setAngVel([0,0,0,0]);
 						_body.clearVelChanged();
 					}
 				}

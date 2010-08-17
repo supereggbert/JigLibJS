@@ -24,13 +24,13 @@
  */
 
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JCapsule=jigLib.JCapsule;
-        var JTerrain=jigLib.JTerrain;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JCapsule=jigLib.JCapsule;
+	var JTerrain=jigLib.JTerrain;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	
@@ -38,7 +38,7 @@
 		this.name = "BoxTerrain";
 		this.type0 = "CAPSULE";
 		this.type1 = "TERRAIN";
-	}
+	};
 	jigLib.extends(CollDetectCapsuleTerrain,jigLib.CollDetectFunctor);
 
 	CollDetectCapsuleTerrain.prototype.collDetect=function(info, collArr){
@@ -48,46 +48,46 @@
 			info.body0 = info.body1;
 			info.body1 = tempBody;
 		}
-                        
+						
 		var capsule = info.body0;
 		var terrain = info.body1;
-                        
+						
 		var collPts = [];
 		var cpInfo;
-                        
-		var averageNormal= new Vector3D();
+						
+		var averageNormal= [0,0,0,0];
 		var pos1 = capsule.getBottomPos(capsule.oldState);
 		var pos2 = capsule.getBottomPos(capsule.currentState);
 		var obj1= terrain.getHeightAndNormalByPoint(pos1);
 		var obj2 = terrain.getHeightAndNormalByPoint(pos2);
 		if (Math.min(obj1.height, obj2.height) < JConfig.collToll + capsule.radius) {
 			var oldDepth = capsule.radius - obj1.height;
-			var worldPos = pos1.subtract(JNumber3D.getScaleVector(obj2.normal, capsule.radius));
+			var worldPos = Vector3DUtil.subtract(pos1, JNumber3D.getScaleVector(obj2.normal, capsule.radius));
 			cpInfo = new CollPointInfo();
-			cpInfo.r0 = worldPos.subtract(capsule.oldState.position);
-			cpInfo.r1 = worldPos.subtract(terrain.oldState.position);
+			cpInfo.r0 = Vector3DUtil.subtract(worldPos, capsule.oldState.position);
+			cpInfo.r1 = Vector3DUtil.subtract(worldPos, terrain.oldState.position);
 			cpInfo.initialPenetration = oldDepth;
 			collPts.push(cpInfo);
-			averageNormal = averageNormal.add(obj2.normal);
+			averageNormal = Vector3DUtil.add(averageNormal, obj2.normal);
 		}
-                        
+						
 		pos1 = capsule.getEndPos(capsule.oldState);
 		pos2 = capsule.getEndPos(capsule.currentState);
 		obj1 = terrain.getHeightAndNormalByPoint(pos1);
 		obj2 = terrain.getHeightAndNormalByPoint(pos2);
 		if (Math.min(obj1.height, obj2.height) < JConfig.collToll + capsule.radius) {
 			oldDepth = capsule.radius - obj1.height;
-			worldPos = pos1.subtract(JNumber3D.getScaleVector(obj2.normal, capsule.radius));
+			worldPos = Vector3DUtil.subtract(pos1, JNumber3D.getScaleVector(obj2.normal, capsule.radius));
 			cpInfo = new CollPointInfo();
-			cpInfo.r0 = worldPos.subtract(capsule.oldState.position);
-			cpInfo.r1 = worldPos.subtract(terrain.oldState.position);
+			cpInfo.r0 = Vector3DUtil.subtract(worldPos, capsule.oldState.position);
+			cpInfo.r1 = Vector3DUtil.subtract(worldPos, terrain.oldState.position);
 			cpInfo.initialPenetration = oldDepth;
 			collPts.push(cpInfo);
-			averageNormal = averageNormal.add(obj2.normal);
+			averageNormal = Vector3DUtil.add(averageNormal, obj2.normal);
 		}
-                        
+						
 		if (collPts.length > 0){
-			averageNormal.normalize();
+			Vector3DUtil.normalize(averageNormal);
 			var collInfo = new CollisionInfo();
 			collInfo.objInfo = info;
 			collInfo.dirToBody = averageNormal;
@@ -102,10 +102,8 @@
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
 		}
-	}
+	};
 	
 	jigLib.CollDetectCapsuleTerrain=CollDetectCapsuleTerrain;
 	
-})(jigLib)
-	
-	
+})(jigLib);

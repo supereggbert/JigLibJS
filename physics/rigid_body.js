@@ -24,16 +24,15 @@
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
-    var JConfig=jigLib.JConfig;
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JConfig=jigLib.JConfig;
 	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-    var JNumber3D=jigLib.JNumber3D;
-    var MaterialProperties=jigLib.MaterialProperties;
-    var PhysicsState=jigLib.PhysicsState;
-    var PhysicsSystem=jigLib.PhysicsSystem;
-    var JAABox=jigLib.JAABox;
+	var JNumber3D=jigLib.JNumber3D;
+	var MaterialProperties=jigLib.MaterialProperties;
+	var PhysicsState=jigLib.PhysicsState;
+	var PhysicsSystem=jigLib.PhysicsSystem;
+	var JAABox=jigLib.JAABox;
 	
 	var RigidBody=function(skin){
 		this._useDegrees = (JConfig.rotationType == "DEGREES") ? true : false;
@@ -50,14 +49,14 @@
 		this._oldState = new PhysicsState();
 		this._storeState = new PhysicsState();
 		this._invOrientation = JMatrix3D.getInverseMatrix(this._currState.get_orientation());
-		this._currLinVelocityAux = new Vector3D();
-		this._currRotVelocityAux = new Vector3D();
+		this._currLinVelocityAux = [0,0,0,0];
+		this._currRotVelocityAux = [0,0,0,0];
 
-		this._force = new Vector3D();
-		this._torque = new Vector3D();
+		this._force = [0,0,0,0];
+		this._torque = [0,0,0,0];
 			
-		this._linVelDamping = new Vector3D(0.995, 0.995, 0.995);
-		this._rotVelDamping = new Vector3D(0.5, 0.5, 0.5);
+		this._linVelDamping = [0.995, 0.995, 0.995, 0];
+		this._rotVelDamping = [0.5, 0.5, 0.5, 0];
 		this._maxLinVelocities = 500;
 		this._maxRotVelocities = 50;
 
@@ -72,14 +71,14 @@
 		this._constraints = [];
 		this._nonCollidables = [];
 
-		this._storedPositionForActivation = new Vector3D();
+		this._storedPositionForActivation = [0,0,0,0];
 		this._bodiesToBeActivatedOnMovement = [];
-		this._lastPositionForDeactivation = this._currState.position.clone();
+		this._lastPositionForDeactivation = this._currState.position.slice(0);
 		this._lastOrientationForDeactivation = this._currState.get_orientation().clone();
 
 		this._type = "Object3D";
 		this._boundingSphere = 0;
-		this._boundingBox = new JAABox(new Vector3D(), new Vector3D());
+		this._boundingBox = new JAABox([0,0,0,0], [0,0,0,0]);
 		this._boundingBox.clear();
 	};
 	
@@ -186,91 +185,91 @@
 	};
 
 	RigidBody.prototype.pitch=function(rot){
-		this.setOrientation(JMatrix3D.getAppendMatrix3D(this.get_currentState().orientation, JMatrix3D.getRotationMatrixAxis(rot, Vector3D.X_AXIS)));
+		this.setOrientation(JMatrix3D.getAppendMatrix3D(this.get_currentState().orientation, JMatrix3D.getRotationMatrixAxis(rot, Vector3DUtil.X_AXIS)));
 	};
 
 	RigidBody.prototype.yaw=function(rot){
-		this.setOrientation(JMatrix3D.getAppendMatrix3D(this.get_currentState().orientation, JMatrix3D.getRotationMatrixAxis(rot, Vector3D.Y_AXIS)));
+		this.setOrientation(JMatrix3D.getAppendMatrix3D(this.get_currentState().orientation, JMatrix3D.getRotationMatrixAxis(rot, Vector3DUtil.Y_AXIS)));
 	};
 
 	RigidBody.prototype.roll=function(rot){
-		this.setOrientation(JMatrix3D.getAppendMatrix3D(this.get_currentState().orientation, JMatrix3D.getRotationMatrixAxis(rot, Vector3D.Z_AXIS)));
+		this.setOrientation(JMatrix3D.getAppendMatrix3D(this.get_currentState().orientation, JMatrix3D.getRotationMatrixAxis(rot, Vector3DUtil.Z_AXIS)));
 	};
 	
 	RigidBody.prototype.createRotationMatrix=function(){
 		var matrix3D = new Matrix3D();
-		matrix3D.appendRotation(this._rotationX, Vector3D.X_AXIS);
-		matrix3D.appendRotation(this._rotationY, Vector3D.Y_AXIS);
-		matrix3D.appendRotation(this._rotationZ, Vector3D.Z_AXIS);
+		matrix3D.appendRotation(this._rotationX, Vector3DUtil.X_AXIS);
+		matrix3D.appendRotation(this._rotationY, Vector3DUtil.Y_AXIS);
+		matrix3D.appendRotation(this._rotationZ, Vector3DUtil.Z_AXIS);
 		return matrix3D;
 	};
 
 	RigidBody.prototype.setOrientation=function(orient){
-		this._currState.set_orientation(orient.clone());
+		this._currState.set_orientation(orient.slice(0));
 		this.updateInertia();
 		this.updateState();
 	};
 
 	RigidBody.prototype.get_x=function(){
-		return this._currState.position.x;
+		return this._currState.position[0];
 	};
 
 	RigidBody.prototype.get_y=function(){
-		return this._currState.position.y;
+		return this._currState.position[1];
 	};
 
 	RigidBody.prototype.get_z=function(){
-		return _currState.position.z;
+		return _currState.position[2];
 	};
 
 	RigidBody.prototype.set_x=function(px){
-		this._currState.position.x = px;
+		this._currState.position[0] = px;
 		this.updateState();
 	};
 
 	RigidBody.prototype.set_y=function(py){
-		this._currState.position.y = py;
+		this._currState.position[1] = py;
 		this.updateState();
 	};
 
 	RigidBody.prototype.set_z=function(pz){
-		this._currState.position.z = pz;
+		this._currState.position[2] = pz;
 		this.updateState();
 	};
 	
 	RigidBody.prototype.moveTo=function(pos){
-		this._currState.position = pos.clone();
+		this._currState.position = pos.slice(0);
 		this.updateState();
 	};
 
 	RigidBody.prototype.updateState=function(){
-		this._currState.linVelocity = new Vector3D();
-		this._currState.rotVelocity = new Vector3D();
+		this._currState.linVelocity = [0,0,0,0];
+		this._currState.rotVelocity = [0,0,0,0];
 		this.copyCurrentStateToOld();
 		this.updateBoundingBox();
 	};
 
 	RigidBody.prototype.setVelocity=function(vel){
-		this._currState.linVelocity = vel.clone();
+		this._currState.linVelocity = vel.slice(0);
 	};
 
 	RigidBody.prototype.setAngVel=function(angVel){
-		this._currState.rotVelocity = angVel.clone();
+		this._currState.rotVelocity = angVel.slice(0);
 	};
 
 	RigidBody.prototype.setVelocityAux=function(vel){
-		this._currLinVelocityAux = vel.clone();
+		this._currLinVelocityAux = vel.slice(0);
 	};
 
 	RigidBody.prototype.setAngVelAux=function(angVel){
-		this._currRotVelocityAux = angVel.clone();
+		this._currRotVelocityAux = angVel.slice(0);
 	};
 
 	RigidBody.prototype.addGravity=function(){
 		if (!this._movable){
 			return;
 		}
-		this._force = this._force.add(JNumber3D.getScaleVector(jigLib.PhysicsSystem.getInstance().get_gravity(), this._mass));
+		this._force = Vector3DUtil.add(this._force, JNumber3D.getScaleVector(jigLib.PhysicsSystem.getInstance().get_gravity(), this._mass));
 		this._velChanged = true;
 	};
 	
@@ -282,7 +281,7 @@
 		if (!this._movable){
 			return;
 		}
-		this._torque = this._torque.add(t);
+		this._torque = Vector3DUtil.add(this._torque, t);
 		this._velChanged = true;
 		this.setActive();
 	};
@@ -300,8 +299,8 @@
 		if (!this._movable){
 			return;
 		}
-		this._force = this._force.add(f);
-		this.addWorldTorque(p.subtract(this._currState.position).crossProduct(f));
+		this._force = Vector3DUtil.add(this._force, f);
+		this.addWorldTorque(Vector3DUtil.crossProduct(Vector3DUtil.subtract(p, this._currState.position), f));
 		this._velChanged = true;
 		this.setActive();
 	};
@@ -313,13 +312,13 @@
 		}
 		JMatrix3D.multiplyVector(this._currState.get_orientation(), f);
 		JMatrix3D.multiplyVector(this._currState.get_orientation(), p);
-		this.addWorldForce(f, this._currState.position.add(p));
+		this.addWorldForce(f, Vector3DUtil.add(this._currState.position, p));
 	};
 
 	// This just sets all forces etc to zero
 	RigidBody.prototype.clearForces=function(){
-		this._force = new Vector3D();
-		this._torque = new Vector3D();
+		this._force = [0,0,0,0];
+		this._torque = [0,0,0,0];
 	};
 	
 
@@ -328,11 +327,11 @@
 		if (!this._movable){
 			return;
 		}
-		this._currState.linVelocity = this._currState.linVelocity.add(JNumber3D.getScaleVector(impulse, this._invMass));
+		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(impulse, this._invMass));
 
-		var rotImpulse = pos.subtract(this._currState.position).crossProduct(impulse);
+		var rotImpulse = Vector3DUtil.crossProduct(Vector3DUtil.subtract(pos, this._currState.position), impulse);
 		JMatrix3D.multiplyVector(this._worldInvInertia, rotImpulse);
-		this._currState.rotVelocity = this._currState.rotVelocity.add(rotImpulse);
+		this._currState.rotVelocity = Vector3DUtil.add(this._currState.rotVelocity, rotImpulse);
 
 		this._velChanged = true;
 	};
@@ -341,11 +340,11 @@
 		if (!this._movable){
 			return;
 		}
-		this._currLinVelocityAux = this._currLinVelocityAux.add(JNumber3D.getScaleVector(impulse, this._invMass));
+		this._currLinVelocityAux = Vector3DUtil.add(this._currLinVelocityAux, JNumber3D.getScaleVector(impulse, this._invMass));
 
-		var rotImpulse = pos.subtract(this._currState.position).crossProduct(impulse);
+		var rotImpulse = Vector3DUtil.crossProduct(Vector3DUtil.subtract(pos, this._currState.position), impulse);
 		JMatrix3D.multiplyVector(this._worldInvInertia, rotImpulse);
-		this._currRotVelocityAux = this._currRotVelocityAux.add(rotImpulse);
+		this._currRotVelocityAux = Vector3DUtil.add(this._currRotVelocityAux, rotImpulse);
 
 		this._velChanged = true;
 	};
@@ -355,10 +354,10 @@
 		if (!this._movable){
 			return;
 		}
-		this._currState.linVelocity = this._currState.linVelocity.add(JNumber3D.getScaleVector(impulse, this._invMass));
-		var rotImpulse = delta.crossProduct(impulse);
+		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(impulse, this._invMass));
+		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse);
 		JMatrix3D.multiplyVector(this._worldInvInertia, rotImpulse);
-		this._currState.rotVelocity = this._currState.rotVelocity.add(rotImpulse);
+		this._currState.rotVelocity = Vector3DUtil.add(this._currState.rotVelocity, rotImpulse);
 
 		this._velChanged = true;
 	};
@@ -367,11 +366,11 @@
 		if (!this._movable){
 			return;
 		}
-		this._currLinVelocityAux = this._currLinVelocityAux.add(JNumber3D.getScaleVector(impulse, this._invMass));
+		this._currLinVelocityAux = Vector3DUtil.add(this._currLinVelocityAux, JNumber3D.getScaleVector(impulse, this._invMass));
 
-		var rotImpulse = delta.crossProduct(impulse);
+		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse);
 		JMatrix3D.multiplyVector(this._worldInvInertia, rotImpulse);
-		this._currRotVelocityAux = this._currRotVelocityAux.add(rotImpulse);
+		this._currRotVelocityAux = Vector3DUtil.add(this._currRotVelocityAux, rotImpulse);
 
 		this._velChanged = true;
 	};
@@ -402,22 +401,22 @@
 	};
 
 	// implementation updates the velocity/angular rotation with the force/torque.
-    RigidBody.prototype.updateVelocity=function(dt){
+	RigidBody.prototype.updateVelocity=function(dt){
 		if (!this._movable || !this._activity){
 			return;
 		}
-		this._currState.linVelocity = this._currState.linVelocity.add(JNumber3D.getScaleVector(this._force, this._invMass * dt));
+		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(this._force, this._invMass * dt));
 
 		var rac = JNumber3D.getScaleVector(this._torque, dt);
 		JMatrix3D.multiplyVector(this._worldInvInertia, rac);
-		this._currState.rotVelocity = this._currState.rotVelocity.add(rac);
+		this._currState.rotVelocity = Vector3DUtil.add(this._currState.rotVelocity, rac);
 	};
 	
 	// Updates the position with the auxiliary velocities, and zeros them
 	RigidBody.prototype.updatePositionWithAux=function(dt){
 		if (!this._movable || !this._activity){
-			this._currLinVelocityAux = new Vector3D();
-			this._currRotVelocityAux = new Vector3D();
+			this._currLinVelocityAux = [0,0,0,0];
+			this._currRotVelocityAux = [0,0,0,0];
 			return;
 		}
 		
@@ -430,26 +429,26 @@
 			JNumber3D.copyFromArray(this._currLinVelocityAux, arr);
 		}
 
-		var angMomBefore = this._currState.rotVelocity.clone();
+		var angMomBefore = this._currState.rotVelocity.slice(0);
 		JMatrix3D.multiplyVector(this._worldInertia, angMomBefore);
 		
-		this._currState.position = this._currState.position.add(JNumber3D.getScaleVector(this._currState.linVelocity.add(this._currLinVelocityAux), dt));
+		this._currState.position = Vector3DUtil.add(this._currState.position, JNumber3D.getScaleVector(Vector3DUtil.add(this._currState.linVelocity, this._currLinVelocityAux), dt));
 
-		var dir = this._currState.rotVelocity.add(this._currRotVelocityAux);
-		var ang = dir.get_length() * 180 / Math.PI;
+		var dir = Vector3DUtil.add(this._currState.rotVelocity, this._currRotVelocityAux);
+		var ang = Vector3DUtil.get_length(dir) * 180 / Math.PI;
 		if (ang > 0){
-			dir.normalize();
+			Vector3DUtil.normalize(dir);
 			ang *= dt;
-			var rot = JMatrix3D.getRotationMatrix(dir.x, dir.y, dir.z, ang);
+			var rot = JMatrix3D.getRotationMatrix(dir[0], dir[1], dir[2], ang);
 			this._currState.set_orientation(JMatrix3D.getAppendMatrix3D(this._currState.get_orientation(), rot));
 				
 			this.updateInertia();
 		}
-		this._currLinVelocityAux = new Vector3D();
-		this._currRotVelocityAux = new Vector3D();
+		this._currLinVelocityAux = [0,0,0,0];
+		this._currRotVelocityAux = [0,0,0,0];
 		
 		JMatrix3D.multiplyVector(this._worldInvInertia, angMomBefore);
-		this._currState.rotVelocity = angMomBefore.clone();
+		this._currState.rotVelocity = angMomBefore.slice(0);
 			
 		this.updateBoundingBox();
 	};
@@ -462,8 +461,8 @@
 			return;
 		}
 			
-		if (this._currState.position.subtract(this._lastPositionForDeactivation).get_length() > JConfig.posThreshold){
-			this._lastPositionForDeactivation = this._currState.position.clone();
+		if (Vector3DUtil.get_length(Vector3DUtil.subtract(this._currState.position, this._lastPositionForDeactivation)) > JConfig.posThreshold){
+			this._lastPositionForDeactivation = this._currState.position.slice(0);
 			this._inactiveTime = 0;
 			return;
 		}
@@ -473,7 +472,7 @@
 
 		var cols = JMatrix3D.getCols(deltaMat);
 
-		if (cols[0].get_length() > ot || cols[1].get_length() > ot || cols[2].get_length() > ot){
+		if (Vector3DUtil.get_length(cols[0]) > ot || Vector3DUtil.get_length(cols[1]) > ot || Vector3DUtil.get_length(cols[2]) > ot){
 			this._lastOrientationForDeactivation = this._currState.get_orientation().clone();
 			this._inactiveTime = 0;
 			return;
@@ -485,8 +484,8 @@
 
 		this._inactiveTime += dt;
 		if (this._inactiveTime > JConfig.deactivationTime){
-			this._lastPositionForDeactivation = this._currState.position.clone();
-			this._lastOrientationForDeactivation = this._currState.get_orientation().clone();
+			this._lastPositionForDeactivation = this._currState.position.slice(0);
+			this._lastOrientationForDeactivation = this._currState.get_orientation().slice(0);
 			this.setInactive();
 		}
 	};
@@ -549,7 +548,7 @@
 		this._velChanged = false;
 	};
 
-    RigidBody.prototype.setActive=function(activityFactor){
+	RigidBody.prototype.setActive=function(activityFactor){
 		if(!activityFactor) activityFactor=1;
 		if (this._movable){
 			this.isActive = this._activity = true;
@@ -565,39 +564,39 @@
 
 	// Returns the velocity of a point at body-relative position
 	RigidBody.prototype.getVelocity=function(relPos){
-		return this._currState.linVelocity.add(this._currState.rotVelocity.crossProduct(relPos));
+		return Vector3DUtil.add(this._currState.linVelocity, Vector3DUtil.crossProduct(this._currState.rotVelocity, relPos));
 	};
 
 	// As GetVelocity but just uses the aux velocities
 	RigidBody.prototype.getVelocityAux=function(relPos){
-		return this._currLinVelocityAux.add(this._currRotVelocityAux.crossProduct(relPos));
+		return Vector3DUtil.add(this._currLinVelocityAux, Vector3DUtil.crossProduct(this._currRotVelocityAux, relPos));
 	};
 		
 
 	// indicates if the velocity is above the threshold for freezing
 	RigidBody.prototype.getShouldBeActive=function(){
-		return ((this._currState.linVelocity.get_length() > JConfig.velThreshold) || (this._currState.rotVelocity.get_length() > JConfig.angVelThreshold));
+		return ((Vector3DUtil.get_length(this._currState.linVelocity) > JConfig.velThreshold) || (Vector3DUtil.get_length(this._currState.rotVelocity) > JConfig.angVelThreshold));
 	};
 
 	RigidBody.prototype.getShouldBeActiveAux=function(){
-		return ((this._currLinVelocityAux.get_length() > JConfig.velThreshold) || (this._currRotVelocityAux.get_length() > JConfig.angVelThreshold));
+		return ((Vector3DUtil.get_length(this._currLinVelocityAux) > JConfig.velThreshold) || (Vector3DUtil.get_length(this._currRotVelocityAux) > JConfig.angVelThreshold));
 	};
 
 	// damp movement as the body approaches deactivation
 	RigidBody.prototype.dampForDeactivation=function(){
-		this._currState.linVelocity.x *= this._linVelDamping.x;
-		this._currState.linVelocity.y *= this._linVelDamping.y;
-		this._currState.linVelocity.z *= this._linVelDamping.z;
-		this._currState.rotVelocity.x *= this._rotVelDamping.x;
-		this._currState.rotVelocity.y *= this._rotVelDamping.y;
-		this._currState.rotVelocity.z *= this._rotVelDamping.z;
+		this._currState.linVelocity[0] *= this._linVelDamping[0];
+		this._currState.linVelocity[1] *= this._linVelDamping[1];
+		this._currState.linVelocity[2] *= this._linVelDamping[2];
+		this._currState.rotVelocity[0] *= this._rotVelDamping[0];
+		this._currState.rotVelocity[1] *= this._rotVelDamping[1];
+		this._currState.rotVelocity[2] *= this._rotVelDamping[2];
 			
-		this._currLinVelocityAux.x *= this._linVelDamping.x;
-		this._currLinVelocityAux.y *= this._linVelDamping.y;
-		this._currLinVelocityAux.z *= this._linVelDamping.z;
-		this._currRotVelocityAux.x *= this._rotVelDamping.x;
-		this._currRotVelocityAux.y *= this._rotVelDamping.y;
-		this._currRotVelocityAux.z *= this._rotVelDamping.z;
+		this._currLinVelocityAux[0] *= this._linVelDamping[0];
+		this._currLinVelocityAux[1] *= this._linVelDamping[1];
+		this._currLinVelocityAux[2] *= this._linVelDamping[2];
+		this._currRotVelocityAux[0] *= this._rotVelDamping[0];
+		this._currRotVelocityAux[1] *= this._rotVelDamping[1];
+		this._currRotVelocityAux[2] *= this._rotVelDamping[2];
 			
 		var r = 0.5;
 		var frac = this._inactiveTime / JConfig.deactivationTime;
@@ -620,7 +619,7 @@
 	// in which case it also clears its list.
 	RigidBody.prototype.doMovementActivations=function(){
 		var numBodies = this._bodiesToBeActivatedOnMovement.length;
-		if (numBodies == 0 || this._currState.position.subtract(this._storedPositionForActivation).get_length() < JConfig.posThreshold)
+		if (numBodies == 0 || Vector3DUtil.get_length(Vector3DUtil.subtract(this._currState.position, this._storedPositionForActivation)) < JConfig.posThreshold)
 			return;
 		
 		for (var i = 0; i<numBodies; i++){
@@ -667,7 +666,7 @@
 	};
 
 	RigidBody.prototype.hitTestObject3D=function(obj3D){
-		var num1 = this._currState.position.subtract(obj3D.get_currentState().position).get_length();
+		var num1 = Vector3DUtil.get_length(Vector3DUtil.subtract(this._currState.position, obj3D.get_currentState().position));
 		var num2 = this._boundingSphere + obj3D.get_boundingSphere();
 
 		if (num1 <= num2){
@@ -699,26 +698,26 @@
 
 	// copies the current position etc to old - normally called only by physicsSystem.
 	RigidBody.prototype.copyCurrentStateToOld=function(){
-		this._oldState.position = this._currState.position.clone();
+		this._oldState.position = this._currState.position.slice(0);
 		this._oldState.set_orientation(this._currState.get_orientation().clone());
-		this._oldState.linVelocity = this._currState.linVelocity.clone();
-		this._oldState.rotVelocity = this._currState.rotVelocity.clone();
+		this._oldState.linVelocity = this._currState.linVelocity.slice(0);
+		this._oldState.rotVelocity = this._currState.rotVelocity.slice(0);
 	};
 
 	// Copy our current state into the stored state
 	RigidBody.prototype.storeState=function(){
-		this._storeState.position = this._currState.position.clone();
+		this._storeState.position = this._currState.position.slice(0);
 		this._storeState.set_orientation(this._currState.get_orientation().clone());
-		this._storeState.linVelocity = this._currState.linVelocity.clone();
-		this._storeState.rotVelocity = this._currState.rotVelocity.clone();
+		this._storeState.linVelocity = this._currState.linVelocity.slice(0);
+		this._storeState.rotVelocity = this._currState.rotVelocity.slice(0);
 	};
 
 	// restore from the stored state into our current state.
 	RigidBody.prototype.restoreState=function(){
-		this._currState.position = this._storeState.position.clone();
+		this._currState.position = this._storeState.position.slice(0);
 		this._currState.set_orientation(this._storeState.get_orientation().clone());
-		this._currState.linVelocity = this._storeState.linVelocity.clone();
-		this._currState.rotVelocity = this._storeState.rotVelocity.clone();
+		this._currState.linVelocity = this._storeState.linVelocity.slice(0);
+		this._currState.rotVelocity = this._storeState.rotVelocity.slice(0);
 	};
 
 	// the "working" state
@@ -781,9 +780,9 @@
 
 	//every dimension should be set to 0-1;
 	RigidBody.prototype.set_linVelocityDamping=function(vel){
-		this._linVelDamping.x = JNumber3D.getLimiteNumber(vel.x, 0, 1);
-		this._linVelDamping.y = JNumber3D.getLimiteNumber(vel.y, 0, 1);
-		this._linVelDamping.z = JNumber3D.getLimiteNumber(vel.z, 0, 1);
+		this._linVelDamping[0] = JNumber3D.getLimiteNumber(vel[0], 0, 1);
+		this._linVelDamping[1] = JNumber3D.getLimiteNumber(vel[1], 0, 1);
+		this._linVelDamping[2] = JNumber3D.getLimiteNumber(vel[2], 0, 1);
 	};
 		
 	RigidBody.prototype.get_linVelocityDamping=function(){
@@ -792,9 +791,9 @@
 		
 	//every dimension should be set to 0-1;
 	RigidBody.prototype.set_rotVelocityDamping=function(vel){
-		this._rotVelDamping.x = JNumber3D.getLimiteNumber(vel.x, 0, 1);
-		this._rotVelDamping.y = JNumber3D.getLimiteNumber(vel.y, 0, 1);
-		this._rotVelDamping.z = JNumber3D.getLimiteNumber(vel.z, 0, 1);
+		this._rotVelDamping[0] = JNumber3D.getLimiteNumber(vel[0], 0, 1);
+		this._rotVelDamping[1] = JNumber3D.getLimiteNumber(vel[1], 0, 1);
+		this._rotVelDamping[2] = JNumber3D.getLimiteNumber(vel[2], 0, 1);
 	};
 	
 	RigidBody.prototype.get_rotVelocityDamping=function(){
@@ -819,15 +818,15 @@
 	};
 
 	RigidBody.prototype.limitVel=function(){
-		this._currState.linVelocity.x = JNumber3D.getLimiteNumber(this._currState.linVelocity.x, -this._maxLinVelocities, this._maxLinVelocities);
-		this._currState.linVelocity.y = JNumber3D.getLimiteNumber(this._currState.linVelocity.y, -this._maxLinVelocities, this._maxLinVelocities);
-		this._currState.linVelocity.z = JNumber3D.getLimiteNumber(this._currState.linVelocity.z, -this._maxLinVelocities, this._maxLinVelocities);
+		this._currState.linVelocity[0] = JNumber3D.getLimiteNumber(this._currState.linVelocity[0], -this._maxLinVelocities, this._maxLinVelocities);
+		this._currState.linVelocity[1] = JNumber3D.getLimiteNumber(this._currState.linVelocity[1], -this._maxLinVelocities, this._maxLinVelocities);
+		this._currState.linVelocity[2] = JNumber3D.getLimiteNumber(this._currState.linVelocity[2], -this._maxLinVelocities, this._maxLinVelocities);
 	};
 
 	RigidBody.prototype.limitAngVel=function(){
-		var fx = Math.abs(this._currState.rotVelocity.x) / this._maxRotVelocities;
-		var fy = Math.abs(this._currState.rotVelocity.y) / this._maxRotVelocities;
-		var fz = Math.abs(this._currState.rotVelocity.z) / this._maxRotVelocities;
+		var fx = Math.abs(this._currState.rotVelocity[0]) / this._maxRotVelocities;
+		var fy = Math.abs(this._currState.rotVelocity[1]) / this._maxRotVelocities;
+		var fz = Math.abs(this._currState.rotVelocity[2]) / this._maxRotVelocities;
 		var f = Math.max(fx, fy, fz);
 		if (f > 1){
 			this._currState.rotVelocity = JNumber3D.getDivideVector(this._currState.rotVelocity, f);
@@ -845,7 +844,7 @@
 	//update skin
 	RigidBody.prototype.updateObject3D=function(){
 		if (this._skin != null){
-			this._skin.set_transform(JMatrix3D.getAppendMatrix3D(this._currState.get_orientation(), JMatrix3D.getTranslationMatrix(this._currState.position.x, this._currState.position.y, this._currState.position.z)));
+			this._skin.set_transform(JMatrix3D.getAppendMatrix3D(this._currState.get_orientation(), JMatrix3D.getTranslationMatrix(this._currState.position[0], this._currState.position[1], this._currState.position[2])));
 		}
 	};
 

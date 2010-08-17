@@ -24,7 +24,7 @@
  */
  
  (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	
 	 
 	var BodyPair=function(_body0, _body1, r0, r1){
 		if (_body0.id > _body1.id){

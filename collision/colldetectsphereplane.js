@@ -24,13 +24,13 @@
  */
  
  (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JSphere=jigLib.JSphere;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JSphere=jigLib.JSphere;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	var CollPointInfo=jigLib.CollPointInfo;
@@ -41,7 +41,7 @@
 		this.name = "SpherePlane";
 		this.type0 = "SPHERE";
 		this.type1 = "PLANE";
-	}
+	};
 	jigLib.extends(CollDetectSpherePlane,jigLib.CollDetectFunctor);
 	
 	CollDetectSpherePlane.prototype.collDetect=function(info, collArr){
@@ -65,10 +65,10 @@
 		var cpInfo;
 		var depth = sphere.get_radius() - oldDist;
 
-		var worldPos = sphere.get_oldState().position.subtract(JNumber3D.getScaleVector(plane.get_normal(), sphere.get_radius()));
+		var worldPos = Vector3DUtil.subtract(sphere.get_oldState().position, JNumber3D.getScaleVector(plane.get_normal(), sphere.get_radius()));
 		cpInfo = new CollPointInfo();
-		cpInfo.r0 = worldPos.subtract(sphere.get_oldState().position);
-		cpInfo.r1 = worldPos.subtract(plane.get_oldState().position);
+		cpInfo.r0 = Vector3DUtil.subtract(worldPos, sphere.get_oldState().position);
+		cpInfo.r1 = Vector3DUtil.subtract(worldPos, plane.get_oldState().position);
 		cpInfo.initialPenetration = depth;
 		collPts.push(cpInfo);
 
@@ -83,9 +83,8 @@
 		collArr.push(collInfo);
 		info.body0.collisions.push(collInfo);
 		info.body1.collisions.push(collInfo);
-	}
+	};
 	
 	jigLib.CollDetectSpherePlane=CollDetectSpherePlane;
 	 
-})(jigLib)
- 
+})(jigLib);

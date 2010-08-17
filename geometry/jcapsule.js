@@ -24,12 +24,12 @@ distribution.
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var ISkin3D=jigLib.ISkin3D;
-        var PhysicsState=jigLib.PhysicsState;
+	var JNumber3D=jigLib.JNumber3D;
+	var ISkin3D=jigLib.ISkin3D;
+	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 	var JSegment=jigLib.JSegment;
 	
@@ -41,7 +41,7 @@ distribution.
 		this._boundingSphere = this.getBoundingSphere(r, l);
 		this.set_mass(1);
 		this.updateBoundingBox();
-	}
+	};
 	jigLib.extends(JCapsule,jigLib.RigidBody);
 	
 	JCapsule.prototype._length=null;
@@ -53,69 +53,69 @@ distribution.
 		this.setInertia(this.getInertiaProperties(this.get_mass()));
 		this.updateBoundingBox();
 		this.setActive();
-	}
+	};
 	
 	JCapsule.prototype.get_radius=function(){
 		return this._radius;
-	}
-                 
+	};
+				 
 	JCapsule.prototype.set_length=function(l){
 		this._length = l;
 		this._boundingSphere = getBoundingSphere(this._radius, this._length);
 		this.setInertia(this.getInertiaProperties(this.get_mass()));
 		this.updateBoundingBox();
 		this.setActive();
-	}
+	};
 	
 	JCapsule.prototype.get_length=function(){
 		return this._length;
-	}
+	};
 	
 	JCapsule.prototype.getBottomPos=function(state){
 		var temp = state.getOrientationCols()[1];
-		//temp.normalize();
-		return state.position.add(JNumber3D.getScaleVector(temp, -this._length / 2 - this._radius));
-	}
-                 
+		//Vector3DUtil.normalize(temp);
+		return Vector3DUtil.add(state.position, JNumber3D.getScaleVector(temp, -this._length / 2 - this._radius));
+	};
+				 
 	JCapsule.prototype.getEndPos=function(state){
 		var temp = state.getOrientationCols()[1];
-		//temp.normalize();
-		return state.position.add(JNumber3D.getScaleVector(temp, this._length / 2 + this._radius));
-	}
-                 
+		//Vector3DUtil.normalize(temp);
+		return Vector3DUtil.add(state.position, JNumber3D.getScaleVector(temp, this._length / 2 + this._radius));
+	};
+				 
 	JCapsule.prototype.segmentIntersect=function(out, seg, state){
 		out.fracOut = 0;
-		out.posOut = new Vector3D();
-		out.normalOut = new Vector3D();
-                        
+		out.posOut = [0,0,0,0];
+		out.normalOut = [0,0,0,0];
+						
 		var Ks = seg.delta;
-		var kss = Ks.dotProduct(Ks);
+		var kss = Vector3DUtil.dotProduct(Ks, Ks);
 		var radiusSq = this._radius * this._radius;
-                        
+						
 		var cols = state.getOrientationCols();
 		var cylinderAxis = new JSegment(getBottomPos(state), cols[1]);
 		var Ke = cylinderAxis.get_delta();
-		var Kg = cylinderAxis.get_origin().subtract(seg.get_origin());
-		var kee = Ke.dotProduct(Ke);
+		var Kg = Vector3DUtil.subtract(cylinderAxis.get_origin(), seg.get_origin());
+		var kee = Vector3DUtil.dotProduct(Ke, Ke);
 		if (Math.abs(kee) < JNumber3D.NUM_TINY) {
 			return false;
 		}
-                        
-		var kes = Ke.dotProduct(Ks);
-		var kgs = Kg.dotProduct(Ks);
-		var keg = Ke.dotProduct(Kg);
-		var kgg = Kg.dotProduct(Kg);
-                        
-		var distSq = Kg.subtract(JNumber3D.getDivideVector(JNumber3D.getScaleVector(Ke, keg), kee)).get_lengthSquared();
+						
+		var kes = Vector3DUtil.dotProduct(Ke, Ks);
+		var kgs = Vector3DUtil.dotProduct(Kg, Ks);
+		var keg = Vector3DUtil.dotProduct(Ke, Kg);
+		var kgg = Vector3DUtil.dotProduct(Kg, Kg);
+						
+		var distSq = Vector3DUtil.get_lengthSquared(Vector3DUtil.subtract(Kg, JNumber3D.getDivideVector(JNumber3D.getScaleVector(Ke, keg), kee)));
 		if (distSq < radiusSq) {
 			out.fracOut = 0;
-			out.posOut = seg.get_origin().clone();
-			out.normalOut = out.posOut.subtract(getBottomPos(state));
-			out.normalOut = out.normalOut.subtract(JNumber3D.getScaleVector(cols[1], out.normalOut.dotProduct(cols[1])));
-			out.normalOut.normalize();
+			out.posOut = seg.get_origin().slice(0);
+			out.normalOut = Vector3DUtil.subtract(out.posOut, getBottomPos(state));
+			out.normalOut = Vector3DUtil.subtract(out.normalOut, JNumber3D.getScaleVector(cols[1], Vector3DUtil.dotProduct(out.normalOut, cols[1])));
+			Vector3DUtil.normalize(out.normalOut);
 			return true;
 		}
-                        
+						
 		var ar = kee * kss - (kes * kes);
 		if (Math.abs(a) < JNumber3D.NUM_TINY) {
 			return false;
@@ -132,47 +132,46 @@ distribution.
 		}
 		out.fracOut = t;
 		out.posOut = seg.getPoint(t);
-		out.normalOut = out.posOut.subtract(getBottomPos(state));
-		out.normalOut = out.normalOut.subtract(JNumber3D.getScaleVector(cols[1], out.normalOut.dotProduct(cols[1])));
-		out.normalOut.normalize();
+		out.normalOut = Vector3DUtil.subtract(out.posOut, getBottomPos(state));
+		out.normalOut = Vector3DUtil.subtract(out.normalOut, JNumber3D.getScaleVector(cols[1], Vector3DUtil.dotProduct(out.normalOut, cols[1])));
+		Vector3DUtil.normalize(out.normalOut);
 		return true;
-	}
-	
+	};
 
 	JCapsule.prototype.getInertiaProperties=function(m){
 		var cylinderMass = m * Math.PI * this._radius * this._radius * this._length / this.getVolume();
 		var Ixx = 0.25 * cylinderMass * this._radius * this._radius + (1 / 12) * cylinderMass * this._length * this._length;
 		var Iyy = 0.5 * cylinderMass * this._radius * this._radius;
 		var Izz= Ixx;
-                         
+						 
 		var endMass = m - cylinderMass;
 		Ixx += (0.4 * endMass * this._radius * this._radius + endMass * Math.pow(0.5 * this._length, 2));
 		Iyy += (0.2 * endMass * this._radius * this._radius);
 		Izz += (0.4 * endMass * this._radius * this._radius + endMass * Math.pow(0.5 * this._length, 2));
-                        
-                         /*
-                        var inertiaTensor:JMatrix3D = new JMatrix3D();
-                        inertiaTensor.n11 = Ixx;
-                        inertiaTensor.n22 = Iyy;
-                        inertiaTensor.n33 = Izz;
-                        */
-                        
+						
+						 /*
+						var inertiaTensor:JMatrix3D = new JMatrix3D();
+						inertiaTensor.n11 = Ixx;
+						inertiaTensor.n22 = Iyy;
+						inertiaTensor.n33 = Izz;
+						*/
+						
 		return JMatrix3D.getScaleMatrix(Ixx, Iyy, Izz);
-	}
-                
+	};
+				
 	JCapsule.prototype.updateBoundingBox=function(){
 		this._boundingBox.clear();
 		this._boundingBox.addCapsule(this);
-	}
-                
+	};
+				
 	JCapsule.prototype.getBoundingSphere=function(r, l){
 		return Math.sqrt(Math.pow(l / 2, 2) + r * r) + r;
-	}
-                
+	};
+				
 	JCapsule.prototype.getVolume=function(){
 		return (4 / 3) * Math.PI * this._radius * this._radius * this._radius + this._length * Math.PI * this._radius * this._radius;
-	}
+	};
 	
 	jigLib.JCapsule=JCapsule;
 	
-})(jigLib)
+})(jigLib);
