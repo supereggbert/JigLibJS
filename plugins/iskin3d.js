@@ -13,14 +13,14 @@
 	
 	function ISkin3D(){
 		this.matrix=new Matrix3D();
-	}
+	};
 	ISkin3D.prototype.get_transform=function(){
 		return this.matrix;
-	}
+	};
 	ISkin3D.prototype.set_transform=function(value){
 		this.matrix=value;
-	}
+	};
 	
 	jigLib.ISkin3D=ISkin3D;
 	
-})(jigLib)
+})(jigLib);

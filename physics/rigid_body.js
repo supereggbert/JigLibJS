@@ -210,6 +210,10 @@
 		this.updateState();
 	};
 
+	RigidBody.prototype.get_position=function(){
+		return this._currState.position;
+	};
+
 	RigidBody.prototype.get_x=function(){
 		return this._currState.position[0];
 	};
@@ -485,7 +489,7 @@
 		this._inactiveTime += dt;
 		if (this._inactiveTime > JConfig.deactivationTime){
 			this._lastPositionForDeactivation = this._currState.position.slice(0);
-			this._lastOrientationForDeactivation = this._currState.get_orientation().slice(0);
+			this._lastOrientationForDeactivation = this._currState.get_orientation().clone();
 			this.setInactive();
 		}
 	};
@@ -523,9 +527,9 @@
 	};
 
 	RigidBody.prototype.set_movable=function(mov){
-		if (this._type == "PLANE" || this._type == "TERRAIN") {
+		if (this._type == "PLANE" || this._type == "TERRAIN") 
 			return;
-		}
+
 		this._movable = mov;
 		this.isActive = this._activity = mov;
 		this._origMovable = mov;

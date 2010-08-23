@@ -26,14 +26,14 @@
 (function(jigLib){
 	
 	var CollDetectFunctor=function(){
-	}
+	};
 	CollDetectFunctor.prototype.name=null;
 	CollDetectFunctor.prototype.type0=null;
 	CollDetectFunctor.prototype.type1=null;
 	
 	CollDetectFunctor.prototype.collDetect=function(info,collArr){
-	}
+	};
 	
 	jigLib.CollDetectFunctor=CollDetectFunctor;
 	
-})(jigLib)
+})(jigLib);

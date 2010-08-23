@@ -36,11 +36,11 @@
 			this.body1 = _body0;
 			this.r = r1;
 		}
-	}
+	};
 	BodyPair.prototype.body0=null;
 	BodyPair.prototype.body1=null;
 	BodyPair.prototype.r=null;
 	
 	jigLib.BodyPair=BodyPair;
 		
-})(jigLib)
+})(jigLib);

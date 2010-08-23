@@ -8,7 +8,7 @@
 
 <script type="text/javascript" src="../cof/jconfig.js"></script>
 
-<script type="text/javascript" src="../maths/vector3d.js"></script>
+<script type="text/javascript" src="../maths/vector3dutil.js"></script>
 <script type="text/javascript" src="../maths/matrix3d.js"></script>
 <script type="text/javascript" src="../maths/jnumber3d.js"></script>
 <script type="text/javascript" src="../maths/jmatrix3d.js"></script>
@@ -172,7 +172,7 @@ XMLdoc.onLoad = function(){
 		sphere.set_mass(4/3*radius*radius*radius*Math.PI);
 		sphere.set_friction(1);
 		system.addBody(sphere);
-		sphere.moveTo(new jigLib.Vector3D(0,10,0));
+		sphere.moveTo([0,10,0,0]);
 		links.push({glge:newObject,jig:sphere})
 	}
 	
@@ -189,13 +189,13 @@ XMLdoc.onLoad = function(){
 		newObject.setScaleZ(height/2);
 		scene.addObject(newObject);
 		var cube=new jigLib.JBox(null,width,height,depth);
-		cube.set_rotVelocityDamping(new jigLib.Vector3D(0.2, 0.2, 0.2));
-		cube.set_rotVelocityDamping(new jigLib.Vector3D(0.1, 0.1, 0.1));
+		cube.set_rotVelocityDamping([0.2, 0.2, 0.2, 0]);
+		cube.set_rotVelocityDamping([0.1, 0.1, 0.1, 0]);
 		cube.set_mass(width*height*depth);
 		cube.set_restitution(0);
 		cube.set_friction(1);
 		system.addBody(cube);
-		cube.moveTo(new jigLib.Vector3D(0,10,0));
+		cube.moveTo([0,10,0,0]);
 		links.push({glge:newObject,jig:cube})
 	}
 	
@@ -213,8 +213,8 @@ XMLdoc.onLoad = function(){
 				var sphere=new jigLib.JBox(null,1,0.5,0.3);
 				sphere.set_mass(100);
 				system.addBody(sphere);
-				sphere.get_currentState().position.y=i*0.29+0.15;
-				sphere.get_currentState().position.x=-x*1.0+0.5+0.5*(i%2);
+				sphere.get_currentState().position[1]=i*0.29+0.15;
+				sphere.get_currentState().position[0]=-x*1.0+0.5+0.5*(i%2);
 				sphere.get_material().set_friction(0.2);
 				sphere.get_material().set_restitution(0.2);
 				system.integrate(0.001);
@@ -225,30 +225,30 @@ XMLdoc.onLoad = function(){
 	}
 	
 	var system=jigLib.PhysicsSystem.getInstance();
-	system.setGravity(new jigLib.Vector3D(0,-9.8,0));
-	var plane=new jigLib.JPlane(null,new jigLib.Vector3D(0, 1, 0));
+	system.setGravity([0,-9.8,0,0]);
+	var plane=new jigLib.JPlane(null,[0, 1, 0, 0]);
 	plane.set_friction(0.99);
 	
 	var cube=new jigLib.JBox(null,1,1,1);
 	cube.set_mass(1);
 		cube.set_restitution(0);
 		cube.set_friction(0);
-	cube.set_linVelocityDamping(new jigLib.Vector3D(0.95, 0.95, 0.95));
-	cube.set_rotVelocityDamping(new jigLib.Vector3D(0.1, 0.1, 0.1));
+	cube.set_linVelocityDamping([0.95, 0.95, 0.95, 0]);
+	cube.set_rotVelocityDamping([0.1, 0.1, 0.1, 0]);
 	
 	var cube2=new jigLib.JBox(null,1,1,1);
 	cube2.set_mass(1);
 		cube2.set_restitution(0);
 		cube2.set_friction(0);
-	cube2.set_linVelocityDamping(new jigLib.Vector3D(0.95, 0.95, 0.95));
-	cube2.moveTo(new jigLib.Vector3D(0, 1.5, 0));
+	cube2.set_linVelocityDamping([0.95, 0.95, 0.95, 0]);
+	cube2.moveTo([0, 1.5, 0, 0]);
 	
 	
 	
 	system.addBody(plane);
 	system.addBody(cube);
 	system.addBody(cube2);
-	cube.moveTo(new jigLib.Vector3D(1, 1.5, 0));
+	cube.moveTo([1, 1.5, 0, 0]);
 	
 	links.push({glge:cubeObj,jig:cube});
 	links.push({glge:cubeObj2,jig:cube2});
@@ -264,9 +264,9 @@ XMLdoc.onLoad = function(){
 		
 		var linkCount = links.length;
 		for(var i=0; i<linkCount;i++){
-			links[i].glge.setLocY(links[i].jig.get_currentState().position.y);
-			links[i].glge.setLocX(links[i].jig.get_currentState().position.x);
-			links[i].glge.setLocZ(links[i].jig.get_currentState().position.z);
+			links[i].glge.setLocY(links[i].jig.get_currentState().position[1]);
+			links[i].glge.setLocX(links[i].jig.get_currentState().position[0]);
+			links[i].glge.setLocZ(links[i].jig.get_currentState().position[2]);
 			var ori=GLGE.Mat4(links[i].jig.get_currentState().get_orientation().rawData);
 			links[i].glge.setRotMatrix(ori);
 		}

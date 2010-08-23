@@ -78,7 +78,7 @@
 	CollDetectBoxBox.prototype.addPoint=function(contactPoints, pt, combinationDistanceSq){
 		for(var i=0,cpsl=contactPoints.length;i<cpsl;i++){
 			var contactPoint=contactPoints[i];
-			if (Vector3DUtil.subtract(contactPoint, pt).lengthSquared < combinationDistanceSq){
+			if (Vector3DUtil.get_lengthSquared(Vector3DUtil.subtract(contactPoint, pt)) < combinationDistanceSq){
 				contactPoint = JNumber3D.getDivideVector(Vector3DUtil.add(contactPoint, pt), 2);
 				return false;
 			}

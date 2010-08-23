@@ -39,6 +39,7 @@
 		this._doingIntegration = false;
 		this._bodies = [];
 		this._collisions = [];
+		this._effects=[];
 		this._activeBodies = [];
 		this._constraints = [];
 		this._controllers = [];
@@ -59,6 +60,7 @@
 	PhysicsSystem.prototype._collisions=null;
 	PhysicsSystem.prototype._constraints=null;
 	PhysicsSystem.prototype._controllers=null;
+	PhysicsSystem.prototype._effects=null;
 
 	PhysicsSystem.prototype._gravityAxis=null;
 	PhysicsSystem.prototype._gravity=null;
@@ -117,7 +119,7 @@
 		return this._gravityAxis;
 	};
 
-	PhysicsSystem.prototype.get_bodys=function(){
+	PhysicsSystem.prototype.get_bodies=function(){
 		return this._bodies;
 	};
 
@@ -136,9 +138,9 @@
 		}
 	};
 
-	PhysicsSystem.prototype.removeAllBodys=function(){
+	PhysicsSystem.prototype.removeAllBodies=function(){
 		this._bodies = [];
-		this._collisionSystem.removeAllCollisionBodys();
+		this._collisionSystem.removeAllCollisionBodies();
 	};
 
 	// Add a constraint to the simulation
@@ -154,6 +156,21 @@
 
 	PhysicsSystem.prototype.removeAllConstraints=function(){
 		this._constraints = [];
+	};
+	
+	// Add an effect to the simulation
+	PhysicsSystem.prototype.addEffect=function(effect){
+		if (!this.findEffect(effect))
+			this._effects.push(effect);
+	};
+	
+	PhysicsSystem.prototype.removeEffect=function(effect){
+		if (this.findEffect(effect))
+			this._effects.splice(this._effects.indexOf(effect), 1);
+	};
+
+	PhysicsSystem.prototype.removeAllEffects=function(){
+		this._effects = [];
 	};
 
 	// Add a physics controlled to the simulation
@@ -174,6 +191,12 @@
 	PhysicsSystem.prototype.setSolverType=function(type){
 		switch (type)
 		{
+			case "SIMPLE":
+				this.preProcessCollisionFn = this.preProcessCollisionSimple;
+				this.preProcessContactFn = this.preProcessCollisionSimple;
+				this.processCollisionFn = this.processCollision;
+				this.processContactFn = this.processCollision;
+				return;
 			case "FAST":
 				this.preProcessCollisionFn = this.preProcessCollisionFast;
 				this.preProcessContactFn = this.preProcessCollisionFast;
@@ -210,6 +233,12 @@
 	PhysicsSystem.prototype.findConstraint=function(constraint){
 		var i=this._constraints.length-1;
 		if (i > 0) do { if(constraint==this._constraints[i]) return true; } while (i--);
+		return false;
+	};
+	
+	PhysicsSystem.prototype.findEffect=function(effect){
+		var i=this._effects.length-1;
+		if (i > 0) do { if(effect==this._effects[i]) return true; } while (i--);
 		return false;
 	};
 
@@ -391,11 +420,14 @@
 			var bp = new BodyPair(body0, body1, [0,0,0,0], [0,0,0,0]);
 
 			for(var j=0, ccl=this._cachedContacts.length; j<ccl; j++){
-				if (!(bp.body0 == this._cachedContacts[j].pair.body0 && bp.body1 == this._cachedContacts[j].pair.body1))
+				var cont=this._cachedContacts[j];
+				var cpair=cont.pair;
+
+				if (bp.body0 != cpair.body0 || bp.body1 == cpair.body1)
 					continue;
-				
-				var distSq = (this._cachedContacts[j].pair.body0 == body0)  ? Vector3DUtil.subtract(this._cachedContacts[j].pair.r, ptInfo.r0).lengthSquared 
-																			: Vector3DUtil.subtract(this._cachedContacts[j].pair.r, ptInfo.r1).lengthSquared;
+
+				var distSq = (cpair.body0 == body0)  ? Vector3DUtil.get_lengthSquared(Vector3DUtil.subtract(cpair.r, ptInfo.r0)) 
+													 : Vector3DUtil.get_lengthSquared(Vector3DUtil.subtract(cpair.r, ptInfo.r1));
 
 				if (distSq < bestDistSq){
 					bestDistSq = distSq;
@@ -421,6 +453,62 @@
 				body1.applyBodyWorldImpulseAux(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
 			}
 		}
+	};
+	
+	/**
+	 * a simplified, faster version of the accumulated solver
+	 */
+	PhysicsSystem.prototype.preProcessCollisionSimple=function(collision, dt){
+		collision.satisfied = false;
+		var body0 = collision.objInfo.body0;
+		var body1 = collision.objInfo.body1;
+		var N = collision.dirToBody;
+		var timescale = JConfig.numPenetrationRelaxationTimesteps * dt;
+		var tempV;
+		var ptInfo;
+		var initMinAllowedPen;
+		var approachScale = 0;
+		var numTiny = JNumber3D.NUM_TINY;
+		var allowedPenetration = JConfig.allowedPenetration;
+
+		var i = collision.pointInfo.length - 1;
+		do{
+			ptInfo = collision.pointInfo[i];
+			initMinAllowedPen = ptInfo.initialPenetration - allowedPenetration;
+			if (!body0.get_movable()){
+				ptInfo.denominator = 0;
+			}else{
+				tempV = Vector3DUtil.crossProduct(ptInfo.r0, N);
+				JMatrix3D.multiplyVector(body0.get_worldInvInertia(), tempV);
+				ptInfo.denominator = body0.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r0));
+			}
+
+			if (body1.get_movable()){
+				tempV = Vector3DUtil.crossProduct(ptInfo.r1, N);
+				JMatrix3D.multiplyVector(body1.get_worldInvInertia(), tempV);
+				ptInfo.denominator += (body1.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r1)));
+			}
+			if (ptInfo.denominator < numTiny) ptInfo.denominator = numTiny;
+
+			if (ptInfo.initialPenetration > allowedPenetration){
+				ptInfo.minSeparationVel = initMinAllowedPen / timescale;
+			}else{
+				approachScale = -0.1 * initMinAllowedPen / allowedPenetration;
+				
+				if (approachScale < numTiny) approachScale = numTiny;
+				else if (approachScale > 1) approachScale = 1;
+				
+				var max=(dt>numTiny) ? dt : numTiny;
+				ptInfo.minSeparationVel = approachScale * initMinAllowedPen / max;
+			}
+
+			ptInfo.accumulatedNormalImpulse = 0;
+			ptInfo.accumulatedNormalImpulseAux = 0;
+			ptInfo.accumulatedFrictionImpulse = [0,0,0,0];
+
+			var bestDistSq = 0.04;
+			var bp = new BodyPair(body0, body1, [0,0,0,0], [0,0,0,0]);
+		} while (i--);
 	};
 	
 	/* Handle an individual collision by classifying it, calculating
@@ -709,6 +797,21 @@
 			if (!gotOne) break;
 		}
 	};
+
+	PhysicsSystem.prototype.handleAllEffects=function(){
+		var effect;
+		
+		var i=this._effects.length-1;
+		if (i < 0) return;
+		do {
+			this._effects[i].PreApply();
+		} while(i--);
+
+		i=this._effects.length-1;
+		do {
+			this._effects[i].Apply();
+		} while(i--);
+	};
 	
 	PhysicsSystem.prototype.activateObject=function(body){
 		if (!body.get_movable() || body.isActive)
@@ -871,6 +974,7 @@
 		this.copyAllCurrentStatesToOld();
 
 		this.getAllExternalForces(dt);
+		this.handleAllEffects();
 		this.detectAllCollisions(dt);
 		this.handleAllConstraints(dt, JConfig.numCollisionIterations, false);
 		this.updateAllVelocities(dt);

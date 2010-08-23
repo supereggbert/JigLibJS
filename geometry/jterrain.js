@@ -104,7 +104,7 @@
 		if (seg.delta[1] > -JNumber3D.NUM_TINY) 
 			return false;
 
-		var obj1 = this.getHeightAndNormalByPoint(seg.get_origin());
+		var obj1 = this.getHeightAndNormalByPoint(seg.origin);
 		if (obj1.height < 0) 
 			return false;
 

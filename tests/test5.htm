@@ -30,6 +30,9 @@
 <script type="text/javascript" src="../physics/rigid_body.js"></script>
 <script type="text/javascript" src="../physics/hingejoint.js"></script>
 
+<script type="text/javascript" src="../physics/effect/jeffect.js"></script>
+<script type="text/javascript" src="../physics/effect/gravityField.js"></script>
+
 <script type="text/javascript" src="../geometry/jbox.js"></script>
 <script type="text/javascript" src="../geometry/jcapsule.js"></script>
 <script type="text/javascript" src="../geometry/jplane.js"></script>
@@ -123,7 +126,6 @@ body{margin:auto; background-color: #888; padding-top: 50px; font-family:sans; c
 			<object id="groundObject" mesh="#groundMesh" material="#grid" rot_x="-1.57"  scale="15" />
 			
 			<object id="CubeObject" mesh="#Cube" loc_y="2" scale="0.5" material="#green" />
-			<object id="CubeObject2" mesh="#Cube" loc_y="3" scale="0.5" material="#green" />
 			
 			<light id="light1" loc_x="-3" loc_y="15" loc_z="-7" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1" type="L_POINT" />
 		
@@ -145,7 +147,6 @@ XMLdoc.onLoad = function(){
 	renderer.setScene( scene );
 	renderer.render();
 	var cubeObj = XMLdoc.getElement( "CubeObject" );
-	var cubeObj2 = XMLdoc.getElement( "CubeObject2" );
 	var camera = XMLdoc.getElement( "mainCamera" );
 	var green = XMLdoc.getElement( "green" );
 	var materials=[
@@ -265,26 +266,19 @@ XMLdoc.onLoad = function(){
 	
 	var cube=new jigLib.JBox(null,1,1,1);
 	cube.set_mass(1);
-		cube.set_restitution(0);
-		cube.set_friction(0);
+	cube.set_restitution(0);
+	cube.set_friction(0);
 	cube.set_linVelocityDamping([0.95, 0.95, 0.95, 0]);
 	cube.set_rotVelocityDamping([0.1, 0.1, 0.1, 0]);
-	
-	var cube2=new jigLib.JBox(null,1,1,1);
-	cube2.set_mass(1);
-		cube2.set_restitution(0);
-		cube2.set_friction(0);
-	cube2.set_linVelocityDamping([0.95, 0.95, 0.95, 0]);
-	cube2.moveTo([0, 1.5, 0, 0]);
-	
+
+	var gravityField=new jigLib.GravityField([1, 1.5, 0, 0], 6, 0.5, cube);
 	
 	system.addBody(plane);
 	system.addBody(cube);
-	system.addBody(cube2);
+	system.addEffect(gravityField);
 	cube.moveTo([1, 1.5, 0, 0]);
 	
 	links.push({glge:cubeObj,jig:cube});
-	links.push({glge:cubeObj2,jig:cube2});
 	
 	var lasttime=(new Date()).getTime();
 	function render(){

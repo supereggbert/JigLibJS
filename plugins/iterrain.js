@@ -4,7 +4,7 @@
 		 * @author Muzer
 		 */
 	var ITerrain=function(){
-	}
+	};
 	//Min of coordinate horizontally;
 		ITerrain.prototype.get_minW=function(){};
 				
@@ -33,4 +33,4 @@
 		ITerrain.prototype.get_heights=function(){};
 		
 	jigLib.ITerrain=ITerrain;
-})(jigLib)
+})(jigLib);

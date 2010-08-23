@@ -36,6 +36,15 @@
 		v1[3]+=v2[3];
 	};
 	
+	Vector3DUtil.distance=function(v1,v2) {
+		var math=Math;
+		var pow=math.pow;
+		var x=pow(v1[0]-v2[0], 2);
+		var y=pow(v1[1]-v2[1], 2);
+		var z=pow(v1[2]-v2[2], 2);
+		return math.sqrt(x+y+z);
+	};
+	
 	Vector3DUtil.dotProduct=function(v1,v2){
 		return v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2];
 	};
@@ -53,8 +62,7 @@
 		return f;
 	};
 		Vector3DUtil.get_lengthSquared=function(v){
-		var a=[v[0],v[1],v[2]];
-		var sq=a[0]*a[0]+a[1]*a[1]+a[2]*a[2];
+		var sq=v[0]*v[0]+v[1]*v[1]+v[2]*v[2];
 		return sq;
 	};
 	
@@ -89,9 +97,11 @@
 	};
 	
 	Vector3DUtil.angleBetween=function(v1,v2){
-		v1=Vector3DUtil.normalize(v1.slice(0));
-		v2=Vector3DUtil.normalize(v2.slice(0));
-		d=Vector3DUtil.dotProduct(v1, v2);
+		var v1n=v1.slice(0);
+		var v2n=v2.slice(0);
+		Vector3DUtil.normalize(v1n);
+		Vector3DUtil.normalize(v2n);
+		d=Vector3DUtil.dotProduct(v1n, v2n);
 		if (d<-1) d=-1;
 		else if (d>1) d=1;
 

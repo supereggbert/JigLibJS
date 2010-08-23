@@ -40,7 +40,7 @@ distribution.
 		this.name = "SphereBox";
 		this.type0 = "SPHERE";
 		this.type1 = "BOX";
-	}
+	};
 	jigLib.extends(CollDetectSphereBox,jigLib.CollDetectFunctor);
 	
 				
@@ -54,12 +54,12 @@ distribution.
 						
 		var sphere = info.body0;
 		var box = info.body1;		
-		if (!sphere.hitTestObject3D(box)) {
+		if (!sphere.hitTestObject3D(box)) 
 			return;
-		}
-		if (JConfig.aabbDetection && !sphere.get_boundingBox().overlapTest(box.get_boundingBox())) {
+
+		if (JConfig.aabbDetection && !sphere.get_boundingBox().overlapTest(box.get_boundingBox())) 
 			return;
-		}
+		
 		//var spherePos:Vector3D = sphere.get_oldState().position;
 		//var boxPos:Vector3D = box.get_oldState().position;
 

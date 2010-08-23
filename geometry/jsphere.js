@@ -66,7 +66,7 @@
 		var s = Vector3DUtil.subtract(seg.origin, state.position);
 
 		var radiusSq = this._radius * this._radius;
-		var rSq = r.lengthSquared;
+		var rSq = Vector3DUtil.get_lengthSquared(r);
 		if (rSq < radiusSq){
 			out.fracOut = 0;
 			out.posOut = seg.origin.slice(0);
@@ -76,7 +76,7 @@
 		}
 
 		var sDotr = Vector3DUtil.dotProduct(s, r);
-		var sSq = s.lengthSquared;
+		var sSq = Vector3DUtil.get_lengthSquared(s);
 		var sigma = sDotr * sDotr - rSq * (sSq - radiusSq);
 		if (sigma < 0){
 			return false;

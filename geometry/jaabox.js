@@ -165,7 +165,7 @@ distribution.
 	};
 				
 	JAABox.prototype.addSegment=function(seg){
-		this.addPoint(seg.get_origin());
+		this.addPoint(seg.origin);
 		this.addPoint(seg.getEnd());
 	};
 

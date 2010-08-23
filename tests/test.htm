@@ -43,7 +43,7 @@
 		function duffs_device(a)
 		{
 			var x = 0;
-			var n = a / 26;
+			var n = a / 8;
 			var caseTest = a % 8;	
 			
 			do {
@@ -695,6 +695,40 @@
 	</script>
 	<div>
 		<button onClick="testIsNaNVsBoolConv();">isNaN vs boolean conversion vs ==NaN</button>
+	</div>
+	<br />
+	
+	<script type="text/javascript">
+		function ifelseAssignTest()
+		{
+			var start = new Date();
+			var i=99999999;
+			do { 
+				var x;
+				if (i<55555555) x = 0;
+				else x=1; 
+			} while (i--);
+			return new Date()-start;
+		}
+		function ternaryAssignTest()
+		{
+			var start = new Date();
+			var i=99999999;
+			do { 
+				var x=(i<55555555) ? 0 : 1; 
+			} while (i--);
+			return new Date()-start;
+		}
+		function testTernaryVsIfElse()
+		{
+			var a=ternaryAssignTest();
+			var b=ifelseAssignTest();
+			var out = 'ternary: '+a+'<br />if/else: '+b;
+			document.getElementById('debug').innerHTML = out;
+		}
+	</script>
+	<div>
+		<button onClick="testTernaryVsIfElse();">ternary vs if/else</button>
 	</div>
 	<br />
 	

@@ -26,31 +26,31 @@
 (function(jigLib){
 	 
 	var MaterialProperties=function(_restitution, _friction){
-		if(_restitution==null) _restitution=0.25
-		if(_friction==null) _friction=0.25
+		if(_restitution==null) _restitution=0.25;
+		if(_friction==null) _friction=0.25;
 		this._restitution = _restitution;
 		this._friction = _friction;
-	}
+	};
 	
 	MaterialProperties.prototype._restitution=null;
 	MaterialProperties.prototype._friction=null;
 	
 	MaterialProperties.prototype.get_restitution=function(){
 		return this._restitution;
-	}
+	};
 
 	MaterialProperties.prototype.set_restitution=function(restitution){
 		this._restitution = restitution;
-	}
+	};
 
 	MaterialProperties.prototype.get_friction=function(){
 		return this._friction;
-	}
+	};
 
 	MaterialProperties.prototype.set_friction=function(friction){
 		this._friction = friction;
-	}
+	};
 		
 	jigLib.MaterialProperties=MaterialProperties;
 	
-})(jigLib)
+})(jigLib);

@@ -31,21 +31,14 @@
 	};
 
 	JNumber3D.copyFromArray=function(v, arr){
-		if (arr.length >= 3)
-		{
-			v[0] = arr[0];
-			v[1] = arr[1];
-			v[2] = arr[2];
-		}
+		if (arr.length >= 3) v=arr;
 	};
 
 	JNumber3D.getLimiteNumber=function(num, min, max){
 		var n = num;
-		if (n < min){
-			n = min;
-		}else if (n > max){
-			n = max;
-		}
+		if (n < min) n = min;
+		else if (n > max) n = max;
+
 		return n;
 	};
 	

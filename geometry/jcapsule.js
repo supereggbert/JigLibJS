@@ -94,8 +94,8 @@ distribution.
 						
 		var cols = state.getOrientationCols();
 		var cylinderAxis = new JSegment(getBottomPos(state), cols[1]);
-		var Ke = cylinderAxis.get_delta();
-		var Kg = Vector3DUtil.subtract(cylinderAxis.get_origin(), seg.get_origin());
+		var Ke = cylinderAxis.delta;
+		var Kg = Vector3DUtil.subtract(cylinderAxis.origin, seg.origin);
 		var kee = Vector3DUtil.dotProduct(Ke, Ke);
 		if (Math.abs(kee) < JNumber3D.NUM_TINY) {
 			return false;
@@ -109,7 +109,7 @@ distribution.
 		var distSq = Vector3DUtil.get_lengthSquared(Vector3DUtil.subtract(Kg, JNumber3D.getDivideVector(JNumber3D.getScaleVector(Ke, keg), kee)));
 		if (distSq < radiusSq) {
 			out.fracOut = 0;
-			out.posOut = seg.get_origin().slice(0);
+			out.posOut = seg.origin.slice(0);
 			out.normalOut = Vector3DUtil.subtract(out.posOut, getBottomPos(state));
 			out.normalOut = Vector3DUtil.subtract(out.normalOut, JNumber3D.getScaleVector(cols[1], Vector3DUtil.dotProduct(out.normalOut, cols[1])));
 			Vector3DUtil.normalize(out.normalOut);

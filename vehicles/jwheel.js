@@ -218,7 +218,7 @@
 			distFwd = (deltaFwdStart + iRay * deltaFwd) - this._radius;
 			yOffset = this._radius * (1 - Math.cos(90 * (distFwd / this._radius) * Math.PI / 180));
 			segments[iRay] = wheelRay.clone();
-			segments[iRay].set_origin(Vector3DUtil.add(segments[iRay].get_origin(), Vector3DUtil.add(JNumber3D.getScaleVector(wheelFwd, distFwd), JNumber3D.getScaleVector(wheelUp, yOffset))));
+			segments[iRay].origin = Vector3DUtil.add(segments[iRay].origin, Vector3DUtil.add(JNumber3D.getScaleVector(wheelFwd, distFwd), JNumber3D.getScaleVector(wheelUp, yOffset)));
 			if (collSystem.segmentIntersect(objArr[iRay], segments[iRay], carBody)) {
 				this._lastOnFloor = true;
 				if (objArr[iRay].fracOut < objArr[bestIRay].fracOut){

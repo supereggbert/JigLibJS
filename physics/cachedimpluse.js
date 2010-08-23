@@ -29,11 +29,11 @@
 		this.normalImpulse = _normalImpulse;
 		this.normalImpulseAux = _normalImpulseAux;
 		this.frictionImpulse = _frictionImpulse;
-	}
+	};
 	CachedImpulse.prototype.normalImpulse=null;
 	CachedImpulse.prototype.normalImpulseAux=null;
 	CachedImpulse.prototype.frictionImpulse=null;
 	
 	jigLib.CachedImpulse=CachedImpulse;
 	
-})(jigLib)
+})(jigLib);

@@ -30,51 +30,34 @@
 	var JRay=jigLib.JRay;
 	 
 	 
-	var JSegment=function(origin, delta){
-		this._origin = origin;
-		this._delta = delta;
+	var JSegment=function(_origin, _delta){
+		this.origin = _origin;
+		this.delta = _delta;
 	};
-	JSegment.prototype._origin=null;
-	JSegment.prototype._delta=null;
+	JSegment.prototype.origin=null;
+	JSegment.prototype.delta=null;
 	
-	
-	JSegment.prototype.set_origin=function(ori){
-		this._origin = ori;
-	};
-
-	JSegment.prototype.get_origin=function(){
-		return this._origin;
-	};
-
-	JSegment.prototype.set_delta=function(del){
-		this._delta = del;
-	};
-
-	JSegment.prototype.get_delta=function(){
-		return this._delta;
-	};
-
 	JSegment.prototype.getPoint=function(t){
-		return Vector3DUtil.add(this._origin, JNumber3D.getScaleVector(this._delta, t));
+		return Vector3DUtil.add(this.origin, JNumber3D.getScaleVector(this.delta, t));
 	};
 
 	JSegment.prototype.getEnd=function(){
-		return Vector3DUtil.add(this._origin, this._delta);
+		return Vector3DUtil.add(this.origin, this.delta);
 	};
 
 	JSegment.prototype.clone=function(){
-		return new JSegment(this._origin, this._delta);
+		return new JSegment(this.origin, this.delta);
 	};
 	
 	JSegment.prototype.segmentSegmentDistanceSq=function(out, seg){
 		out.t0 = 0;
 		out.t1 = 0;
 
-		var kDiff = Vector3DUtil.subtract(this._origin, seg.get_origin());
-		var fA00 = Vector3DUtil.get_lengthSquared(this._delta);
-		var fA01 = -Vector3DUtil.dotProduct(this._delta, seg.get_delta());
-		var fA11 = Vector3DUtil.get_lengthSquared(seg.get_delta());
-		var fB0 = Vector3DUtil.dotProduct(kDiff, this._delta);
+		var kDiff = Vector3DUtil.subtract(this.origin, seg.origin);
+		var fA00 = Vector3DUtil.get_lengthSquared(this.delta);
+		var fA01 = -Vector3DUtil.dotProduct(this.delta, seg.delta);
+		var fA11 = Vector3DUtil.get_lengthSquared(seg.delta);
+		var fB0 = Vector3DUtil.dotProduct(kDiff, this.delta);
 		var fC = Vector3DUtil.get_lengthSquared(kDiff);
 		var fDet = Math.abs(fA00 * fA11 - fA01 * fA01);
 		var fB1;
@@ -84,7 +67,7 @@
 		var fTmp;
 
 		if (fDet >= JNumber3D.NUM_TINY){
-			fB1 = -Vector3DUtil.dotProduct(kDiff, seg.get_delta());
+			fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
 			fS = fA01 * fB1 - fA11 * fB0;
 			fT = fA01 * fB0 - fA00 * fB1;
 
@@ -265,7 +248,7 @@
 					fT = 0;
 					fSqrDist = fB0 * fS + fC;
 				}else{
-					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.get_delta());
+					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
 					fS = 1;
 					fTmp = fA00 + fB0;
 					if (-fTmp >= fA01){
@@ -286,7 +269,7 @@
 					fT = 0;
 					fSqrDist = fB0 * fS + fC;
 				}else{
-					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.get_delta());
+					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
 					fS = 0;
 					if (fB0 >= -fA01){
 						fT = 1;
@@ -307,8 +290,8 @@
 	JSegment.prototype.pointSegmentDistanceSq=function(out, pt){
 		out.t = 0;
 
-		var kDiff = Vector3DUtil.subtract(pt,  this._origin);
-		var fT = Vector3DUtil.dotProduct(kDiff, this._delta);
+		var kDiff = Vector3DUtil.subtract(pt,  this.origin);
+		var fT = Vector3DUtil.dotProduct(kDiff, this.delta);
 
 		if (fT <= 0){
 			fT = 0;
@@ -334,7 +317,7 @@
 		out.pfLParam2 = 0;
 
 		var obj = {};
-		var kRay = new JRay(this._origin, this._delta);
+		var kRay = new JRay(this.origin, this.delta);
 		var fSqrDistance = this.sqrDistanceLine(obj, kRay, rkBox, boxState);
 		if (obj.num >= 0){
 			if (obj.num <= 1){
@@ -344,12 +327,12 @@
 				out.pfLParam2 = obj.num2;
 				return Math.max(fSqrDistance, 0);
 			}else{
-				fSqrDistance = this.sqrDistancePoint(out, Vector3DUtil.add(this._origin, this._delta), rkBox, boxState);
+				fSqrDistance = this.sqrDistancePoint(out, Vector3DUtil.add(this.origin, this.delta), rkBox, boxState);
 				out.pfLParam = 1;
 				return Math.max(fSqrDistance, 0);
 			}
 		}else{
-			fSqrDistance = this.sqrDistancePoint(out, this._origin, rkBox, boxState);
+			fSqrDistance = this.sqrDistancePoint(out, this.origin, rkBox, boxState);
 			out.pfLParam = 0;
 			return Math.max(fSqrDistance, 0);
 		}

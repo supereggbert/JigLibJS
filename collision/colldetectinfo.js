@@ -26,9 +26,9 @@
  (function(jigLib){
 	 var CollDetectInfo=function(){
 		 
-	 }
+	 };
 	 CollDetectInfo.prototype.body0=null;
 	 CollDetectInfo.prototype.body1=null;
 	 
 	 jigLib.CollDetectInfo=CollDetectInfo;
- })(jigLib)
+ })(jigLib);

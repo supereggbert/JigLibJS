@@ -6,4 +6,4 @@ jigLib.extends=function(dest,source){
 		dest.prototype[proto]=source.prototype[proto];
 	}
 	dest.prototype.super=source;
-}
+};

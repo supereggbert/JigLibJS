@@ -246,7 +246,7 @@
 		var dirMin = 0;
 		var dirMax = 0;
 		var dir = 0;
-		var p = Vector3DUtil.subtract(state.position, seg.get_origin());
+		var p = Vector3DUtil.subtract(state.position, seg.origin);
 		var h = JNumber3D.getScaleVector(this._sideLengths, 0.5);
 
 		//var tempV:Vector3D;
@@ -262,7 +262,7 @@
 		for (dir = 0; dir < 3; dir++){
 			directionVectorNumber = directionVectorArray[dir];
 			e = Vector3DUtil.dotProduct(orientationCol[dir], p);
-			f = Vector3DUtil.dotProduct(orientationCol[dir], seg.get_delta());
+			f = Vector3DUtil.dotProduct(orientationCol[dir], seg.delta);
 			if (Math.abs(f) > JNumber3D.NUM_TINY){
 				t1 = (e + directionVectorNumber) / f;
 				t2 = (e - directionVectorNumber) / f;
@@ -302,7 +302,7 @@
 		out.fracOut = frac;
 		out.posOut = seg.getPoint(frac);
 
-		if (Vector3DUtil.dotProduct(orientationCol[dir], seg.get_delta()) < 0)
+		if (Vector3DUtil.dotProduct(orientationCol[dir], seg.delta) < 0)
 			out.normalOut = JNumber3D.getScaleVector(orientationCol[dir], -1);
 		else
 			out.normalOut = orientationCol[dir];
