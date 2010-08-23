@@ -20,7 +20,7 @@
 	 * @param dt
 	 * @returns
 	 */
-	JEffect.prototype.apply=function(dt){
+	JEffect.prototype.Apply=function(dt){
 		return false;
 	};
 	

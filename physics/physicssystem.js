@@ -800,16 +800,12 @@
 
 	PhysicsSystem.prototype.handleAllEffects=function(){
 		var effect;
-		
 		var i=this._effects.length-1;
 		if (i < 0) return;
+		
 		do {
-			this._effects[i].PreApply();
-		} while(i--);
-
-		i=this._effects.length-1;
-		do {
-			this._effects[i].Apply();
+			effect=this._effects[i];
+			if (effect.enabled) effect.Apply();
 		} while(i--);
 	};
 	

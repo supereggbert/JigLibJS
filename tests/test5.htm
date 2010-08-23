@@ -78,9 +78,12 @@ body{margin:auto; background-color: #888; padding-top: 50px; font-family:sans; c
 <div id="container">
 <canvas id="canvas" width="900" height="400"></canvas>
 <div id="details">
-<h2>GLGE JigLib Demo</h2>
+<h2>GLGE JigLib Gravity Field Demo</h2>
 <div id="debug"></div>
-<p>This demo illustrates the use of jiglib with GLGE is offers simple 3D physics within javascript</p>
+<p>The cube that is initially added to the screen is controllable with your arrow keys. <br />
+There is a GravityField effect in the scene that is set to follow your cube (the cube was defined as the effect's parent on instantiation).<br />
+To add a random cube or sphere to the scene, click anywhere in the canvas.<br />
+You can switch the effect on or off (it is off by default) and tweak it's properties using the inputs below.</p>
 </div>
 
 
@@ -139,6 +142,7 @@ body{margin:auto; background-color: #888; padding-top: 50px; font-family:sans; c
 
 var canvas = document.getElementById( 'canvas' )
 var renderer = new GLGE.Renderer( canvas );
+var gravityField;
 
 var XMLdoc = new GLGE.Document();
 
@@ -271,7 +275,8 @@ XMLdoc.onLoad = function(){
 	cube.set_linVelocityDamping([0.95, 0.95, 0.95, 0]);
 	cube.set_rotVelocityDamping([0.1, 0.1, 0.1, 0]);
 
-	var gravityField=new jigLib.GravityField([1, 1.5, 0, 0], 6, 0.5, cube);
+	gravityField=new jigLib.GravityField([1, 1.5, 0, 0], 6, 0.5, cube);
+	gravityField.enabled=false;
 	
 	system.addBody(plane);
 	system.addBody(cube);
@@ -305,6 +310,20 @@ XMLdoc.onLoad = function(){
 XMLdoc.parseScript("glge_document");
 
 </script>
+<table>
+	<tr>
+		<th>switch gravity field on/off</th>
+		<td><button onclick="gravityField.enabled=!gravityField.enabled">switch</button></td>
+	</tr>
+	<tr>
+		<th>set radius of influence</th>
+		<td><input type="text" onchange="gravityField.radius=this.value" value="6" /></td>
+	</tr>
+	<tr>
+		<th>set strength of effect (force)</th>
+		<td><input type="text" onchange="gravityField.force=this.value" value="0.5" /> *a negative value will reverse the effect</td>
+	</tr>
+</table>
 </body>
 </html>
 
