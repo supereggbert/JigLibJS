@@ -3,6 +3,11 @@
 	/**
 	 * @author Jim Sangwine
 	 * 
+	 * This effect has a radius within which it will either attract or repel other objects depending on the defined force 
+	 * (positive values attract, negative repel) and their distance (the closer the object, the stronger the effect). 
+	 * 
+	 * The effect can either be placed at an arbitrary location in the scene, or it can be attached to a parent object.
+	 * 
 	 * @param {Array}	location	starting coordinates in the format {x,y,z}
 	 * @param {Number}	radius		radius of effect - at [radius] distance, gravity effect will be 0
 	 * @param {Number}	force		the force of gravity at 0 distance, objects will accelerate at [force] rate
