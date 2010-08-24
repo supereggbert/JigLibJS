@@ -91,6 +91,17 @@
 			}
 			return new Date();
 		}
+
+		function whileL(a)
+		{
+			var x=0;
+			while (a--)
+			{
+				x++;
+			}
+
+			return new Date();
+		}
 		
 		function test()
 		{
@@ -99,8 +110,9 @@
 			var dot = new Date() - do_loop(100000000);
 			var dufft = new Date() - duffs_device(100000000);
 			var duff2t = new Date() - duffs_2(100000000);
+			var whilel = new Date() - whileL(100000000);
 			
-			var out = 'for loop: '+fort+'<br />flipped for loop: '+forflipt+'<br />do loop: '+dot+'<br />duffs device: '+dufft+'<br />duffs2: '+duff2t;
+			var out = 'for loop: '+fort+'<br />flipped for loop: '+forflipt+'<br />do loop: '+dot+'<br />duffs device: '+dufft+'<br />duffs2: '+duff2t+'<br />while: '+whilel;
 			document.getElementById('debug').innerHTML = out;
 		}
 	</script> 

@@ -17,10 +17,9 @@
 	 * this should be implemented by the effect to apply force to 
 	 * bodies in the physics system as appropriate.
 	 * 
-	 * @param dt
 	 * @returns
 	 */
-	JEffect.prototype.Apply=function(dt){
+	JEffect.prototype.Apply=function(){
 		return false;
 	};
 	
