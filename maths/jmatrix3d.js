@@ -52,7 +52,7 @@
 	JMatrix3D.getSubMatrix=function(a, b){
 		var num = [16];
 		for (var i = 0; i < 16; i++ ) {
-			num[i] = a.rawData[i] - b.rawData[i];
+			num[i] = a.glmatrix[i] - b.glmatrix[i];
 		}
 		return new Matrix3D(num);
 	};
@@ -64,7 +64,7 @@
 	};
 				
 	JMatrix3D.getCols=function(matrix3D){
-		var _rawData =  matrix3D.rawData;
+		var _rawData =  matrix3D.glmatrix;
 		var cols = [];
 						
 		/*cols[0] = new Vector3D(_rawData[0], _rawData[1], _rawData[2]);
@@ -85,7 +85,7 @@
 
 		if (vx == 0 && vy == 0 && vz == 0) { return; }
 						
-		var _rawData =  matrix3D.rawData;
+		var _rawData =  matrix3D.glmatrix;
 						
 		/*
 		How did this work in AS3? it looks wrong!

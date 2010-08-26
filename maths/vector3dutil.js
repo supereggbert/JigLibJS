@@ -78,7 +78,7 @@
 		v[0]*=-1;
 		v[1]*=-1;
 		v[2]*=-1;
-		return;
+		return v;
 	};
 	
 	Vector3DUtil.scaleBy=function(v,s){

@@ -25,7 +25,6 @@ distribution.
  
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
-	var Matrix3D=jigLib.Matrix3D;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
 	var ISkin3D=jigLib.ISkin3D;

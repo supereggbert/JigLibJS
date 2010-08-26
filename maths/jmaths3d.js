@@ -1,6 +1,5 @@
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
-	var Matrix3D=jigLib.Matrix3D;
 	
 	/**
 	* @author katopz

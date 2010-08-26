@@ -25,7 +25,6 @@
 
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
-	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
 	var JSegment=jigLib.JSegment;
 	

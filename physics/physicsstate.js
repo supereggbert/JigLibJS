@@ -25,7 +25,7 @@
 	
 	PhysicsState.prototype.set_orientation=function(val){
 		this._orientation = val;			 
-		var _rawData = this._orientation.rawData;
+		var _rawData = this._orientation.glmatrix;
 						
 		this.orientationCols[0][0] = _rawData[0];
 		this.orientationCols[0][1] = _rawData[1];

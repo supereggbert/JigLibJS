@@ -23,15 +23,10 @@
  * @link http://code.google.com/p/jiglibflash
  */
  (function(jigLib){
-
-	
-	var JMatrix3D=jigLib.JMatrix3D;
-		var JNumber3D=jigLib.JNumber3D;
-		var JConstraint=jigLib.JConstraint;
-
 	var CollPointInfo=function(){
 		this.accumulatedFrictionImpulse=[0,0,0,0];
 	};
+	
 	CollPointInfo.prototype.initialPenetration=null;
 		CollPointInfo.prototype.r0;
 		CollPointInfo.prototype.r1;

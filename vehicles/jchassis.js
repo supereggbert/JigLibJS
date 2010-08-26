@@ -25,7 +25,6 @@
 
 (function(jigLib){
 	
-	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
 	var JBox=jigLib.JBox;
 

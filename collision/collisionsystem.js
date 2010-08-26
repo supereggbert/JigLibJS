@@ -27,7 +27,6 @@
 	var JSegment=jigLib.JSegment;
 	var RigidBody=jigLib.RigidBody;
 	var Vector3DUtil=jigLib.Vector3DUtil;
-	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
 	var JConstraint=jigLib.JConstraint;
 	var CollDetectBoxBox=jigLib.CollDetectBoxBox;
