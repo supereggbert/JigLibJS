@@ -156,7 +156,7 @@
 
 		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
-			if (_collBody != ownerBody && segmentBounding(seg, _collBody)){
+			if (_collBody != ownerBody && this.segmentBounding(seg, _collBody)){
 				if (_collBody.segmentIntersect(obj, seg, _collBody.get_currentState())){
 					if (obj.fracOut < out.fracOut){
 						out.posOut = obj.posOut;

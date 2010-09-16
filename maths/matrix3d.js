@@ -3,14 +3,13 @@
 	var GLMatrix=jigLib.GLMatrix;
 	
 	/**
-	 * @author Jim Sangwine
+	 * @author Paul Brunt
 	 * 
-	 * I have rewritten this class to use GLMatrix (http://code.google.com/p/glmatrix/)
-	 */
+	 * Class rewritten by Jim Sangwine to use GLMatrix (http://code.google.com/p/glmatrix/)
+	 **/
 	var Matrix3D=function(v){
-		this.glmatrix=GLMatrix.create();
-		if(v) GLMatrix.set(v,this.glmatrix);
-		else GLMatrix.set([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],this.glmatrix);
+		if(v) this.glmatrix=GLMatrix.create(v);
+		else this.glmatrix=GLMatrix.create([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
 	};
 	Matrix3D.prototype.glmatrix=null;
 	
@@ -31,7 +30,7 @@
 	Matrix3D.prototype.angleAxis=function(angle, axis) {
 		var xmx,ymy,zmz,xmy,ymz,zmx,xms,yms,zms;
 
-		//convert from degress to radians
+		//convert from degrees to radians
 		angle=angle/(3.14159*2);
 
 		var x = axis[0];

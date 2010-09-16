@@ -7,9 +7,9 @@
 	var JNumber3D=jigLib.JNumber3D;
 	
 	/**
-		 * @author katopz
-		 *				 Devin Reimer (blog.almostlogical.com)
-		 */
+	 * @author katopz
+	 *				 Devin Reimer (blog.almostlogical.com)
+	 */
 	var PhysicsState=function(){
 		this.position = [0,0,0,0];
 		this._orientation = new Matrix3D();

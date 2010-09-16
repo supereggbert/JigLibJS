@@ -93,9 +93,9 @@
 	};
 
 	JPlane.prototype.updateState=function(){
-		this.super.updateState();
+		this.super.prototype.updateState.call(this);
 		this._normal = this._initNormal.slice(0);
-		JMatrix3D.multiplyVector(this._currState.orientation, this._normal);
+		JMatrix3D.multiplyVector(this._currState._orientation, this._normal);
 		//_normal = _currState.orientation.transformVector(new Vector3D(0, 0, -1));
 		this._distance = Vector3DUtil.dotProduct(this._currState.position, this._normal);
 	};

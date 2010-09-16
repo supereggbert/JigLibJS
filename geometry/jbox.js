@@ -15,7 +15,9 @@
 		 */
 	
 	var JBox=function(skin, width, depth, height){
-		this.super(skin);
+		//	calling "this.super" causes recursion in inheritance chains longer than 1
+		//this.super(skin);
+		jigLib.RigidBody.call(this);
 		
 		this._edges=[new EdgeData( 0, 1 ), new EdgeData( 3, 1 ), new EdgeData( 2, 3 ),
 					new EdgeData( 2, 0 ), new EdgeData( 4, 5 ), new EdgeData( 5, 7 ),

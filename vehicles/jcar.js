@@ -27,6 +27,12 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	var JSegment=jigLib.JSegment;
+	var JChassis=jigLib.JChassis;
+	var JWheel=jigLib.JWheel;
+	var PhysicsSystem=jigLib.PhysicsSystem;
+	
+	// get local refs to Math methods to improve performance
+	var mr=Math, mrAbs=mr.abs, mrSqrt=mr.sqrt;
 	
 	var JCar=function(skin){
 		this._chassis = new JChassis(this, skin);
@@ -72,27 +78,22 @@
 		
 		var gravity = PhysicsSystem.getInstance().get_gravity().slice(0);
 		var mass = this._chassis.get_mass();
-		var mass4 = mass / _steerRate;
+		var mass4 = 0.25 * this._steerRate;
 		var gravityLen = Vector3DUtil.get_length(gravity);
-						
+
 		Vector3DUtil.normalize(gravity);
-		var axis =JNumber3D.getScaleVector(gravity,-1);
+		var axis = JNumber3D.getScaleVector(gravity,-1);
 		var spring = mass4 * gravityLen / (wheelRestingFrac * wheelTravel);
-		var inertia = 0.5 * wheelRadius * wheelRadius * mass;
-		var damping = 2 * Math.sqrt(spring * mass);
-		damping /= this._steerRate;
-		damping *= wheelDampingFrac;
+		var inertia = 0.015 * wheelRadius * wheelRadius * mass;
+		var damping = 2 * mrSqrt(spring * mass);
+		damping *= (0.25 * wheelDampingFrac);
+//		damping /= this._steerRate;
+//		damping *= wheelDampingFrac;
 
-		this._wheels[_name] = new JWheel(this);
-		this._wheels[_name].setup(pos, axis, spring, wheelTravel, inertia, wheelRadius, wheelSideFriction, wheelFwdFriction, damping, wheelNumRays);
-	};
-
-	JCar.prototype.get_chassis=function(){
-		return this._chassis;
-	};
-
-	JCar.prototype.get_wheels=function(){
-		return this._wheels;
+		var wheel = new JWheel(this);
+		wheel.name = _name;
+		wheel.setup(pos, axis, spring, wheelTravel, inertia, wheelRadius, wheelSideFriction, wheelFwdFriction, damping, wheelNumRays);
+		this._wheels.push(wheel);
 	};
 
 	JCar.prototype.setAccelerate=function(val){
@@ -102,78 +103,77 @@
 	JCar.prototype.setSteer=function(wheels, val){
 		this._destSteering = val;
 		this._steerWheels = [];
-		for (var i in wheels){
-			if (this.findWheel(wheels[i])){
-				this._steerWheels[wheels[i]] = this._wheels[wheels[i]];
-			}
+		var wheel=null;
+		for (var i=0, l=wheels.length; i<l; i++){
+			wheel=this.getWheel(wheels[i]);
+			if (wheel)
+				this._steerWheels.push(wheel);
 		}
 	};
 
 	JCar.prototype.findWheel=function(_name){
-		for (var i in _wheels){
-			if (i == _name){
-				return true;
-			}
+		for (var i=0, l=this._wheels.length; i<l; i++){
+			if (this._wheels[i].name == _name) return true;
 		}
 		return false;
 	};
-
+	
+	JCar.prototype.getWheel=function(_name){
+		for (var i=0; i<this._wheels.length; i++){
+			if (this._wheels[i].name == _name) return this._wheels[i];
+		}
+		return null;
+	};
+	
 	JCar.prototype.setHBrake=function(val){
 		this._HBrake = val;
 	};
 
 	JCar.prototype.addExternalForces=function(dt){
-		wheels=this.get_wheels();
-		for(var i=0, wl=wheels.length; i<wl; i++){
-			wheels[i].addForcesToCar(dt);
+		for(var i=0, wl=this._wheels.length; i<wl; i++){
+			this._wheels[i].addForcesToCar(dt);
 		}
 	};
 
 	// Update stuff at the end of physics
 	JCar.prototype.postPhysics=function(dt){
-		wheels=this.get_wheels();
-		for(var i=0, wl=wheels.length; i<wl; i++){
-			wheels[i].update(dt);
+		for(var i=0, wl=this._wheels.length; i<wl; i++){
+			this._wheels[i].update(dt);
 		}
 
-		var deltaAccelerate = dt * this._steerRate;
+		var deltaAccelerate = dt;
 		var deltaSteering = dt * this._steerRate;
 		var dAccelerate = this._destAccelerate - this._accelerate;
-		if (dAccelerate < -deltaAccelerate){
-			dAccelerate = -deltaAccelerate;
-		}else if (dAccelerate > deltaAccelerate){
-			dAccelerate = deltaAccelerate;
-		}
+
+		if (dAccelerate < -deltaAccelerate) dAccelerate = -deltaAccelerate;
+		else if (dAccelerate > deltaAccelerate) dAccelerate = deltaAccelerate;
+
 		this._accelerate += dAccelerate;
 
-		var dSteering = _destSteering - this._steering;
-		if (dSteering < -deltaSteering){
-			dSteering = -deltaSteering;
-		}else if (dSteering > deltaSteering){
-			dSteering = deltaSteering;
-		}
+		var dSteering = this._destSteering - this._steering;
+
+		if (dSteering < -deltaSteering) dSteering = -deltaSteering;
+		else if (dSteering > deltaSteering) dSteering = deltaSteering;
+
 		this._steering += dSteering;
 
-		for(var i=0;i<wheels.length;i++){
-			wheels[i].addTorque(this._driveTorque * this._accelerate);
-			wheels[i].setLock(this._HBrake > 0.5);
+		for(var i=0;i<this._wheels.length;i++){
+			this._wheels[i].addTorque(this._driveTorque * this._accelerate);
+			this._wheels[i].setLock(this._HBrake > 0.5);
 		}
 
-		var alpha = Math.abs(this._maxSteerAngle * this._steering);
+		var alpha = mrAbs(this._maxSteerAngle * this._steering);
 		var angleSgn = (this._steering > 0) ? 1 : -1;
 		for(var i=0, swl=this._steerWheels.length; i<swl; i++){
-			var _steerWheel=this._steerWheels[i];
-			_steerWheel.setSteerAngle(angleSgn * alpha);
+			this._steerWheels[i].setSteerAngle(angleSgn * alpha);
 		}
 	};
 
-	JCar.prototype.getNumWheelsOnFloor=function(){
+	JCar.prototype.getNumWheelsOnFloor=function(dt){
 		var count = 0;
-		wheels=this.get_wheels();
-		for(var i=0, wl=wheels.length; i<wl; i++){
-			wheels[i].update(dt);
-			if (wheels[i].getOnFloor())
-				count++;
+		for(var i=0, wl=this._wheels.length; i<wl; i++){
+			//this._wheels[i].update(dt);
+			if (this._wheels[i].getOnFloor()) count++;
 		}
 		return count;
 	};

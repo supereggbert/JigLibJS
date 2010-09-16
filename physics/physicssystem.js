@@ -93,7 +93,7 @@
 	};
 
 	PhysicsSystem.prototype.getCollisionSystem=function(){
-		return _collisionSystem;
+		return this._collisionSystem;
 	};
 
 	PhysicsSystem.prototype.setGravity=function(gravity){

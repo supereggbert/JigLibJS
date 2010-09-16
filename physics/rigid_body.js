@@ -205,7 +205,7 @@
 	};
 
 	RigidBody.prototype.setOrientation=function(orient){
-		this._currState.set_orientation(orient.slice(0));
+		this._currState.set_orientation(orient.clone());
 		this.updateInertia();
 		this.updateState();
 	};

@@ -1,0 +1,425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
+<head>
+
+<title>GLGE with jigLib Demo</title>
+<script type="text/javascript" src="slider/range.js"></script>
+<script type="text/javascript" src="slider/timer.js"></script>
+<script type="text/javascript" src="slider/slider.js"></script>
+<link type="text/css" rel="StyleSheet" href="slider/winclassic.css" />
+    
+<script type="text/javascript" src="../jiglib.js"></script>
+
+<script type="text/javascript" src="../cof/jconfig.js"></script>
+
+<script type="text/javascript" src="../maths/glmatrix.js"></script>
+<script type="text/javascript" src="../maths/vector3dutil.js"></script>
+<script type="text/javascript" src="../maths/matrix3d.js"></script>
+<script type="text/javascript" src="../maths/jnumber3d.js"></script>
+<script type="text/javascript" src="../maths/jmatrix3d.js"></script>
+<script type="text/javascript" src="../maths/jmaths3d.js"></script>
+
+<script type="text/javascript" src="../data/contactdata.js"></script>
+<script type="text/javascript" src="../data/edgedata.js"></script>
+<script type="text/javascript" src="../data/planedata.js"></script>
+<script type="text/javascript" src="../data/spandata.js"></script>
+
+<script type="text/javascript" src="../plugins/iskin3d.js"></script>
+
+<script type="text/javascript" src="../geometry/jaabox.js"></script>
+
+<script type="text/javascript" src="../physics/bodypair.js"></script>
+<script type="text/javascript" src="../physics/cachedimpluse.js"></script>
+<script type="text/javascript" src="../physics/materialproperties.js"></script>
+<script type="text/javascript" src="../physics/physicscontroller.js"></script>
+<script type="text/javascript" src="../physics/physicsstate.js"></script>
+<script type="text/javascript" src="../physics/rigid_body.js"></script>
+<script type="text/javascript" src="../physics/hingejoint.js"></script>
+
+<script type="text/javascript" src="../physics/effect/jeffect.js"></script>
+<script type="text/javascript" src="../physics/effect/wind.js"></script>
+
+<script type="text/javascript" src="../geometry/jbox.js"></script>
+<script type="text/javascript" src="../geometry/jcapsule.js"></script>
+<script type="text/javascript" src="../geometry/jplane.js"></script>
+<script type="text/javascript" src="../geometry/jray.js"></script>
+<script type="text/javascript" src="../geometry/jsegment.js"></script>
+<script type="text/javascript" src="../geometry/jsphere.js"></script>
+<script type="text/javascript" src="../geometry/jterrain.js"></script>
+
+<script type="text/javascript" src="../collision/collpointinfo.js"></script>
+<script type="text/javascript" src="../collision/collisioninfo.js"></script>
+<script type="text/javascript" src="../collision/colldetectinfo.js"></script>
+<script type="text/javascript" src="../collision/colldetectfunctor.js"></script>
+<script type="text/javascript" src="../collision/colldetectboxbox.js"></script>
+<script type="text/javascript" src="../collision/colldetectboxplane.js"></script>
+<script type="text/javascript" src="../collision/colldetectboxterrain.js"></script>
+<script type="text/javascript" src="../collision/colldetectcapsulebox.js"></script>
+<script type="text/javascript" src="../collision/colldetectcapsulecapsule.js"></script>
+<script type="text/javascript" src="../collision/colldetectcapsuleplane.js"></script>
+<script type="text/javascript" src="../collision/colldetectcapsuleterrain.js"></script>
+<script type="text/javascript" src="../collision/colldetectspherebox.js"></script>
+<script type="text/javascript" src="../collision/colldetectspherecapsule.js"></script>
+<script type="text/javascript" src="../collision/colldetectsphereplane.js"></script>
+<script type="text/javascript" src="../collision/colldetectspheresphere.js"></script>
+<script type="text/javascript" src="../collision/colldetectsphereterrain.js"></script>
+<script type="text/javascript" src="../collision/collisionsystem.js"></script>
+
+<script type="text/javascript" src="../physics/constraint/jconstraint.js"></script>
+<script type="text/javascript" src="../physics/constraint/jconstraintmaxdistance.js"></script>
+<script type="text/javascript" src="../physics/constraint/jconstraintpoint.js"></script>
+<script type="text/javascript" src="../physics/hingejoint.js"></script>
+
+<script type="text/javascript" src="../physics/physicssystem.js"></script>
+
+<script type="text/javascript" src="../vehicles/jchassis.js"></script>
+<script type="text/javascript" src="../vehicles/jwheel.js"></script>
+<script type="text/javascript" src="../vehicles/jcar.js"></script>
+
+<script type="text/javascript" src="glge_math.js"></script> 
+<script type="text/javascript" src="glge.js"></script> 
+<style>
+body{margin:auto; background-color: #888; padding-top: 50px; font-family:sans; color: #666; font-size: 0.8em}
+#container{ margin:auto; width: 900px; padding: 10px; background-color: #fff; border-radius: 5px; -webkit-box-shadow: 5px 5px 2px #444; }
+</style>
+</head>
+<body>
+
+
+<div id="container">
+<canvas id="canvas" width="900" height="400"></canvas>
+
+<h2>GLGE vehicle Demo</h2>
+Acceleration/steering: arrow keys<br />
+Handbrake: spacebar<br /><br />
+<div id="details" style="width:100%">
+	<div id="debug" style="width:50%; float:left;">left div</div>
+	<div id="debug2" style="width:50%; float:left;"></div>
+	<div style="clear:both;"></div>
+</div>
+
+
+
+<script id="glge_document" type="text/xml">
+	<glge>
+
+		<mesh id="groundMesh">
+			<positions>1.000,1.000,0.000,-1.000,1.000,0.000,-1.000,-1.000,0.000,1.000,1.000,0.000,-1.000,-1.000,0.000,1.000,-1.000,0.000</positions>
+			<normals>-0.000,0.000,1.000,-0.000,0.000,1.000,-0.000,0.000,1.000,0.000,-0.000,1.000,0.000,-0.000,1.000,0.000,-0.000,1.000</normals>
+			<uv1>0.000,0.000,1.000,0.000,1.000,1.000,0.000,0.000,1.000,1.000,0.000,1.000</uv1>
+			<faces>0,1,2,3,4,5,</faces>
+		</mesh>
+		
+		<mesh id="Cube">
+				<positions>1.000,1.000,1.000,1.000,1.000,-1.000,-1.000,1.000,-1.000,1.000,1.000,1.000,-1.000,1.000,-1.000,-1.000,1.000,1.000,-1.000,-1.000,-1.000,-1.000,-1.000,1.000,-1.000,1.000,1.000,-1.000,-1.000,-1.000,-1.000,1.000,1.000,-1.000,1.000,-1.000,1.000,-1.000,-1.000,1.000,-1.000,1.000,-1.000,-1.000,-1.000,1.000,-1.000,1.000,-1.000,-1.000,1.000,-1.000,-1.000,-1.000,1.000,1.000,-1.000,1.000,1.000,1.000,1.000,-1.000,-1.000,1.000,1.000,1.000,1.000,-1.000,1.000,1.000,-1.000,-1.000,1.000,1.000,1.000,-1.000,1.000,1.000,1.000,-1.000,1.000,-1.000,1.000,1.000,-1.000,-1.000,1.000,1.000,-1.000,1.000,1.000,1.000,-1.000,1.000,-1.000,-1.000,-1.000,-1.000,-1.000,1.000,1.000,-1.000,-1.000,-1.000,-1.000,-1.000,1.000,-1.000</positions>
+				<normals>0.000,1.000,0.000,0.000,1.000,0.000,0.000,1.000,0.000,0.000,1.000,0.000,0.000,1.000,0.000,0.000,1.000,0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-0.000,-1.000,-0.000,-0.000,-1.000,-0.000,-0.000,-1.000,-0.000,-0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-1.000,0.000,1.000,0.000,-0.000,1.000,0.000,-0.000,1.000,0.000,-0.000,1.000,-0.000,0.000,1.000,-0.000,0.000,1.000,-0.000,0.000,-0.000,-0.000,1.000,-0.000,-0.000,1.000,-0.000,-0.000,1.000,0.000,-0.000,1.000,0.000,-0.000,1.000,0.000,-0.000,1.000,0.000,0.000,-1.000,0.000,0.000,-1.000,0.000,0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-1.000,0.000,-0.000,-1.000</normals>
+			<faces>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35</faces>
+		</mesh>
+
+		<material id="green" specular="0" shininess="20" color="green" />
+		
+		<material id="yellow" specular="0" shininess="20" color="yellow" />
+		<material id="red" specular="0" shininess="20" color="red" />
+		<material id="blue" specular="0" shininess="20" color="blue" />
+		<material id="grey" specular="10" shininess="20" color="black" />
+		<material id="grid" specular="0" shininess="20">
+			<texture id="grid-tex" src="grid.png" />
+			<material_layer texture="#grid-tex" mapinput="UV1" scale_x="2" scale_y="2" scale_z="2" mapto="M_COLOR" />
+		</material>
+
+		<scene id="mainscene" ambient_color="#555" camera="#mainCamera" background_color="#338">
+			<!-- original -->
+			<camera id="mainCamera" loc_z="300" loc_y="150" fov_y="35" rot_x="-0.6" />
+			<!-- right -->
+			<!--camera id="mainCamera" loc_z="7" loc_y="0.28" loc_x="0" fov_y="35" rot_x="0" /-->
+			<!-- left -->
+			<!--camera id="mainCamera" loc_z="-7" loc_y="1" loc_x="0" fov_y="35" rot_y="-3.14" /-->
+			<!-- top -->
+			<!--camera id="mainCamera" loc_z="0" loc_y="10" fov_y="35" rot_x="-1.57" /-->
+			
+			<object id="groundObject" mesh="#groundMesh" material="#grid" rot_x="-1.57"  scale="100" loc_y="-40" />
+			<object id="carObject" mesh="#Cube" material="#red" scale_x="20" scale_y="10" scale_z="45" />
+			<object id="wheelFRObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
+			<object id="wheelFLObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
+			<object id="wheelBRObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
+			<object id="wheelBLObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
+			
+			<light id="light1" loc_x="-60" loc_y="85" loc_z="-70" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1" type="L_POINT" />
+		
+			<light id="light2" loc_x="60" loc_y="85" loc_z="70" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1.5" type="L_POINT" />
+			
+		</scene>
+	</glge>
+</script>
+
+<script><!--
+
+var canvas = document.getElementById( 'canvas' )
+var renderer = new GLGE.Renderer( canvas );
+var wind;
+var system;
+
+var XMLdoc = new GLGE.Document();
+
+XMLdoc.onLoad = function(){
+	var scene = XMLdoc.getElement( "mainscene" );
+	renderer.setScene( scene );
+	renderer.render();
+	
+	var grey = XMLdoc.getElement("grey");
+	
+	var car = XMLdoc.getElement("carObject");
+	
+	var wheelFR = XMLdoc.getElement("wheelFRObject");
+	var steerFR = new GLGE.Group();
+	steerFR.addChild(wheelFR);
+	steerFR.setLocX(20).setLocY(-10).setLocZ(25);
+	
+	var wheelFL = XMLdoc.getElement("wheelFLObject");
+	var steerFL = new GLGE.Group();
+	steerFL.addChild(wheelFL);
+	steerFL.setLocX(-20).setLocY(-10).setLocZ(25);
+	
+	var wheelBR = XMLdoc.getElement("wheelBRObject");
+	wheelBR.setLocX(20).setLocY(-10).setLocZ(-25);
+	
+	var wheelBL = XMLdoc.getElement("wheelBLObject");
+	wheelBL.setLocX(-20).setLocY(-10).setLocZ(-25);
+	
+	var carG = new GLGE.Group();
+	carG.addChild(car).addChild(steerFR).addChild(steerFL).addChild(wheelBR).addChild(wheelBL);
+	scene.addGroup(carG);
+	
+	var ground = XMLdoc.getElement( "groundObject" );
+	var camera = XMLdoc.getElement( "mainCamera" );
+	var green = XMLdoc.getElement( "green" );
+	var cmesh = XMLdoc.getElement( "Cube" );
+
+
+	document.onkeydown = function( e ){
+		switch(e.keyCode)
+		{
+			case 32:
+				carBody.setHBrake(1);
+				break;
+			case 38:
+				carBody.setAccelerate(1);
+				break;
+			case 40:
+				carBody.setAccelerate(-1);
+				break;
+			case 37:
+				carBody.setSteer(["WheelFL", "WheelFR"], 1);
+				break;
+			case 39:
+				carBody.setSteer(["WheelFL", "WheelFR"], -1);
+				break;
+		}
+	}
+	
+	document.onkeyup = function( e ){
+		switch(e.keyCode)
+		{
+			case 32:
+				carBody.setHBrake(0);
+				break;
+			case 38:
+				carBody.setAccelerate(0);
+				break;
+			case 40:
+				carBody.setAccelerate(0);
+				break;
+			case 37:
+				carBody.setSteer(["WheelFL", "WheelFR"], 0);
+				break;
+			case 39:
+				carBody.setSteer(["WheelFL", "WheelFR"], 0);
+				break;
+		}
+	}
+	
+	canvas.onmouseup = function( e ){
+		//if(Math.random()>0.5) addSphere(); else addCube();
+		//this.drag = null;
+	}
+	canvas.onmousewheel = function( e ){
+		delta=e.wheelDelta/120;
+		if(delta!=0){
+			camera.setFovY(parseFloat(camera.getFovY())-delta);
+		}
+	}
+	
+	var links=[];
+	
+	var addwall=function(){
+		for(var x=1;x<5;x++){
+			for(var i=0;i<7;i++){
+				var newObject=new GLGE.Object();
+				newObject.setMesh(cmesh);
+				newObject.setMaterial(green);
+				newObject.setScaleY(0.15);
+				newObject.setScaleX(0.5);
+				newObject.setLocX(-x*1);
+				newObject.setScaleZ(0.25);
+				scene.addObject(newObject);
+				var sphere=new jigLib.JBox(null,1,0.5,0.3);
+				sphere.set_mass(100);
+				system.addBody(sphere);
+				sphere.get_currentState().position[1]=i*0.29+0.15;
+				sphere.get_currentState().position[0]=-x*1.0+0.5+0.5*(i%2);
+				sphere.get_material().set_friction(0.2);
+				sphere.get_material().set_restitution(0.2);
+				system.integrate(0.001);
+				sphere.setInactive()
+				links.push({glge:newObject,jig:sphere})
+			}
+		}
+	}
+	
+	system=jigLib.PhysicsSystem.getInstance();
+	system.setGravity([0,-9.8,0,0]);
+	var plane=new jigLib.JPlane(null,[0, 0.02, 0, 0]);
+	plane.moveTo([ground.getLocX(), ground.getLocY(), ground.getLocZ()]);
+	plane.set_friction(0.99);
+	system.addBody(plane);
+	
+	//init car physics
+	var carBody = new jigLib.JCar(car);
+
+	var maxSteerAngle = 50;
+	var steerRate = 3;
+	var driveTorque = 400;
+	
+	carBody.setCar(maxSteerAngle, steerRate, driveTorque);
+	//carBody._chassis.moveTo([0, 100, 0]); //[car.getLocX(), car.getLocY(), car.getLocZ()]);
+	//carBody._chassis.set_rotationY(90);
+	carBody._chassis.mass = 9;
+	carBody._chassis.sideLengths = car.getBoundingVolume().dims;
+	system.addBody(carBody._chassis);
+	
+	var wheelRadius = 8;// wheelFL.getBoundingVolume().dims[1] / 2;
+	var travel = 3;
+	var sideFriction = 1.2;
+	var fwdFriction = 1.2;
+	var restingFrac = 0.9;
+	var dampingFrac = 0.9;
+	var rays = 2;
+	
+	carBody.setupWheel("WheelFL", [steerFL.getLocX(),steerFL.getLocY(),steerFL.getLocZ()], sideFriction, fwdFriction, travel, wheelRadius, restingFrac, dampingFrac, rays);
+	carBody.setupWheel("WheelFR", [steerFR.getLocX(),steerFR.getLocY(),steerFR.getLocZ()], sideFriction, fwdFriction, travel, wheelRadius, restingFrac, dampingFrac, rays);
+	carBody.setupWheel("WheelBL", [wheelBL.getLocX(),wheelBL.getLocY(),wheelBL.getLocZ()], sideFriction, fwdFriction, travel, wheelRadius, restingFrac, dampingFrac, rays);
+	carBody.setupWheel("WheelBR", [wheelBR.getLocX(),wheelBR.getLocY(),wheelBR.getLocZ()], sideFriction, fwdFriction, travel, wheelRadius, restingFrac, dampingFrac, rays);
+	
+	links.push({glge:carG,jig:carBody._chassis});
+	
+	//	test
+	function interrogateObject(obj) {
+		var out='';
+		for (var att in obj) { out += att + ': ' + obj[att] + '<br />'; }
+		return out;
+	}
+	
+	function pitch(wheel, rot, rev)
+	{
+		if (rev) rot=-rot;
+		var mat=new jigLib.Matrix3D(wheel.getRotMatrix());
+		mat=jigLib.JMatrix3D.getAppendMatrix3D(mat, jigLib.JMatrix3D.getRotationMatrixAxis(rot, jigLib.Vector3DUtil.X_AXIS))
+		wheel.setRotMatrix(mat.glmatrix);
+	}
+	
+	function updateWheels()
+	{
+		steerFL.setDRotY(degToRad(carBody.getWheel("WheelFL").getSteerAngle()));
+		steerFR.setDRotY(degToRad(carBody.getWheel("WheelFR").getSteerAngle()));
+		
+		pitch(wheelFL, carBody.getWheel("WheelFL").getRollAngle());
+		pitch(wheelFR, carBody.getWheel("WheelFR").getRollAngle(), true);
+		pitch(wheelBL, carBody.getWheel("WheelBL").getRollAngle());
+		pitch(wheelBR, carBody.getWheel("WheelBR").getRollAngle(), true);
+
+		steerFL.setLocY(carBody.getWheel("WheelFL").getActualPos()[1]);
+		steerFR.setLocY(carBody.getWheel("WheelFR").getActualPos()[1]);
+		wheelBL.setLocY(carBody.getWheel("WheelBL").getActualPos()[1]);
+		wheelBR.setLocY(carBody.getWheel("WheelBR").getActualPos()[1]);
+	}
+	
+	function updateStats()
+	{
+		var out='', out2='';
+		out+='_destSteering: '+carBody._destSteering+'<br />';
+		out+='_destAccelerate: '+carBody._destAccelerate+'<br />';
+		out+='_steering: '+carBody._steering+'<br />';
+		out+='_accelerate: '+carBody._accelerate+'<br />';
+		out+='_HBrake: '+carBody._HBrake+'<br />';
+		
+		out+='wheels on the ground: '+carBody.getNumWheelsOnFloor(new Date())+'<br />';
+		
+		out2+='WheelFL.getSteerAngle(): '+carBody.getWheel("WheelFL").getSteerAngle()+'<br />';
+		out2+='WheelFR.getSteerAngle(): '+carBody.getWheel("WheelFR").getSteerAngle()+'<br />';
+		
+		out2+='WheelFL.getRollAngle(): '+carBody.getWheel("WheelFL").getRollAngle()+'<br />';
+		out2+='WheelFR.getRollAngle(): '+carBody.getWheel("WheelFR").getRollAngle()+'<br />';
+		out2+='WheelBL.getRollAngle(): '+carBody.getWheel("WheelBL").getRollAngle()+'<br />';
+		out2+='WheelBR.getRollAngle(): '+carBody.getWheel("WheelBR").getRollAngle()+'<br />';
+
+		out2+='WheelFL.getActualPos()[1]: '+carBody.getWheel("WheelFL").getActualPos()[1]+'<br />';
+		out2+='WheelFR.getActualPos()[1]: '+carBody.getWheel("WheelFR").getActualPos()[1]+'<br />';
+		out2+='WheelBL.getActualPos()[1]: '+carBody.getWheel("WheelBL").getActualPos()[1]+'<br />';
+		out2+='WheelBR.getActualPos()[1]: '+carBody.getWheel("WheelBR").getActualPos()[1]+'<br />';
+		
+		document.getElementById('debug2').innerHTML=out;
+		document.getElementById('debug').innerHTML=out2;
+	}
+	
+	function dumpObject(obj, property)
+	{ 
+		var out='';
+		for (var k in obj)
+		{
+			out+=' &nbsp; &nbsp;'+k+': '+((property) ? obj[property] : obj[k])+'<br />';
+		}
+		return out;
+	}
+	
+	function degToRad(deg) {
+		return (deg*3.14159)/180;
+	}
+	
+	function radToDeg(rad) {
+		return rad*(180/3.14159);
+	}
+	
+	var lasttime=(new Date()).getTime();
+	function render(){
+		var now=(new Date()).getTime();
+		var inttime=(now-lasttime)/1000;
+		if (inttime<0.05) inttime=0.05;
+		system.integrate((now-lasttime)/1000);
+		lasttime=now;
+		
+		for(var i=0; i<links.length;i++){
+			links[i].glge.setLocY(links[i].jig.get_currentState().position[1]);
+			links[i].glge.setLocX(links[i].jig.get_currentState().position[0]);
+			links[i].glge.setLocZ(links[i].jig.get_currentState().position[2]);
+			var ori=GLGE.Mat4(links[i].jig.get_currentState().get_orientation().glmatrix);
+			links[i].glge.setRotMatrix(ori);
+		}
+		
+		updateWheels();
+		updateStats();
+		
+		renderer.render();
+	}
+	
+	setInterval(render,30);
+}
+
+XMLdoc.parseScript("glge_document");
+
+--></script>
+
+</div>
+</body>
+</html>
+

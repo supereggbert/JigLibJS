@@ -41,10 +41,6 @@
 	
 	JChassis.prototype._car=null;
 	
-	JChassis.prototype.get_car=function(){
-		return this._car;
-	};
-
 	JChassis.prototype.addExternalForces=function(dt){
 		this.clearForces();
 		this.addGravity();
@@ -58,4 +54,3 @@
 	jigLib.JChassis=JChassis;
 	
 })(jigLib);
-	

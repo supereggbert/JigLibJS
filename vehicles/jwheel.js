@@ -28,10 +28,16 @@
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
 	var JSegment=jigLib.JSegment;
+	var PhysicsSystem=jigLib.PhysicsSystem;
+	
+	// get local refs to Math methods to improve performance
+	var mr=Math, mrPI=mr.PI, mrMin=mr.min, mrMax=mr.max, mrCos=mr.cos, mrAbs=mr.abs, mrSqrt=mr.sqrt;
 	
 	var JWheel=function(car){
 		this._car = car;
 	};
+	
+	JWheel.prototype.name = null;
 	
 	JWheel.prototype.noslipVel = 0.2;
 	JWheel.prototype.slipVel = 0.4;
@@ -78,6 +84,8 @@
 	JWheel.prototype.rimVel=null;
 	JWheel.prototype.worldVel=null;
 	JWheel.prototype.wheelCentreVel=null;
+	
+	JWheel.prototype._collSystem=null;
 	
 	/*
 	* pos: position relative to car, in car's space
@@ -158,7 +166,7 @@
 	};
 
 	JWheel.prototype.getRollAngle=function(){
-		return 0.1 * this._angVel * 180 / Math.PI;
+		return 0.1 * this._angVel * 180 / mrPI;
 	};
 
 	JWheel.prototype.setRotationDamping=function(vel){
@@ -179,11 +187,11 @@
 		this._lastDisplacement = this._displacement;
 		this._displacement = 0;
 
-		var carBody = this._car.get_chassis();
+		var carBody = this._car._chassis;
 		worldPos = this._pos.slice(0);
 		JMatrix3D.multiplyVector(carBody.get_currentState().get_orientation(), worldPos);
 		worldPos = Vector3DUtil.add(carBody.get_currentState().position, worldPos);
-		worldAxis = _axisUp.slice(0);
+		worldAxis = this._axisUp.slice(0);
 		JMatrix3D.multiplyVector(carBody.get_currentState().get_orientation(), worldAxis);
 
 		wheelFwd = carBody.get_currentState().getOrientationCols()[2].slice(0);
@@ -196,10 +204,11 @@
 		wheelRayEnd = Vector3DUtil.subtract(worldPos, JNumber3D.getScaleVector(worldAxis, this._radius));
 		wheelRay = new JSegment(Vector3DUtil.add(wheelRayEnd, JNumber3D.getScaleVector(worldAxis, rayLen)), JNumber3D.getScaleVector(worldAxis, -rayLen));
 
-		var collSystem = PhysicsSystem.getInstance().getCollisionSystem();
+		if (this._collSystem == null)
+			this._collSystem = PhysicsSystem.getInstance().getCollisionSystem();
 
 		var maxNumRays = 10;
-		var numRays = Math.min(this._numRays, maxNumRays);
+		var numRays = mrMin(this._numRays, maxNumRays);
 
 		var objArr = [];
 		var segments = [];
@@ -213,23 +222,24 @@
 		var yOffset;
 		var bestIRay = 0;
 		var iRay = 0;
+		var segment = null;
 		for (iRay = 0; iRay < numRays; iRay++){
 			objArr[iRay] = {};
 			distFwd = (deltaFwdStart + iRay * deltaFwd) - this._radius;
-			yOffset = this._radius * (1 - Math.cos(90 * (distFwd / this._radius) * Math.PI / 180));
-			segments[iRay] = wheelRay.clone();
-			segments[iRay].origin = Vector3DUtil.add(segments[iRay].origin, Vector3DUtil.add(JNumber3D.getScaleVector(wheelFwd, distFwd), JNumber3D.getScaleVector(wheelUp, yOffset)));
-			if (collSystem.segmentIntersect(objArr[iRay], segments[iRay], carBody)) {
+			yOffset = this._radius * (1 - mrCos(90 * (distFwd / this._radius) * mrPI / 180));
+			segment = wheelRay.clone();
+			segment.origin = Vector3DUtil.add(segment.origin, Vector3DUtil.add(JNumber3D.getScaleVector(wheelFwd, distFwd), JNumber3D.getScaleVector(wheelUp, yOffset)));
+			
+			if (this._collSystem.segmentIntersect(objArr[iRay], segment, carBody)) {
 				this._lastOnFloor = true;
 				if (objArr[iRay].fracOut < objArr[bestIRay].fracOut){
 					bestIRay = iRay;
 				}
 			}
+			segments[iRay] = segment;
 		}
-
-		if (!this._lastOnFloor){
-			return false;
-		}
+		
+		if (!this._lastOnFloor) return false;
 
 		var frac= objArr[bestIRay].fracOut;
 		var groundPos = objArr[bestIRay].posOut;
@@ -238,30 +248,25 @@
 		var groundNormal = worldAxis.slice(0);
 		if (numRays > 1){
 			for (iRay = 0; iRay < numRays; iRay++){
-				if (objArr[iRay].fracOut <= 1){
-					groundNormal = Vector3DUtil.add(groundNormal, JNumber3D.getScaleVector(Vector3DUtil.subtract(worldPos, segments[iRay].getEnd()), 1 - objArr[iRay].fracOut));
-				}
+				var rayFracOut=objArr[iRay].fracOut;
+				if (rayFracOut <= 1)
+					groundNormal = Vector3DUtil.add(groundNormal, JNumber3D.getScaleVector(Vector3DUtil.subtract(worldPos, segments[iRay].getEnd()), 1 - rayFracOut));
 			}
 			Vector3DUtil.normalize(groundNormal);
-		}else{
-			groundNormal = objArr[bestIRay].normalOut;
-		}
+		}else groundNormal = objArr[bestIRay].normalOut;
 
 		this._displacement = rayLen * (1 - frac);
-		if (this._displacement < 0){
-			this._displacement = 0;
-		}else if (this._displacement > this._travel){
-			this._displacement = this._travel;
-		}
+		
+		if (this._displacement < 0) this._displacement = 0;
+		else if (this._displacement > this._travel) this._displacement = this._travel;
 
 		var displacementForceMag = this._displacement * this._spring;
 		displacementForceMag *= Vector3DUtil.dotProduct(groundNormal, worldAxis);
 
 		var dampingForceMag = this._upSpeed * this._damping;
 		var totalForceMag = displacementForceMag + dampingForceMag;
-		if (totalForceMag < 0){
-			totalForceMag = 0;
-		}
+		if (totalForceMag < 0) totalForceMag = 0;
+
 		var extraForce = JNumber3D.getScaleVector(worldAxis, totalForceMag);
 		force = Vector3DUtil.add(force, extraForce);
 
@@ -284,17 +289,15 @@
 
 		var friction = this._sideFriction;
 		var sideVel = Vector3DUtil.dotProduct(wheelPointVel, groundLeft);
-		if ((sideVel > slipVel) || (sideVel < -slipVel)){
-			friction *= slipFactor;
-		}else if ((sideVel > noslipVel) || (sideVel < -noslipVel)){
-			friction *= (1 - (1 - slipFactor) * (Math.abs(sideVel) - noslipVel) / (slipVel - noslipVel));
-		}
-		if (sideVel < 0){
-			friction *= -1;
-		}
-		if (Math.abs(sideVel) < smallVel){
-			friction *= Math.abs(sideVel) / smallVel;
-		}
+
+		if ((sideVel > this.slipVel) || (sideVel < -this.slipVel))
+			friction *= this.slipFactor;
+		else if ((sideVel > this.noslipVel) || (sideVel < -this.noslipVel))
+			friction *= (1 - (1 - this.slipFactor) * (mrAbs(sideVel) - this.noslipVel) / (this.slipVel - this.noslipVel));
+
+		if (sideVel < 0) friction *= -1;
+
+		if (mrAbs(sideVel) < this.smallVel) friction *= mrAbs(sideVel) / this.smallVel;
 
 		var sideForce= -friction * totalForceMag;
 		extraForce = JNumber3D.getScaleVector(groundLeft, sideForce);
@@ -302,17 +305,16 @@
 
 		friction = this._fwdFriction;
 		var fwdVel = Vector3DUtil.dotProduct(wheelPointVel, groundFwd);
-		if ((fwdVel > slipVel) || (fwdVel < -slipVel)){
-			friction *= slipFactor;
-		}else if ((fwdVel > noslipVel) || (fwdVel < -noslipVel)){
-			friction *= (1 - (1 - slipFactor) * (Math.abs(fwdVel) - noslipVel) / (slipVel - noslipVel));
-		}
-		if (fwdVel < 0){
-			friction *= -1;
-		}
-		if (Math.abs(fwdVel) < smallVel){
-			friction *= (Math.abs(fwdVel) / smallVel);
-		}
+		
+		if ((fwdVel > this.slipVel) || (fwdVel < -this.slipVel))
+			friction *= this.slipFactor;
+		else if ((fwdVel > this.noslipVel) || (fwdVel < -this.noslipVel))
+			friction *= (1 - (1 - this.slipFactor) * (mrAbs(fwdVel) - this.noslipVel) / (this.slipVel - this.noslipVel));
+
+		if (fwdVel < 0) friction *= -1;
+		
+		if (mrAbs(fwdVel) < this.smallVel) friction *= (mrAbs(fwdVel) / this.smallVel);
+
 		var fwdForce = -friction * totalForceMag;
 		extraForce = JNumber3D.getScaleVector(groundFwd, fwdForce);
 		force = Vector3DUtil.add(force, extraForce);
@@ -325,7 +327,7 @@
 		if (otherBody.movable){
 			var maxOtherBodyAcc = 500;
 			var maxOtherBodyForce = maxOtherBodyAcc * otherBody.get_mass();
-			if (Vector3DUtil.get_lengthSquared(force) > maxOtherBodyForce * maxOtherBodyForce)
+			if (Vector3DUtil.get_lengthSquared(force) > (maxOtherBodyForce * maxOtherBodyForce))
 				force = JNumber3D.getScaleVector(force, maxOtherBodyForce / Vector3DUtil.get_length(force));
 
 			otherBody.addWorldForce(JNumber3D.getScaleVector(force, -1), groundPos);
@@ -335,11 +337,10 @@
 
 	// Updates the rotational state etc
 	JWheel.prototype.update=function(dt){
-		if (dt <= 0){
-			return;
-		}
+		if (dt <= 0) return;
+
 		var origAngVel = this._angVel;
-		this._upSpeed = (this._displacement - this._lastDisplacement) / Math.max(dt, JNumber3D.NUM_TINY);
+		this._upSpeed = (this._displacement - this._lastDisplacement) / mrMax(dt, JNumber3D.NUM_TINY);
 
 		if (this._locked){
 			this._angVel = 0;
@@ -348,20 +349,17 @@
 			this._angVel += (this._torque * dt / this._inertia);
 			this._torque = 0;
 
-			if (((origAngVel > this._angVelForGrip) && (this._angVel < this._angVelForGrip)) || ((origAngVel < this._angVelForGrip) && (this._angVel > this._angVelForGrip))){
+			if (((origAngVel > this._angVelForGrip) && (this._angVel < this._angVelForGrip)) || ((origAngVel < this._angVelForGrip) && (this._angVel > this._angVelForGrip)))
 				this._angVel = this._angVelForGrip;
-			}
 
 			this._angVel += this._driveTorque * dt / this._inertia;
 			this._driveTorque = 0;
 
-			if (this._angVel < -100){
-				this._angVel = -100;
-			}else if (this._angVel > 100){
-				this._angVel = 100;
-			}
-			this._angVel *= _rotDamping;
-			this._axisAngle += (this._angVel * dt * 180 / Math.PI);
+			if (this._angVel < -100) this._angVel = -100;
+			else if (this._angVel > 100) this._angVel = 100;
+			
+			this._angVel *= this._rotDamping;
+			this._axisAngle += (this._angVel * dt * 180 / mrPI);
 		}
 	};
 

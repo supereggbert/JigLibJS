@@ -67,9 +67,11 @@
 		var _rawData =  matrix3D.glmatrix;
 		var cols = [];
 						
-		/*cols[0] = new Vector3D(_rawData[0], _rawData[1], _rawData[2]);
-		cols[1] = new Vector3D(_rawData[4], _rawData[5], _rawData[6]);
-		cols[2] = new Vector3D(_rawData[8], _rawData[9], _rawData[10]);
+		/*
+		cols[0] = Vector3DUtil.create(_rawData[0], _rawData[1], _rawData[2], 0);
+		cols[1] = Vector3DUtil.create(_rawData[4], _rawData[5], _rawData[6], 0);
+		cols[2] = Vector3DUtil.create(_rawData[8], _rawData[9], _rawData[10], 0);
+		
 		*/
 		cols[0] = Vector3DUtil.create(_rawData[0], _rawData[4], _rawData[8], 0);
 		cols[1] = Vector3DUtil.create(_rawData[1], _rawData[5], _rawData[9], 0);
@@ -92,7 +94,8 @@
 		v[0] = vx * _rawData[0] + vy * _rawData[4] + vz * _rawData[8]  + _rawData[12];
 		v[1] = vx * _rawData[1] + vy * _rawData[5] + vz * _rawData[9]  + _rawData[13];
 		v[2] = vx * _rawData[2] + vy * _rawData[6] + vz * _rawData[10] + _rawData[14];
-		*/
+		
+		 */
 		v[0] = vx * _rawData[0] + vy * _rawData[1] + vz * _rawData[2]  + _rawData[3];
 		v[1] = vx * _rawData[4] + vy * _rawData[5] + vz * _rawData[6]  + _rawData[7];
 		v[2] = vx * _rawData[8] + vy * _rawData[9] + vz * _rawData[10] + _rawData[11];
