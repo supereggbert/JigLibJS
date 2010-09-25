@@ -25,6 +25,7 @@
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
+	var JMatrix3D=jigLib.JMatrix3D;
 	var JConstraint=jigLib.JConstraint;
 	var JSegment=jigLib.JSegment;
 	var JConfig=jigLib.JConfig;
@@ -35,7 +36,7 @@
 	var SpanData=jigLib.SpanData;
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
-
+	
 	var CollDetectBoxBox=function(){
 		this.name = "BoxBox";
 		this.type0 = "BOX";
@@ -46,7 +47,7 @@
 	
 	CollDetectBoxBox.prototype.MAX_SUPPORT_VERTS = 10;
 	CollDetectBoxBox.prototype.combinationDist=null;
-
+	
 	//Returns true if disjoint.  Returns false if intersecting
 	CollDetectBoxBox.prototype.disjoint=function(out, axis, box0, box1){
 		var obj0 = box0.getSpan(axis);
@@ -72,7 +73,8 @@
 		out.flag = false;
 		return false;
 	};
-
+	
+	
 	CollDetectBoxBox.prototype.addPoint=function(contactPoints, pt, combinationDistanceSq){
 		for(var i=0,cpsl=contactPoints.length;i<cpsl;i++){
 			var contactPoint=contactPoints[i];
@@ -85,199 +87,148 @@
 		return true;
 	};
 
-	CollDetectBoxBox.prototype.getBox2BoxEdgesIntersectionPoints=function(contactPoint, box0, box1, newState){
-		var num = 0;
-		var seg;
-		var box0State = (newState) ? box0.get_currentState() : box0.get_oldState();
-		var box1State = (newState) ? box1.get_currentState() : box1.get_oldState();
-		var boxPts = box1.getCornerPoints(box1State);
-		var boxEdges = box1.get_edges();
-		var outObj;
+                
+	CollDetectBoxBox.prototype.getSupportPoint=function(box, axis) {
+		var orientationCol = box.get_currentState().getOrientationCols();
+		var _as = Vector3DUtil.dotProduct(axis,orientationCol[0]);
+		var _au = Vector3DUtil.dotProduct(axis,orientationCol[1]);
+		var _ad = Vector3DUtil.dotProduct(axis,orientationCol[2]);
+                        
+		var p = box.get_currentState().position.slice(0);
+  
+		var sideLengths=box.get_sideLengths();
 		
-		for(var i=0,bel=boxEdges.length;i<bel;i++){
-			boxEdge=boxEdges[i];
-			outObj = {};
-			seg = new JSegment(boxPts[boxEdge.ind0], Vector3DUtil.subtract(boxPts[boxEdge.ind1], boxPts[boxEdge.ind0]));
-			if (box0.segmentIntersect(outObj, seg, box0State)){
-				if (this.addPoint(contactPoint, outObj.posOut, combinationDist))
-					num += 1;
+		if (_as < -JNumber3D.NUM_TINY) {
+			p = Vector3DUtil.add(p,JNumber3D.getScaleVector(orientationCol[0], 0.5 * sideLengths[0]));
+		}else if (_as >= JNumber3D.NUM_TINY) {
+			p = Vector3DUtil.subtract(p,JNumber3D.getScaleVector(orientationCol[0], 0.5 * sideLengths[0]));
+		}
+  
+		if (_au < -JNumber3D.NUM_TINY) {
+			p = Vector3DUtil.add(p,JNumber3D.getScaleVector(orientationCol[1], 0.5 * sideLengths[1]));
+		}else if (_au > JNumber3D.NUM_TINY) {
+			p = Vector3DUtil.subtract(p,JNumber3D.getScaleVector(orientationCol[1], 0.5 * sideLengths[1]));
+		}
+  
+		if (_ad < -JNumber3D.NUM_TINY) {
+			p = Vector3DUtil.add(p,JNumber3D.getScaleVector(orientationCol[2], 0.5 * sideLengths[2]));
+		}else if (_ad > JNumber3D.NUM_TINY) {
+			p = Vector3DUtil.subtract(p,JNumber3D.getScaleVector(orientationCol[2], 0.5 * sideLengths[2]));
+		}
+		return p;
+	}
+
+	CollDetectBoxBox.prototype.getAABox2EdgeIntersectionPoints=function(contactPoint, origBoxSides, origBoxState, edgePt0, edgePt1){
+		var jDir;
+		var kDir;
+		var dist0;
+		var dist1;
+		var frac;
+		var num=0;
+		var pt;
+		var edgeDir = Vector3DUtil.subtract(edgePt1, edgePt0);
+                 Vector3DUtil.normalize(edgeDir);
+		var ptArr=[];
+		var faceOffsets=[];
+		var edgePt0Arr = edgePt0;
+		var edgePt1Arr = edgePt1;
+		var edgeDirArr = edgeDir;
+		var sidesArr = JNumber3D.getScaleVector(origBoxSides, 0.5);
+		for (var iDir= 2; iDir >= 0; iDir--) {
+			if (Math.abs(edgeDirArr[iDir]) < 0.1) {
+				continue;
+			}
+			jDir = (iDir + 1) % 3;
+			kDir = (iDir + 2) % 3;
+			faceOffsets = [ -sidesArr[iDir], sidesArr[iDir]];
+			for (var iFace= 1; iFace >= 0; iFace-- ) {
+				dist0 = edgePt0Arr[iDir] - faceOffsets[iFace];
+				dist1 = edgePt1Arr[iDir] - faceOffsets[iFace];
+				frac = -1;
+				if (dist0 * dist1 < -JNumber3D.NUM_TINY) {
+					frac = -dist0 / (dist1 - dist0);
+				}else if (Math.abs(dist0) < JNumber3D.NUM_TINY) {
+					frac = 0;
+				}else if (Math.abs(dist1) < JNumber3D.NUM_TINY) {
+					frac = 1;
+				}
+				if (frac >= 0) {
+					pt = Vector3DUtil.add(JNumber3D.getScaleVector(edgePt0, 1 - frac),JNumber3D.getScaleVector(edgePt1, frac));
+					ptArr = pt;
+					if ((ptArr[jDir] > -sidesArr[jDir] - JNumber3D.NUM_TINY) && (ptArr[jDir] < sidesArr[jDir] + JNumber3D.NUM_TINY) && (ptArr[kDir] > -sidesArr[kDir] - JNumber3D.NUM_TINY) && (ptArr[kDir] < sidesArr[kDir] + JNumber3D.NUM_TINY) ) {
+						pt=pt.splice(0);
+						JMatrix3D.multiplyVector(origBoxState.get_orientation(),pt);
+						pt = Vector3DUtil.add(pt,origBoxState.position);
+						this.addPoint(contactPoint, pt, combinationDist);
+						if (++num == 2) {
+							return num;
+						}
+					}
+				}
 			}
 		}
 		return num;
-	};
+	}
+                
+        CollDetectBoxBox.prototype.getBox2BoxEdgesIntersectionPoints=function(contactPoint, box0, box1, newState){
+		var num = 0;
+		var seg;
+		var box0State = (newState) ? box0.get_currentState() : box0.get_oldState();
+		var box1State= (newState) ? box1.get_currentState() : box1.get_oldState();
+		var boxPts = box1.getCornerPointsInBoxSpace(box1State, box0State);
+		
+		var boxEdges = box1.get_edges();
+		var edgePt0;
+		var edgePt1;
+		for(var i=0;i<boxEdges.length;i++){
+		var boxEdge=boxEdges[i];
+			edgePt0 = boxPts[boxEdge.ind0];
+			edgePt1 = boxPts[boxEdge.ind1];
+			num += this.getAABox2EdgeIntersectionPoints(contactPoint, box0.get_sideLengths(), box0State, edgePt0, edgePt1);
+			if (num >= 8) {
+				return num;
+			}
+		}
+		return num;
+	}
 
-	CollDetectBoxBox.prototype.getBoxBoxIntersectionPoints=function(contactPoint, box0, box1, newState){
+        CollDetectBoxBox.prototype.getBoxBoxIntersectionPoints=function(contactPoint, box0, box1, newState){
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box0, box1, newState);
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box1, box0, newState);
-		return contactPoint.length;
-	};
-	
-	/*
-	* Original Author: Olivier renault
-	* http://uk.geocities.com/olivier_rebellion/
-	*/
-	CollDetectBoxBox.prototype.getPointPointContacts=function(PA, PB, CA, CB){
-		CA.push(PA.slice(0));
-		CB.push(PB.slice(0));
-	};
-
-	CollDetectBoxBox.prototype.getPointEdgeContacts=function(PA, PB0, PB1, CA, CB){
-		var B0A = Vector3DUtil.subtract(PA, PB0);
-		var BD = Vector3DUtil.subtract(PB1, PB0);
-
-		var t = Vector3DUtil.dotProduct(B0A, BD) / Vector3DUtil.dotProduct(BD, BD);
-		if (t < 0)
-			t = 0;
-		else if (t > 1)
-			t = 1;
-
-		CA.push(PA.slice(0));
-		CB.push(Vector3DUtil.add(PB0, JNumber3D.getScaleVector(BD, t)));
-	};
-
-	CollDetectBoxBox.prototype.getPointFaceContacts=function(PA, BN, BD, CA, CB){
-		var dist = Vector3DUtil.dotProduct(PA, BN) - BD;
-
-		this.addPoint(CA, PA.slice(0), combinationDist);
-		this.addPoint(CB, Vector3DUtil.subtract(PA, JNumber3D.getScaleVector(BN, dist)), combinationDist);
-	};
-
-	CollDetectBoxBox.prototype.getEdgeEdgeContacts=function(PA0, PA1, PB0, PB1, CA, CB){
-		var AD = Vector3DUtil.subtract(PA1, PA0);
-		var BD = Vector3DUtil.subtract(PB1, PB0);
-		var N = Vector3DUtil.crossProduct(AD, BD);
-		var M = Vector3DUtil.crossProduct(N, BD);
-		var md = Vector3DUtil.dotProduct(M, PB0);
-		var at = (md - Vector3DUtil.dotProduct(PA0, M)) / Vector3DUtil.dotProduct(AD, M);
-		if (at < 0)
-			at = 0;
-		else if (at > 1)
-			at = 1;
-
-		this.getPointEdgeContacts(Vector3DUtil.add(PA0, JNumber3D.getScaleVector(AD, at)), PB0, PB1, CA, CB);
-	};
-
-	CollDetectBoxBox.prototype.getPolygonContacts=function(Clipper, Poly, CA, CB){
-		if (!this.polygonClip(Clipper, Poly, CB))
-			return;
-
-		var ClipperNormal = JNumber3D.getNormal(Clipper[0], Clipper[1], Clipper[2]);
-		var clipper_d = Vector3DUtil.dotProduct(Clipper[0], ClipperNormal);
-
-		var temp = [];
-		for(var i=0,cbl=CB.length;i<cbl;i++){
-			cb=CB[i];
-			this.getPointFaceContacts(cb, ClipperNormal, clipper_d, temp, CA);
-		}
-	};
-
-	
-	CollDetectBoxBox.prototype.polygonClip=function(axClipperVertices, axPolygonVertices, axClippedPolygon){
-		if (axClipperVertices.length <= 2){
-			return false;
-		}
-		var ClipperNormal = JNumber3D.getNormal(axClipperVertices[0], axClipperVertices[1], axClipperVertices[2]);
-
-		var i = axClipperVertices.length - 1;
-		var N;
-		var D;
-		var temp = axPolygonVertices.concat();
-		for (var ip1=0,len=axClipperVertices.length;ip1<len;i=ip1,ip1++){
-			D = Vector3DUtil.subtract(axClipperVertices[ip1], axClipperVertices[i]);
-			N = Vector3DUtil.crossProduct(D, ClipperNormal);
-			var dis = Vector3DUtil.dotProduct(axClipperVertices[i], N);
-
-			if (!this.planeClip(temp, axClippedPolygon, N, dis))
-				return false;
-
-			temp = axClippedPolygon.concat();
-		}
-		return true;
-	};
-
-	CollDetectBoxBox.prototype.planeClip=function(A, B, xPlaneNormal, planeD){
-		var bBack = [];
-		var bBackVerts = false;
-		var bFrontVerts = false;
-
-		var side;
-		
-		for (var s in A){
-			side = Vector3DUtil.dotProduct(A[s], xPlaneNormal) - planeD;
-			bBack[s] = (side < 0) ? true : false;
-			bBackVerts = bBackVerts || bBack[s];
-			bFrontVerts = bBackVerts || !bBack[s];
-			debug+=s+',';
-		}
-		
-		if (!bBackVerts)
-			return false;
-
-		if (!bFrontVerts){
-			for (s in A)
-			{
-				B[s] = A[s].slice(0);
-			}
-			return true;
-		}
-
-		var n = 0;
-		var i = A.length - 1;
-		var max = (A.length > 2) ? A.length : 1;
-		for (var ip1 = 0; ip1 < max; i = ip1, ip1++){
-			if (bBack[i]){
-				if (n >= MAX_SUPPORT_VERTS)
-					return true;
-
-				B[n++] = A[i].slice(0);
-			}
-
-			if (int(bBack[ip1]) ^ int(bBack[i])){
-				if (n >= MAX_SUPPORT_VERTS)
-					return true;
-
-				var D = Vector3DUtil.subtract(A[ip1], A[i]);
-				var t = (planeD - Vector3DUtil.dotProduct(A[i], xPlaneNormal)) / Vector3DUtil.dotProduct(D, xPlaneNormal);
-				B[n++] = Vector3DUtil.add(A[i], JNumber3D.getScaleVector(D, t));
-			}
-		}
-
-		return true;
-	};
-
-	CollDetectBoxBox.prototype.collDetect=function(info, collArr){
+		return Vector3DUtil.get_length(contactPoint);
+	}
+                
+        CollDetectBoxBox.prototype.collDetect=function(info, collArr){
 		var box0 = info.body0;
 		var box1 = info.body1;
 
-		if (!box0.hitTestObject3D(box1))
-			return;
-						
-		if (JConfig.aabbDetection && !box0.get_boundingBox().overlapTest(box1.get_boundingBox())) 
-			return;
+		if (!box0.hitTestObject3D(box1)) return;
 
-		var numTiny = JNumber3D.NUM_TINY;
-		var numHuge = JNumber3D.NUM_HUGE;
-						
+		if (JConfig.aabbDetection && !box0.get_boundingBox().overlapTest(box1.get_boundingBox())) return;
+
+		var numTiny= JNumber3D.NUM_TINY;
+		var numHuge= JNumber3D.NUM_HUGE;
+
 		var dirs0Arr = box0.get_currentState().getOrientationCols();
 		var dirs1Arr = box1.get_currentState().getOrientationCols();
 
 		// the 15 potential separating axes
 		var axes = [dirs0Arr[0], dirs0Arr[1], dirs0Arr[2],
-					dirs1Arr[0], dirs1Arr[1], dirs1Arr[2],
-					Vector3DUtil.crossProduct(dirs0Arr[0], dirs1Arr[0]),
-					Vector3DUtil.crossProduct(dirs0Arr[1], dirs1Arr[0]),
-					Vector3DUtil.crossProduct(dirs0Arr[2], dirs1Arr[0]),
-					Vector3DUtil.crossProduct(dirs0Arr[0], dirs1Arr[1]),
-					Vector3DUtil.crossProduct(dirs0Arr[1], dirs1Arr[1]),
-					Vector3DUtil.crossProduct(dirs0Arr[2], dirs1Arr[1]),
-					Vector3DUtil.crossProduct(dirs0Arr[0], dirs1Arr[2]),
-					Vector3DUtil.crossProduct(dirs0Arr[1], dirs1Arr[2]),
-					Vector3DUtil.crossProduct(dirs0Arr[2], dirs1Arr[2])];
+                                dirs1Arr[0], dirs1Arr[1], dirs1Arr[2],
+                                Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[0]),
+                                Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[0]),
+                                Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[0]),
+                                Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[1]),
+                                Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[1]),
+                                Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[1]),
+                                Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[2]),
+                                Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[2]),
+                                Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[2])];
 
 		var l2;
 		// the overlap depths along each axis
 		var overlapDepths = [];
-		var i = 0;
+		var i= 0;
 		var axesLength = axes.length;
 
 		// see if the boxes are separate along any axis, and if not keep a 
@@ -287,13 +238,11 @@
 			_overlapDepth.depth = numHuge;
 
 			l2 = Vector3DUtil.get_lengthSquared(axes[i]);
-			if (l2 < numTiny)
-				continue;
-
+			if (l2 < numTiny) continue;
+                                
 			var ax = axes[i].slice(0);
 			Vector3DUtil.normalize(ax);
-			if (this.disjoint(overlapDepths[i], ax, box0, box1))
-				return;
+			if (this.disjoint(overlapDepths[i], ax, box0, box1)) return;
 		}
 
 		// The box overlap, find the separation depth closest to 0.
@@ -302,182 +251,188 @@
 		axesLength = axes.length;
 		for (i = 0; i < axesLength; i++){
 			l2 = Vector3DUtil.get_lengthSquared(axes[i]);
-			if (l2 < numTiny)
-				continue;
+			if (l2 < numTiny) continue;
 
 			// If this axis is the minimum, select it
 			if (overlapDepths[i].depth < minDepth){
 				minDepth = overlapDepths[i].depth;
-				minAxis = i|0;
+				minAxis =i;
 			}
 		}
-		if (minAxis == -1)
-			return;
-
+                        
+		if (minAxis == -1) return;
+                        
 		// Make sure the axis is facing towards the box0. if not, invert it
-		var N = axes[minAxis].slice(0);
-		if (Vector3DUtil.dotProduct(Vector3DUtil.subtract(box1.get_currentState().position, box0.get_currentState().position), N) > 0)
+		var N= axes[minAxis].splice(0);
+		if (Vector3DUtil.dotProduct(Vector3DUtil.subtract(box1.get_currentState().position,box0.get_currentState().position),N) > 0) 
 			N = JNumber3D.getScaleVector(N, -1);
-
-		Vector3DUtil.normalize(N);
-
-		if (JConfig.boxCollisionsType == "EDGEBASE")
-			this.boxEdgesCollDetect(info, collArr, box0, box1, N, minDepth);
-		else
-			this.boxSortCollDetect(info, collArr, box0, box1, N, minDepth);
-	};
-	
-	CollDetectBoxBox.prototype.boxEdgesCollDetect=function(info, collArr, box0, box1, N, depth){
+                        
 		var contactPointsFromOld = true;
 		var contactPoints = [];
-		var mmin = Math.min;
-		
-		combinationDist = 0.5 * mmin(mmin(box0.get_sideLengths()[0], box0.get_sideLengths()[1], box0.get_sideLengths()[2]), mmin(box1.get_sideLengths()[0], box1.get_sideLengths()[1], box1.get_sideLengths()[2]));
+		var box0lengths=box0.get_sideLengths();
+		var box1lengths=box1.get_sideLengths();
+		combinationDist = 0.05 * Math.min(Math.min(box0lengths[0], box0lengths[1], box0lengths[2]), Math.min(box1lengths[0], box1lengths[1], box1lengths[2]));
+		combinationDist += (JConfig.collToll * 3.464);
 		combinationDist *= combinationDist;
 
-		if (depth > -JNumber3D.NUM_TINY)
+		if (minDepth > -JNumber3D.NUM_TINY)
 			this.getBoxBoxIntersectionPoints(contactPoints, box0, box1, false);
-
+                        
 		if (contactPoints.length == 0){
 			contactPointsFromOld = false;
 			this.getBoxBoxIntersectionPoints(contactPoints, box0, box1, true);
 		}
+                        
+		var bodyDelta = Vector3DUtil.subtract(Vector3DUtil.subtract(box0.get_currentState().position,box0.get_oldState().position),Vector3DUtil.subtract(box1.get_currentState().position,box1.get_oldState().position));
+		var bodyDeltaLen = Vector3DUtil.dotProduct(bodyDelta,N);
+		var oldDepth = minDepth + bodyDeltaLen;
+                        
+		var SATPoint = [];
+		switch(minAxis){
+			//-----------------------------------------------------------------
+			// Box0 face, Box1 Corner collision
+			//-----------------------------------------------------------------
+		case 0:
+		case 1:
+		case 2:
+			//-----------------------------------------------------------------
+			// Get the lowest point on the box1 along box1 normal
+			//-----------------------------------------------------------------
+			SATPoint = this.getSupportPoint(box1, JNumber3D.getScaleVector(N, -1));
+			break;
+		//-----------------------------------------------------------------
+		// We have a Box2 corner/Box1 face collision
+		//-----------------------------------------------------------------
+		case 3:
+		case 4:
+		case 5:
+			//-----------------------------------------------------------------
+			// Find with vertex on the triangle collided
+			//-----------------------------------------------------------------
+			SATPoint = this.getSupportPoint(box0, N);
+			break;
+		//-----------------------------------------------------------------
+		// We have an edge/edge colliiosn
+		//-----------------------------------------------------------------
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+			//-----------------------------------------------------------------
+			// Retrieve which edges collided.
+			//-----------------------------------------------------------------
+			i = minAxis - 6;
+			var ia = (i / 3)|0;
+			var ib= i - ia * 3;
+			//-----------------------------------------------------------------
+			// find two P0, P1 point on both edges. 
+			//-----------------------------------------------------------------
+			var P0 = this.getSupportPoint(box0, N);
+			var P1 = this.getSupportPoint(box1, JNumber3D.getScaleVector(N, -1));
+      
+			//-----------------------------------------------------------------
+			// Find the edge intersection. 
+			//-----------------------------------------------------------------
+     
+			//-----------------------------------------------------------------
+			// plane along N and F, and passing through PB
+			//-----------------------------------------------------------------
+			var planeNormal = Vector3DUtil.crossProduct(N,dirs1Arr[ib]);
+			var planeD = Vector3DUtil.dotProduct(planeNormal,P1);
+      
+			//-----------------------------------------------------------------
+			// find the intersection t, where Pintersection = P0 + t*box edge dir
+			//-----------------------------------------------------------------
+			var div = Vector3DUtil.dotProduct(dirs0Arr[ia],planeNormal);
+      
+			//-----------------------------------------------------------------
+			// plane and ray colinear, skip the intersection.
+			//-----------------------------------------------------------------
+			if (Math.abs(div) < JNumber3D.NUM_TINY) return;
+      
+			var t = (planeD - Vector3DUtil.dotProduct(P0,planeNormal)) / div;
+      
+			//-----------------------------------------------------------------
+			// point on edge of box0
+			//-----------------------------------------------------------------
+			P0 = Vector3DUtil.add(P0,JNumber3D.getScaleVector(dirs0Arr[ia], t));
+			SATPoint =Vector3DUtil.add(P0,JNumber3D.getScaleVector(N, 0.5 * minDepth));
+			break;
+		}
 
-		var bodyDelta = Vector3DUtil.subtract(Vector3DUtil.subtract(box0.get_currentState().position, 
-											  						box0.get_oldState().position), 
-											  Vector3DUtil.subtract(box1.get_currentState().position, 
-													  				box1.get_oldState().position));
-		var bodyDeltaLen = Vector3DUtil.dotProduct(bodyDelta, N);
-		var oldDepth = depth + bodyDeltaLen;
-
-		var collPts = [];
+		var collPts;
 		if (contactPoints.length > 0){
-			var box0ReqPosition;
-			var box1ReqPosition;
+			collPts = [];
+
+			var minDist = JNumber3D.NUM_HUGE;
+			var maxDist = -JNumber3D.NUM_HUGE;
+			var dist;
+			var depth;
+			var depthScale;
 			var cpInfo;
-								
-			if (contactPointsFromOld){
-				box0ReqPosition = box0.get_oldState().position;
-				box1ReqPosition = box1.get_oldState().position;
-			}else{
-				box0ReqPosition = box0.get_currentState().position;
-				box1ReqPosition = box1.get_currentState().position;
+			var contactPoint;
+
+			for(var j=0;j<contactPoints.length;j++){
+				contactPoint=contactPoints[j];
+
+				dist = Vector3DUtil.get_length(Vector3DUtil.subtract(contactPoint,SATPoint));
+						
+				if (dist < minDist) minDist = dist;
+
+				if (dist > maxDist) maxDist = dist;
 			}
-		
-			for(var i=0, cpl=contactPoints.length; i<cpl;i++){
-				contactPoint=contactPoints[i];
+
+			if (maxDist < minDist + JNumber3D.NUM_TINY) maxDist = minDist + JNumber3D.NUM_TINY;
+
+			i = 0;
+                              
+			for(var j=0;j<contactPoints.length;j++){
+				contactPoint=contactPoints[j];
+				dist = Vector3DUtil.get_length(Vector3DUtil.subtract(contactPoint,SATPoint));
+				depthScale = (dist - minDist) / (maxDist - minDist);
+				depth = (1 - depthScale) * oldDepth;
 				cpInfo = new CollPointInfo();
-				cpInfo.r0 = Vector3DUtil.subtract(contactPoint, box0ReqPosition);
-				cpInfo.r1 = Vector3DUtil.subtract(contactPoint, box1ReqPosition);
-				cpInfo.initialPenetration = oldDepth;
-				collPts.push(cpInfo);
-			}
-
-			var collInfo = new CollisionInfo();
-			collInfo.objInfo = info;
-			collInfo.dirToBody = N;
-			collInfo.pointInfo = collPts;
-
-			var mat = new MaterialProperties();
-			var msqrt = Math.sqrt;
-			mat.set_restitution(msqrt(box0.get_material().get_restitution() * box1.get_material().get_restitution()));
-			mat.set_friction(msqrt(box0.get_material().get_friction() * box1.get_material().get_friction()));
-			collInfo.mat = mat;
-			collArr.push(collInfo);
-
-			info.body0.collisions.push(collInfo);
-			info.body1.collisions.push(collInfo);
-		}
-	};
-
-	CollDetectBoxBox.prototype.boxSortCollDetect=function(info, collArr, box0, box1, N, depth){
-		var contactA = [];
-		var contactB = [];
-		var supportVertA = box0.getSupportVertices(N);
-		var supportVertB = box1.getSupportVertices(JNumber3D.getScaleVector(N, -1));
-		var iNumVertsA = supportVertA.length;
-		var iNumVertsB = supportVertB.length;
-		var mmin = Math.min;
-
-		combinationDist = 0.2 * mmin(mmin(box0.get_sideLengths()[0], box0.get_sideLengths()[1], box0.get_sideLengths()[2]), mmin(box1.get_sideLengths()[0], box1.get_sideLengths()[1], box1.get_sideLengths()[2]));
-		combinationDist *= combinationDist;
-
-		if (iNumVertsA == 1){
-			if (iNumVertsB == 1){
-				//trace("++++ iNumVertsA=1::::iNumVertsB=1");
-				this.getPointPointContacts(supportVertA[0], supportVertB[0], contactA, contactB);
-			}else if (iNumVertsB == 2){
-				//trace("++++ iNumVertsA=1::::iNumVertsB=2");
-				this.getPointEdgeContacts(supportVertA[0], supportVertB[0], supportVertB[1], contactA, contactB);
-			}else{
-				//trace("++++ iNumVertsA=1::::iNumVertsB=4");
-				var BN = JNumber3D.getNormal(supportVertB[0], supportVertB[1], supportVertB[2]);
-				var BD = Vector3DUtil.dotProduct(BN, supportVertB[0]);
-				this.getPointFaceContacts(supportVertA[0], BN, BD, contactA, contactB);
-			}
-		}else if (iNumVertsA == 2){
-			if (iNumVertsB == 1){
-				//trace("++++ iNumVertsA=2::::iNumVertsB=1");
-				this.getPointEdgeContacts(supportVertB[0], supportVertA[0], supportVertA[1], contactB, contactA);
-			}else if (iNumVertsB == 2){
-				//trace("++++ iNumVertsA=2::::iNumVertsB=2");
-				this.getEdgeEdgeContacts(supportVertA[0], supportVertA[1], supportVertB[0], supportVertB[1], contactA, contactB);
-			}else{
-				//trace("++++ iNumVertsA=2::::iNumVertsB=4");
-				this.getPolygonContacts(supportVertB, supportVertA, contactB, contactA);
-			}
-		}else{
-			if (iNumVertsB == 1){
-				//trace("++++ iNumVertsA=4::::iNumVertsB=1");
-				BN = JNumber3D.getNormal(supportVertA[0], supportVertA[1], supportVertA[2]);
-				BD = Vector3DUtil.dotProduct(BN, supportVertA[0]);
-				this.getPointFaceContacts(supportVertB[0], BN, BD, contactB, contactA);
-			}else{
-				//trace("++++ iNumVertsA=4::::iNumVertsB=4");
-				this.getPolygonContacts(supportVertA, supportVertB, contactA, contactB);
-			}
-		}
-		if (contactB.length > contactA.length)
-			contactA = contactB;
-
-		if (contactA.length > contactB.length)
-			contactB = contactA;
-
-		var cpInfo;
-		var collPts = [];
-		if (contactA.length > 0 && contactB.length > 0){
-			var num = (contactA.length > contactB.length) ? contactB.length : contactA.length;
-			for (var j= 0; j < num; j++){
-				cpInfo = new CollPointInfo();
-				cpInfo.r0 = Vector3DUtil.subtract(contactA[j], box0.get_currentState().position);
-				cpInfo.r1 = Vector3DUtil.subtract(contactB[j], box1.get_currentState().position);
+						
+				if (contactPointsFromOld) {
+					cpInfo.r0 = Vector3DUtil.subtract(contactPoint,box0.get_oldState().position);
+					cpInfo.r1 = Vector3DUtil.subtract(contactPoint,box1.get_oldState().position);
+				} else {
+					cpInfo.r0 = Vector3DUtil.subtract(contactPoint,box0.get_currentState().position);
+					cpInfo.r1 = Vector3DUtil.subtract(contactPoint,box1.get_currentState().position);
+				}
+						
 				cpInfo.initialPenetration = depth;
-				collPts.push(cpInfo);
+				collPts[i++] = cpInfo;
 			}
 		}else{
 			cpInfo = new CollPointInfo();
-			cpInfo.r0 = [0,0,0,0];
-			cpInfo.r1 = [0,0,0,0];
-			cpInfo.initialPenetration = depth;
-			collPts.push(cpInfo);
+			cpInfo.r0 = Vector3DUtil.subtract(SATPoint,box0.get_currentState().position);
+			cpInfo.r1 = Vector3DUtil.subtract(SATPoint,box1.get_currentState().position);
+			cpInfo.initialPenetration = oldDepth;
+                                
+			collPts = [];
+			collPts[0] = cpInfo;
 		}
-
 		var collInfo = new CollisionInfo();
 		collInfo.objInfo = info;
 		collInfo.dirToBody = N;
 		collInfo.pointInfo = collPts;
 
 		var mat = new MaterialProperties();
-		var msqrt = Math.sqrt;
-		mat.set_restitution(msqrt(box0.get_material().get_restitution() * box1.get_material().get_restitution()));
-		mat.set_friction(msqrt(box0.get_material().get_friction() * box1.get_material().get_friction()));
+		mat.set_restitution(Math.sqrt(box0.get_material().get_restitution() * box1.get_material().get_restitution()));
+		mat.set_friction(Math.sqrt(box0.get_material().get_friction() * box1.get_material().get_friction()));
 		collInfo.mat = mat;
 		collArr.push(collInfo);
 
 		info.body0.collisions.push(collInfo);
 		info.body1.collisions.push(collInfo);
-	};
-	
+	}
+
 	jigLib.CollDetectBoxBox=CollDetectBoxBox;
 	
 })(jigLib);
