@@ -78,7 +78,7 @@
 		
 		var gravity = PhysicsSystem.getInstance().get_gravity().slice(0);
 		var mass = this._chassis.get_mass();
-		var mass4 = 0.25 * this._steerRate;
+		var mass4 = 0.25 * mass;
 		var gravityLen = Vector3DUtil.get_length(gravity);
 
 		Vector3DUtil.normalize(gravity);

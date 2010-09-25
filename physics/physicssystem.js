@@ -713,6 +713,103 @@
 		return gotOne;
 	};
 	
+	
+	
+	
+	
+	
+	PhysicsSystem.prototype.sortPositionX=function(body0, body1){
+		if (body0.get_currentState().position[0] < body1.get_currentState().position[0])
+			return -1;
+		else if (body0.get_currentState().position[0] > body1.get_currentState().position[0])
+			return 1;
+		else
+			return 0;
+	}
+                
+	PhysicsSystem.prototype.sortPositionY=function(body0, body1){
+		if (body0.get_currentState().position[1] < body1.get_currentState().position[1])
+			return -1;
+		else if (body0.get_currentState().position[1] > body1.get_currentState().position[1])
+			return 1;
+		else
+			return 0;
+	}
+                
+	PhysicsSystem.prototype.sortPositionZ=function(body0, body1){
+		if (body0.get_currentState().position[2] < body1.get_currentState().position[2])
+			return -1;
+		else if (body0.get_currentState().position[2] > body1.get_currentState().position[2])
+			return 1;
+		else
+			return 0;
+	}
+                
+	PhysicsSystem.prototype.doShockStep=function(dt){
+		if (Math.abs(this._gravity[0]) > Math.abs(this._gravity[1]) && Math.abs(this._gravity[0]) > Math.abs(this._gravity[2])){
+			this._bodies = this._bodies.sort(this.sortPositionX);
+			this._collisionSystem.collBody = this._collisionSystem.collBody.sort(this.sortPositionX);
+		}else if (Math.abs(this._gravity[1]) > Math.abs(this._gravity[2]) && Math.abs(this._gravity[1]) > Math.abs(this._gravity[0])){
+			this._bodies = this._bodies.sort(this.sortPositionY);
+			this._collisionSystem.collBody = this._collisionSystem.collBody.sort(this.sortPositionY);
+		}else if (Math.abs(this._gravity[2]) > Math.abs(this._gravity[0]) && Math.abs(this._gravity[2]) > Math.abs(this._gravity[1])){
+			this._bodies = this._bodies.sort(this.sortPositionZ);
+			this._collisionSystem.collBody = this._collisionSystem.collBody.sort(this.sortPositionZ);
+		}
+                        
+		var info;
+		var setImmovable;
+		var gotOne = true;
+		var body_collisions=[];
+                        
+		var body0;
+		var body1;
+                        
+
+		while (gotOne){
+			gotOne = false;
+			for(var i=0;i<this._bodies.length;i++){
+				var body=this._bodies[i];
+				if (body.get_movable() && body.get_doShockProcessing()){
+					if (body.collisions.length == 0 || !body.isActive){
+						body.internalSetImmovable();
+					}else{
+						setImmovable = false;
+						body_collisions = body.collisions;
+						for(var j=0;j<body_collisions.length;j++){
+							info=body_collisions[j];
+
+							body0 = info.objInfo.body0;
+							body1 = info.objInfo.body1;
+                                                                
+							if ((body0 == body && !body1.get_movable()) || (body1 == body && !body0.get_movable())){
+								this.preProcessCollisionFast(info, dt);
+								this.processCollision(info, dt);
+								setImmovable = true;
+							}
+						}
+                                                        
+						if (setImmovable){
+							body.internalSetImmovable();
+							gotOne = true;
+						}
+					}
+				}
+			}
+		}
+
+		for(var i=0;i<this._bodies.length;i++){
+			body=this._bodies[i];
+			body.internalRestoreImmovable();
+			body_collisions = body.collisions;
+			for(var j=0;j<body_collisions.length;j++){
+				info=body_collisions[j];
+				this.preProcessCollisionFn(info, dt);
+				this.processCollisionFn(info, dt);
+			}
+		}
+	};
+	
 	PhysicsSystem.prototype.updateContactCache=function(){
 		this._cachedContacts = [];
 		var ptInfo;
@@ -974,6 +1071,10 @@
 		this.handleAllConstraints(dt, JConfig.numCollisionIterations, false);
 		this.updateAllVelocities(dt);
 		this.handleAllConstraints(dt, JConfig.numContactIterations, true);
+
+		if (JConfig.doShockStep) {
+			this.doShockStep(dt);
+		}
 
 		this.dampAllActiveBodies();
 		this.tryToFreezeAllObjects(dt);

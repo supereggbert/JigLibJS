@@ -62,6 +62,8 @@
 
 		this._velChanged = false;
 		this._inactiveTime = 0;
+		
+		this._doShockProcessing = true;
 
 		this.isActive = this._activity = true;
 		this._movable = true;
@@ -116,6 +118,7 @@
 	RigidBody.prototype._movable=null;
 	RigidBody.prototype._origMovable=null;
 	RigidBody.prototype._inactiveTime=null;
+	RigidBody.prototype._doShockProcessing=null;
 
 	// The list of bodies that need to be activated when we move away from our stored position
 	RigidBody.prototype._bodiesToBeActivatedOnMovement=null;
@@ -536,11 +539,15 @@
 	};
 
 	RigidBody.prototype.internalSetImmovable=function(){
+		if (this._type == "PLANE" || this._type == "TERRAIN") 
+			return;
 		this._origMovable = this._movable;
 		this._movable = false;
 	};
 
 	RigidBody.prototype.internalRestoreImmovable=function(){
+		if (this._type == "PLANE" || this._type == "TERRAIN") 
+			return;
 		this._movable = this._origMovable;
 	};
 
@@ -781,6 +788,13 @@
 	RigidBody.prototype.get_nonCollidables=function(){
 		return this._nonCollidables;
 	};
+	
+	RigidBody.prototype.get_doShockProcessing=function(){
+		return this._doShockProcessing;
+	}
+	RigidBody.prototype.set_doShockProcessing=function(doShock){
+		this._doShockProcessing = doShock;
+	}
 
 	//every dimension should be set to 0-1;
 	RigidBody.prototype.set_linVelocityDamping=function(vel){

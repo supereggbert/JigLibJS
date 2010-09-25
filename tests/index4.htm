@@ -132,8 +132,8 @@ body{margin:auto; background-color: #888; padding-top: 50px; font-family:sans; c
 			
 			<object id="groundObject" mesh="#groundMesh" material="#grid" rot_x="-1.57"  scale="15" />
 			
-			<object id="CubeObject" mesh="#Cube" loc_y="2" scale="0.5" material="#green" />
-			<object id="CubeObject2" mesh="#Cube" loc_y="3" scale="0.5" material="#green" />
+			<!--<object id="CubeObject" mesh="#Cube" loc_y="2" scale="0.5" material="#green" />
+			<object id="CubeObject2" mesh="#Cube" loc_y="3" scale="0.5" material="#green" />-->
 			
 			<light id="light1" loc_x="-3" loc_y="15" loc_z="-7" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1" type="L_POINT" />
 		
@@ -218,7 +218,7 @@ XMLdoc.onLoad = function(){
 		}
 	}
 	canvas.onmouseup = function( e ){
-		if(Math.random()>0.5) addCube(); else addCube();
+		if(Math.random()>0.5) addCube(); else addSphere();
 		this.drag = null;
 	}
 	canvas.onmousewheel = function( e ){
@@ -240,7 +240,7 @@ XMLdoc.onLoad = function(){
 		scene.addObject(newObject);
 		var sphere=new jigLib.JSphere(null,radius);
 		sphere.set_mass(4/3*radius*radius*radius*Math.PI);
-		sphere.set_friction(1);
+		sphere.set_friction(0.1);
 		system.addBody(sphere);
 		sphere.moveTo([0,10,0]);
 		links.push({glge:newObject,jig:sphere})
@@ -259,13 +259,14 @@ XMLdoc.onLoad = function(){
 		newObject.setScaleZ(height/2);
 		scene.addObject(newObject);
 		var cube=new jigLib.JBox(null,width,height,depth);
-		cube.set_rotVelocityDamping([0.6, 0.6, 0.6]);
+		cube.set_rotVelocityDamping([0.7, 0.7, 0.7]);
 		//cube.set_rotVelocityDamping([0.1, 0.1, 0.1]);
+		cube.set_maxRotVelocities(0.5);
 		cube.set_mass(width*height*depth);
-		cube.set_restitution(0);
-		cube.set_friction(1);
+		cube.set_restitution(0.6);
+		cube.set_friction(0);
 		system.addBody(cube);
-		cube.moveTo([0,10,0]);
+		cube.moveTo([0,5,0]);
 		links.push({glge:newObject,jig:cube})
 	}
 	
@@ -299,7 +300,7 @@ XMLdoc.onLoad = function(){
 	var plane=new jigLib.JPlane(null,[0, 1, 0]);
 	plane.set_friction(0.99);
 	
-	var cube=new jigLib.JBox(null,1,1,1);
+	/*var cube=new jigLib.JBox(null,1,1,1);
 	cube.set_mass(1);
 		cube.set_restitution(0);
 		cube.set_friction(0);
@@ -312,7 +313,7 @@ XMLdoc.onLoad = function(){
 		cube2.set_friction(0);
 	cube2.set_linVelocityDamping(0.95, 0.95, 0.95);
 	cube2.moveTo([0, 1.5, 0]);
-	cube2.disableCollisions(cube);
+	cube2.disableCollisions(cube);*/
 	//joint = new jigLib.HingeJoint(cube, cube2, jigLib.Vector3D.Y_AXIS, new jigLib.Vector3D(0, 1, 0),1, 50, 50, 0.1, 0.5);
 	//cube2.set_movable(false);
 	
@@ -322,21 +323,21 @@ XMLdoc.onLoad = function(){
 	
 	
 	system.addBody(plane);
-	system.addBody(cube);
-	system.addBody(cube2);
-	cube.moveTo([1, 1.5, 0]);
+	//system.addBody(cube);
+	//system.addBody(cube2);
+	//cube.moveTo([1, 1.5, 0]);
 	
-	links.push({glge:cubeObj,jig:cube});
-	links.push({glge:cubeObj2,jig:cube2});
+	//links.push({glge:cubeObj,jig:cube});
+	//links.push({glge:cubeObj2,jig:cube2});
 	
 	var lasttime=(new Date()).getTime();
 	function render(){
-		//dc();
+		dc();
 		var now=(new Date()).getTime();
 		var inttime=(now-lasttime)/1000;
 		if (inttime<0.05) inttime=0.05;
 		system.integrate((now-lasttime)/1000);
-		//system.integrate(0.1);
+		//system.integrate(0.05);
 		lasttime=now;
 		
 		for(var i=0; i<links.length;i++){

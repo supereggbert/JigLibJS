@@ -57,7 +57,7 @@
 	};
 
 	JBox.prototype.set_sideLengths=function(size){
-		this._sideLengths = size.clone();
+		this._sideLengths = size.slice(0);
 		this._boundingSphere = 0.5 * this._sideLengths.length;
 		this.initPoint();
 		this.setInertia(this.getInertiaProperties(this.get_mass()));

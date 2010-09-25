@@ -282,7 +282,7 @@
 		rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(wheelLeft, Vector3DUtil.subtract(groundPos, worldPos)), this._angVel);
 		wheelPointVel = Vector3DUtil.add(wheelPointVel, rimVel);
 
-		if (otherBody.movable){
+		if (otherBody.get_movable()){
 			worldVel = Vector3DUtil.add(otherBody.get_currentState().linVelocity, Vector3DUtil.crossProduct(otherBody.get_currentState().rotVelocity, Vector3DUtil.subtract(groundPos, otherBody.get_currentState().position)));
 			wheelPointVel = Vector3DUtil.subtract(wheelPointVel, worldVel);
 		}
@@ -324,7 +324,7 @@
 		this._torque += (-fwdForce * this._radius);
 
 		carBody.addWorldForce(force, groundPos);
-		if (otherBody.movable){
+		if (otherBody.get_movable()){
 			var maxOtherBodyAcc = 500;
 			var maxOtherBodyForce = maxOtherBodyAcc * otherBody.get_mass();
 			if (Vector3DUtil.get_lengthSquared(force) > (maxOtherBodyForce * maxOtherBodyForce))
