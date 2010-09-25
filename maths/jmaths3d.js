@@ -1,6 +1,5 @@
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
-	var Matrix3D=jigLib.Matrix3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	
 	/**
 	* @author katopz
@@ -8,26 +7,26 @@
 	var JMath3D={};
 		
 	JMath3D.fromNormalAndPoint=function(normal, point){
-                var v = new Vector3D(normal.x, normal.y, normal.z);
-                v.w = -(v.x*point.x + v.y*point.y + v.z*point.z);
-                
-                return normal;
-        }
-        
+			var v = Vector3DUtil.create(normal[0], normal[1], normal[2], 0);
+			v[3] = -(v[0]*point[0] + v[1]*point[1] + v[2]*point[2]);
+			
+			return normal;
+	};
+		
 	JMath3D.getIntersectionLine=function(v, v0, v1){
-		var d0 = v.x * v0.x + v.y * v0.y + v.z * v0.z - v.w;
-		var d1 = v.x * v1.x + v.y * v1.y + v.z * v1.z - v.w;
+		var d0 = v[0] * v0[0] + v[1] * v0[1] + v[2] * v0[2] - v[3];
+		var d1 = v[0] * v1[0] + v[1] * v1[1] + v[2] * v1[2] - v[3];
 		var m = d1 / (d1 - d0);
-		return new Vector3D(
-                                v1.x + (v0.x - v1.x) * m,
-                                v1.y + (v0.y - v1.y) * m,
-                                v1.z + (v0.z - v1.z) * m);
-	}
+		return [v1[0] + (v0[0] - v1[0]) * m,
+				v1[1] + (v0[1] - v1[1]) * m,
+				v1[2] + (v0[2] - v1[2]) * m, 
+				0];
+	};
 
 	JMath3D.unproject=function(matrix3D, focus, zoom, mX, mY){
 		var persp = (focus * zoom) / focus;
-		var vector = new Vector3D(mX / persp, -mY / persp, focus);
+		var vector = Vector3DUtil.create(mX / persp, -mY / persp, focus, 0);
 		return matrix3D.transformVector(vector);
-	}
+	};
 	
 })(jigLib);

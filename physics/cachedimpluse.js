@@ -23,17 +23,17 @@
  * @link http://code.google.com/p/jiglibflash
  */
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	
 	
 	var CachedImpulse=function(_normalImpulse, _normalImpulseAux, _frictionImpulse){
 		this.normalImpulse = _normalImpulse;
 		this.normalImpulseAux = _normalImpulseAux;
 		this.frictionImpulse = _frictionImpulse;
-	}
+	};
 	CachedImpulse.prototype.normalImpulse=null;
 	CachedImpulse.prototype.normalImpulseAux=null;
 	CachedImpulse.prototype.frictionImpulse=null;
 	
 	jigLib.CachedImpulse=CachedImpulse;
 	
-})(jigLib)
+})(jigLib);

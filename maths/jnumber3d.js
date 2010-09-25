@@ -1,62 +1,46 @@
 (function(jigLib){
-	
-	var Vector3D=jigLib.Vector3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
 	
 	/**
-	* @author katopz
-	*/
-	var JNumber3D={}
+	 * @author katopz
+	 */
+	var JNumber3D={};
 	
 	JNumber3D.NUM_TINY = 0.00001;
 	JNumber3D.NUM_HUGE = 100000;
 
-	//public static const UP:Vector3D = Vector3D.Y_AXIS;
-	//public static const LOOK:Vector3D = Vector3D.Z_AXIS;
-	//public static const RIGHT:Vector3D = Vector3D.X_AXIS;
-		
 	JNumber3D.toArray=function(v){
-		return [v.x, v.y, v.z];
-	}
+		return [v[0], v[1], v[2]];
+	};
 	
 	JNumber3D.getScaleVector=function(v, s){
-		return new Vector3D(v.x*s,v.y*s,v.z*s,v.w);
-	}
+		return [v[0]*s,v[1]*s,v[2]*s,v[3]];
+	};
 
 	JNumber3D.getDivideVector=function(v, w){
-		if (w != 0){
-			return new Vector3D(v.x / w, v.y / w, v.z / w);
-		}else{
-			return new Vector3D(0, 0, 0);
-		}
-	}
+		return (w) ? [v[0] / w, v[1] / w, v[2] / w, 0] : [0, 0, 0, 0];
+	};
 	
 	JNumber3D.getNormal=function(v0, v1, v2){
-		var E = v1.clone();
-		var F = v2.clone();
-		var N = E.subtract(v0).crossProduct(F.subtract(v1));
-		N.normalize();
+		var E = v1.slice(0);
+		var F = v2.slice(0);
+		var N = Vector3DUtil.crossProduct(Vector3DUtil.subtract(E, v0), Vector3DUtil.subtract(F, v1));
+		Vector3DUtil.normalize(N);
 
 		return N;
-	}
+	};
 
 	JNumber3D.copyFromArray=function(v, arr){
-		if (arr.length >= 3)
-		{
-			v.x = arr[0];
-			v.y = arr[1];
-			v.z = arr[2];
-		}
-	}
+		if (arr.length >= 3) v=arr;
+	};
 
 	JNumber3D.getLimiteNumber=function(num, min, max){
 		var n = num;
-		if (n < min){
-			n = min;
-		}else if (n > max){
-			n = max;
-		}
+		if (n < min) n = min;
+		else if (n > max) n = max;
+
 		return n;
-	}
+	};
 	
 	jigLib.JNumber3D=JNumber3D;
 	

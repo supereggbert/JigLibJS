@@ -24,59 +24,41 @@
  */
  
  (function(jigLib){
-	 
-	var Vector3D=jigLib.Vector3D;
-        var JNumber3D=jigLib.JNumber3D;
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JNumber3D=jigLib.JNumber3D;
 	var PhysicsState=jigLib.PhysicsState;
 	var JRay=jigLib.JRay;
 	 
 	 
-	var JSegment=function(origin, delta){
-		this._origin = origin;
-		this._delta = delta;
-	}
-	JSegment.prototype._origin=null;
-	JSegment.prototype._delta=null;
+	var JSegment=function(_origin, _delta){
+		this.origin = _origin;
+		this.delta = _delta;
+	};
+	JSegment.prototype.origin=null;
+	JSegment.prototype.delta=null;
 	
-	
-	JSegment.prototype.set_origin=function(ori){
-		this._origin = ori;
-	}
-
-	JSegment.prototype.get_origin=function(){
-		return this._origin;
-	}
-
-	JSegment.prototype.set_delta=function(del){
-		this._delta = del;
-	}
-
-	JSegment.prototype.get_delta=function(){
-		return this._delta;
-	}
-
 	JSegment.prototype.getPoint=function(t){
-		return this._origin.add(JNumber3D.getScaleVector(this._delta, t));
-	}
+		return Vector3DUtil.add(this.origin, JNumber3D.getScaleVector(this.delta, t));
+	};
 
 	JSegment.prototype.getEnd=function(){
-		return this._origin.add(this._delta);
-	}
+		return Vector3DUtil.add(this.origin, this.delta);
+	};
 
 	JSegment.prototype.clone=function(){
-		return new JSegment(this._origin, this._delta);
-	}
+		return new JSegment(this.origin, this.delta);
+	};
 	
 	JSegment.prototype.segmentSegmentDistanceSq=function(out, seg){
 		out.t0 = 0;
 		out.t1 = 0;
 
-		var kDiff = this._origin.subtract(seg.get_origin());
-		var fA00 = this._delta.get_lengthSquared();
-		var fA01 = -this._delta.dotProduct(seg.get_delta());
-		var fA11 = seg.get_delta().get_lengthSquared();
-		var fB0 = kDiff.dotProduct(this._delta);
-		var fC = kDiff.get_lengthSquared();
+		var kDiff = Vector3DUtil.subtract(this.origin, seg.origin);
+		var fA00 = Vector3DUtil.get_lengthSquared(this.delta);
+		var fA01 = -Vector3DUtil.dotProduct(this.delta, seg.delta);
+		var fA11 = Vector3DUtil.get_lengthSquared(seg.delta);
+		var fB0 = Vector3DUtil.dotProduct(kDiff, this.delta);
+		var fC = Vector3DUtil.get_lengthSquared(kDiff);
 		var fDet = Math.abs(fA00 * fA11 - fA01 * fA01);
 		var fB1;
 		var fS;
@@ -85,7 +67,7 @@
 		var fTmp;
 
 		if (fDet >= JNumber3D.NUM_TINY){
-			fB1 = -kDiff.dotProduct(seg.get_delta());
+			fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
 			fS = fA01 * fB1 - fA11 * fB0;
 			fT = fA01 * fB0 - fA00 * fB1;
 
@@ -266,7 +248,7 @@
 					fT = 0;
 					fSqrDist = fB0 * fS + fC;
 				}else{
-					fB1 = -kDiff.dotProduct(seg.get_delta());
+					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
 					fS = 1;
 					fTmp = fA00 + fB0;
 					if (-fTmp >= fA01){
@@ -287,7 +269,7 @@
 					fT = 0;
 					fSqrDist = fB0 * fS + fC;
 				}else{
-					fB1 = -kDiff.dotProduct(seg.get_delta());
+					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
 					fS = 0;
 					if (fB0 >= -fA01){
 						fT = 1;
@@ -303,31 +285,30 @@
 		out.t0 = fS;
 		out.t1 = fT;
 		return Math.abs(fSqrDist);
-	}
-	 
-	
+	};
+
 	JSegment.prototype.pointSegmentDistanceSq=function(out, pt){
 		out.t = 0;
 
-		var kDiff = pt.subtract( this._origin);
-		var fT = kDiff.dotProduct(this._delta);
+		var kDiff = Vector3DUtil.subtract(pt,  this.origin);
+		var fT = Vector3DUtil.dotProduct(kDiff, this.delta);
 
 		if (fT <= 0){
 			fT = 0;
 		}else{
-			var fSqrLen = this._delta.get_lengthSquared();
+			var fSqrLen = Vector3DUtil.get_lengthSquared(this._delta);
 			if (fT >= fSqrLen){
 				fT = 1;
-				kDiff = kDiff.subtract(this._delta);
+				kDiff = Vector3DUtil.subtract(kDiff, this._delta);
 			}else{
 				fT /= fSqrLen;
-				kDiff = kDiff.subtract(JNumber3D.getScaleVector(this._delta, fT));
+				kDiff = Vector3DUtil.subtract(kDiff, JNumber3D.getScaleVector(this._delta, fT));
 			}
 		}
 
 		out.t = fT;
-		return kDiff.get_lengthSquared();
-	}
+		return Vector3DUtil.get_lengthSquared(kDiff);
+	};
 
 	JSegment.prototype.segmentBoxDistanceSq=function(out, rkBox, boxState){
 		out.pfLParam = 0;
@@ -336,7 +317,7 @@
 		out.pfLParam2 = 0;
 
 		var obj = {};
-		var kRay = new JRay(this._origin, this._delta);
+		var kRay = new JRay(this.origin, this.delta);
 		var fSqrDistance = this.sqrDistanceLine(obj, kRay, rkBox, boxState);
 		if (obj.num >= 0){
 			if (obj.num <= 1){
@@ -346,16 +327,16 @@
 				out.pfLParam2 = obj.num2;
 				return Math.max(fSqrDistance, 0);
 			}else{
-				fSqrDistance = this.sqrDistancePoint(out, this._origin.add(this._delta), rkBox, boxState);
+				fSqrDistance = this.sqrDistancePoint(out, Vector3DUtil.add(this.origin, this.delta), rkBox, boxState);
 				out.pfLParam = 1;
 				return Math.max(fSqrDistance, 0);
 			}
 		}else{
-			fSqrDistance = this.sqrDistancePoint(out, this._origin, rkBox, boxState);
+			fSqrDistance = this.sqrDistancePoint(out, this.origin, rkBox, boxState);
 			out.pfLParam = 0;
 			return Math.max(fSqrDistance, 0);
 		}
-	}
+	};
 
 	JSegment.prototype.sqrDistanceLine=function(out, rkLine, rkBox, boxState){
 		var orientationCols = boxState.getOrientationCols();
@@ -364,19 +345,21 @@
 		out.num1 = 0;
 		out.num2 = 0;
 
-		var kDiff = rkLine.origin.subtract(boxState.position);
-		var kPnt = new Vector3D(kDiff.dotProduct(orientationCols[0]),
-			kDiff.dotProduct(orientationCols[1]),
-			kDiff.dotProduct(orientationCols[2]));
+		var kDiff = Vector3DUtil.subtract(rkLine.origin, boxState.position);
+		var kPnt = Vector3DUtil.create( Vector3DUtil.dotProduct(kDiff, orientationCols[0]),
+										Vector3DUtil.dotProduct(kDiff, orientationCols[1]),
+										Vector3DUtil.dotProduct(kDiff, orientationCols[2]), 
+										0);
 
-		var kDir = new Vector3D(rkLine.dir.dotProduct(orientationCols[0]),
-			rkLine.dir.dotProduct(orientationCols[1]),
-			rkLine.dir.dotProduct(orientationCols[2]));
-                        
+		var kDir = Vector3DUtil.create( Vector3DUtil.dotProduct(rkLine.dir, orientationCols[0]),
+										Vector3DUtil.dotProduct(rkLine.dir, orientationCols[1]),
+										Vector3DUtil.dotProduct(rkLine.dir, orientationCols[2]), 
+							            0);
+						
 		var kPntArr = JNumber3D.toArray(kPnt);
 		var kDirArr = JNumber3D.toArray(kDir);
-                        
-		var bReflect = [1,1,1];
+						
+		var bReflect = [1,1,1,0];
 		for (var i = 0; i < 3; i++){
 			if (kDirArr[i] < 0){
 				kPntArr[i] = -kPntArr[i];
@@ -389,15 +372,15 @@
 
 		JNumber3D.copyFromArray(kPnt, kPntArr);
 		JNumber3D.copyFromArray(kDir, kDirArr);
-                        
+						
 		var obj = {};
-		obj.rkPnt = kPnt.clone();
+		obj.rkPnt = kPnt.slice(0);
 		obj.pfLParam = 0;
 		obj.rfSqrDistance = 0;
 
-		if (kDir.x > 0){
-			if (kDir.y > 0){
-				if (kDir.z > 0){
+		if (kDir[0] > 0){
+			if (kDir[1] > 0){
+				if (kDir[2] > 0){
 					this.caseNoZeros(obj, kDir, rkBox);
 					out.num = obj.pfLParam;
 				}else{
@@ -405,7 +388,7 @@
 					out.num = obj.pfLParam;
 				}
 			}else{
-				if (kDir.z > 0){
+				if (kDir[2] > 0){
 					this.case0(obj, 0, 2, 1, kDir, rkBox);
 					out.num = obj.pfLParam;
 				}else{
@@ -414,8 +397,8 @@
 				}
 			}
 		}else{
-			if (kDir.y > 0){
-				if (kDir.z > 0){
+			if (kDir[1] > 0){
+				if (kDir[2] > 0){
 					this.case0(obj, 1, 2, 0, kDir, rkBox);
 					out.num = obj.pfLParam;
 				}else{
@@ -423,7 +406,7 @@
 					out.num = obj.pfLParam;
 				}
 			}else{
-				if (kDir.z > 0){
+				if (kDir[2] > 0){
 					this.case00(obj, 2, 0, 1, kDir, rkBox);
 					out.num = obj.pfLParam;
 				}else{
@@ -439,64 +422,65 @@
 		}
 		JNumber3D.copyFromArray(obj.rkPnt, kPntArr);
 
-		out.num0 = obj.rkPnt.x;
-		out.num1 = obj.rkPnt.y;
-		out.num2 = obj.rkPnt.z;
+		out.num0 = obj.rkPnt[0];
+		out.num1 = obj.rkPnt[1];
+		out.num2 = obj.rkPnt[2];
 
 		return Math.max(obj.rfSqrDistance, 0);
-	}
+	};
 	
 
 	JSegment.prototype.sqrDistancePoint=function(out, rkPoint, rkBox, boxState){
 		var orientationVector = boxState.getOrientationCols();
-		var kDiff = rkPoint.subtract(boxState.position);
-		var kClosest = new Vector3D(kDiff.dotProduct(orientationVector[0]),
-			kDiff.dotProduct(orientationVector[1]),
-			kDiff.dotProduct(orientationVector[2]));
+		var kDiff = Vector3DUtil.subtract(rkPoint, boxState.position);
+		var kClosest = Vector3DUtil.create( Vector3DUtil.dotProduct(kDiff, orientationVector[0]),
+							                Vector3DUtil.dotProduct(kDiff, orientationVector[1]),
+							                Vector3DUtil.dotProduct(kDiff, orientationVector[2]), 
+							                0);
 
 		var fSqrDistance = 0;
 		var fDelta;
 		var boxHalfSide = rkBox.getHalfSideLengths();
 
-		if (kClosest.x < -boxHalfSide.x){
-			fDelta = kClosest.x + boxHalfSide.x;
+		if (kClosest[0] < -boxHalfSide[0]){
+			fDelta = kClosest[0] + boxHalfSide[0];
 			fSqrDistance += (fDelta * fDelta);
-			kClosest.x = -boxHalfSide.x;
-		}else if (kClosest.x > boxHalfSide.x){
-			fDelta = kClosest.x - boxHalfSide.x;
+			kClosest[0] = -boxHalfSide[0];
+		}else if (kClosest[0] > boxHalfSide[0]){
+			fDelta = kClosest[0] - boxHalfSide[0];
 			fSqrDistance += (fDelta * fDelta);
-			kClosest.x = boxHalfSide.x;
+			kClosest[0] = boxHalfSide[0];
 		}
 
-		if (kClosest.y < -boxHalfSide.y){
-			fDelta = kClosest.y + boxHalfSide.y;
+		if (kClosest[1] < -boxHalfSide[1]){
+			fDelta = kClosest[1] + boxHalfSide[1];
 			fSqrDistance += (fDelta * fDelta);
-			kClosest.y = -boxHalfSide.y;
-		}else if (kClosest.y > boxHalfSide.y){
-			fDelta = kClosest.y - boxHalfSide.y;
+			kClosest[1] = -boxHalfSide[1];
+		}else if (kClosest[1] > boxHalfSide[1]){
+			fDelta = kClosest[1] - boxHalfSide[1];
 			fSqrDistance += (fDelta * fDelta);
-			kClosest.y = boxHalfSide.y;
+			kClosest[1] = boxHalfSide[1];
 		}
 
-		if (kClosest.z < -boxHalfSide.z){
-			fDelta = kClosest.z + boxHalfSide.z;
+		if (kClosest[2] < -boxHalfSide[2]){
+			fDelta = kClosest[2] + boxHalfSide[2];
 			fSqrDistance += (fDelta * fDelta);
-			kClosest.z = -boxHalfSide.z;
-		}else if (kClosest.z > boxHalfSide.z){
-			fDelta = kClosest.z - boxHalfSide.z;
+			kClosest[2] = -boxHalfSide[2];
+		}else if (kClosest[2] > boxHalfSide[2]){
+			fDelta = kClosest[2] - boxHalfSide[2];
 			fSqrDistance += (fDelta * fDelta);
-			kClosest.z = boxHalfSide.z;
+			kClosest[2] = boxHalfSide[2];
 		}
 
-		out.pfLParam0 = kClosest.x;
-		out.pfLParam1 = kClosest.y;
-		out.pfLParam2 = kClosest.z;
+		out.pfLParam0 = kClosest[0];
+		out.pfLParam1 = kClosest[1];
+		out.pfLParam2 = kClosest[2];
 
 		return Math.max(fSqrDistance, 0);
-	}
+	};
 
 	JSegment.prototype.face=function(out, i0, i1, i2, rkDir, rkBox, rkPmE){
-		var kPpE = new Vector3D();
+		var kPpE = [0,0,0,0];
 		var fLSqr;
 		var fInv;
 		var fTmp;
@@ -657,37 +641,35 @@
 				JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
 			}
 		}
-	}
+	};
 	
 	JSegment.prototype.caseNoZeros=function(out, rkDir, rkBox){
 		var boxHalfSide = rkBox.getHalfSideLengths();
-		var kPmE = new Vector3D(out.rkPnt.x - boxHalfSide.x, out.rkPnt.y - boxHalfSide.y, out.rkPnt.z - boxHalfSide.z);
+		var kPmE = Vector3DUtil.create(out.rkPnt[0] - boxHalfSide[0], out.rkPnt[1] - boxHalfSide[1], out.rkPnt[2] - boxHalfSide[2], 0);
 
-		var fProdDxPy = rkDir.x * kPmE.y;
-		var fProdDyPx = rkDir.y * kPmE.x;
+		var fProdDxPy = rkDir[0] * kPmE[1];
+		var fProdDyPx = rkDir[1] * kPmE[0];
 		var fProdDzPx;
 		var fProdDxPz;
 		var fProdDzPy;
 		var fProdDyPz;
 
 		if (fProdDyPx >= fProdDxPy){
-			fProdDzPx = rkDir.z * kPmE.x;
-			fProdDxPz = rkDir.x * kPmE.z;
-			if (fProdDzPx >= fProdDxPz){
+			fProdDzPx = rkDir[2] * kPmE[0];
+			fProdDxPz = rkDir[0] * kPmE[2];
+			if (fProdDzPx >= fProdDxPz)
 				this.face(out, 0, 1, 2, rkDir, rkBox, kPmE);
-			}else{
+			else
 				this.face(out, 2, 0, 1, rkDir, rkBox, kPmE);
-			}
 		}else{
-			fProdDzPy = rkDir.z * kPmE.y;
-			fProdDyPz = rkDir.y * kPmE.z;
-			if (fProdDzPy >= fProdDyPz){
+			fProdDzPy = rkDir[2] * kPmE[1];
+			fProdDyPz = rkDir[1] * kPmE[2];
+			if (fProdDzPy >= fProdDyPz)
 				this.face(out, 1, 2, 0, rkDir, rkBox, kPmE);
-			}else{
+			else
 				this.face(out, 2, 0, 1, rkDir, rkBox, kPmE);
-			}
 		}
-	}
+	};
 
 	JSegment.prototype.case0=function(out, i0, i1, i2, rkDir, rkBox){
 		var boxHalfSide = rkBox.getHalfSideLengths();
@@ -748,7 +730,7 @@
 			rkPntArr[i2] = boxHalfArr[i2];
 		}
 		JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
-	}
+	};
 
 	JSegment.prototype.case00=function(out, i0, i1, i2, rkDir, rkBox){
 		var fDelta = 0;
@@ -781,44 +763,44 @@
 		}
 
 		JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
-	}
+	};
 
 	JSegment.prototype.case000=function(out, rkBox){
 		var fDelta = 0;
 		var boxHalfSide = rkBox.getHalfSideLengths();
 
-		if (out.rkPnt.x < -boxHalfSide.x){
-			fDelta = out.rkPnt.x + boxHalfSide.x;
+		if (out.rkPnt[0] < -boxHalfSide[0]){
+			fDelta = out.rkPnt[0] + boxHalfSide[0];
 			out.rfSqrDistance += (fDelta * fDelta);
-			out.rkPnt.x = -boxHalfSide.x;
-		}else if (out.rkPnt.x > boxHalfSide.x){
-			fDelta = out.rkPnt.x - boxHalfSide.x;
+			out.rkPnt[0] = -boxHalfSide[0];
+		}else if (out.rkPnt[0] > boxHalfSide[0]){
+			fDelta = out.rkPnt[0] - boxHalfSide[0];
 			out.rfSqrDistance += (fDelta * fDelta);
-			out.rkPnt.x = boxHalfSide.x;
+			out.rkPnt[0] = boxHalfSide[0];
 		}
 
-		if (out.rkPnt.y < -boxHalfSide.y){
-			fDelta = out.rkPnt.y + boxHalfSide.y;
+		if (out.rkPnt[1] < -boxHalfSide[1]){
+			fDelta = out.rkPnt[1] + boxHalfSide[1];
 			out.rfSqrDistance += (fDelta * fDelta);
-			out.rkPnt.y = -boxHalfSide.y;
-		}else if (out.rkPnt.y > boxHalfSide.y){
-			fDelta = out.rkPnt.y - boxHalfSide.y;
+			out.rkPnt[1] = -boxHalfSide[1];
+		}else if (out.rkPnt[1] > boxHalfSide[1]){
+			fDelta = out.rkPnt[1] - boxHalfSide[1];
 			out.rfSqrDistance += (fDelta * fDelta);
-			out.rkPnt.y = boxHalfSide.y;
+			out.rkPnt[1] = boxHalfSide[1];
 		}
 
-		if (out.rkPnt.z < -boxHalfSide.z){
-			fDelta = out.rkPnt.z + boxHalfSide.z;
+		if (out.rkPnt[2] < -boxHalfSide[2]){
+			fDelta = out.rkPnt[2] + boxHalfSide[2];
 			out.rfSqrDistance += (fDelta * fDelta);
-			out.rkPnt.z = -boxHalfSide.z;
-		}else if (out.rkPnt.z > boxHalfSide.z){
-			fDelta = out.rkPnt.z - boxHalfSide.z;
+			out.rkPnt[2] = -boxHalfSide[2];
+		}else if (out.rkPnt[2] > boxHalfSide[2]){
+			fDelta = out.rkPnt[2] - boxHalfSide[2];
 			out.rfSqrDistance += (fDelta * fDelta);
-			out.rkPnt.z = boxHalfSide.z;
+			out.rkPnt[2] = boxHalfSide[2];
 		}
-	}
+	};
 	
 	
 	jigLib.JSegment=JSegment;
 	
- })(jigLib)
+ })(jigLib);

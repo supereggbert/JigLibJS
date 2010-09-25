@@ -27,14 +27,14 @@
 	
 	var PhysicsController=function(){
 		this._controllerEnabled = false;
-	}
+	};
 	
 	PhysicsController.prototype._controllerEnabled=null;
 	
 	
 	 // implement this to apply whatever forces are needed to the objects this controls
 	PhysicsController.prototype.updateController=function(dt){
-	}
+	};
 
 	// register with the physics system
 	PhysicsController.prototype.enableController=function(){
@@ -43,7 +43,7 @@
 		}
 		this._controllerEnabled = true;
 		jigLib.PhysicsSystem.getInstance().addController(this);
-	}
+	};
 
 	// deregister from the physics system
 	PhysicsController.prototype.disableController=function(){
@@ -52,13 +52,13 @@
 		}
 		this._controllerEnabled = false;
 		jigLib.PhysicsSystem.getInstance().removeController(this);
-	}
+	};
 
 	// are we registered with the physics system?
 	PhysicsController.prototype.get_controllerEnabled=function(){
 		return this._controllerEnabled;
-	}
+	};
 	
 	jigLib.PhysicsController=PhysicsController;
 	
-})(jigLib)
+})(jigLib);

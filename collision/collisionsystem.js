@@ -26,26 +26,25 @@
  (function(jigLib){
 	var JSegment=jigLib.JSegment;
 	var RigidBody=jigLib.RigidBody;
-	var Vector3D=jigLib.Vector3D;
-	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var CollDetectBoxBox=jigLib.CollDetectBoxBox;
-        var CollDetectSphereBox=jigLib.CollDetectSphereBox;
-        var CollDetectCapsuleBox=jigLib.CollDetectCapsuleBox;
-        var CollDetectBoxPlane=jigLib.CollDetectBoxPlane;
-        var CollDetectBoxTerrain=jigLib.CollDetectBoxTerrain;
-        var CollDetectSphereBox=jigLib.CollDetectSphereBox;
-        var CollDetectSphereSphere=jigLib.CollDetectSphereSphere;
-        var CollDetectSphereCapsule=jigLib.CollDetectSphereCapsule;
-        var CollDetectSpherePlane=jigLib.CollDetectSpherePlane;
-        var CollDetectSphereTerrain=jigLib.CollDetectSphereTerrain;
-        var CollDetectCapsuleCapsule=jigLib.CollDetectCapsuleCapsule;
-        var CollDetectCapsuleBox=jigLib.CollDetectCapsuleBox;
-        var CollDetectSphereCapsule=jigLib.CollDetectSphereCapsule;
-        var CollDetectCapsulePlane=jigLib.CollDetectCapsulePlane;
-        var CollDetectCapsuleTerrain=jigLib.CollDetectCapsuleTerrain;
-        var CollDetectInfo=jigLib.CollDetectInfo;
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var CollDetectBoxBox=jigLib.CollDetectBoxBox;
+	var CollDetectSphereBox=jigLib.CollDetectSphereBox;
+	var CollDetectCapsuleBox=jigLib.CollDetectCapsuleBox;
+	var CollDetectBoxPlane=jigLib.CollDetectBoxPlane;
+	var CollDetectBoxTerrain=jigLib.CollDetectBoxTerrain;
+	var CollDetectSphereBox=jigLib.CollDetectSphereBox;
+	var CollDetectSphereSphere=jigLib.CollDetectSphereSphere;
+	var CollDetectSphereCapsule=jigLib.CollDetectSphereCapsule;
+	var CollDetectSpherePlane=jigLib.CollDetectSpherePlane;
+	var CollDetectSphereTerrain=jigLib.CollDetectSphereTerrain;
+	var CollDetectCapsuleCapsule=jigLib.CollDetectCapsuleCapsule;
+	var CollDetectCapsuleBox=jigLib.CollDetectCapsuleBox;
+	var CollDetectSphereCapsule=jigLib.CollDetectSphereCapsule;
+	var CollDetectCapsulePlane=jigLib.CollDetectCapsulePlane;
+	var CollDetectCapsuleTerrain=jigLib.CollDetectCapsuleTerrain;
+	var CollDetectInfo=jigLib.CollDetectInfo;
 	 
 	var CollisionSystem=function(){
 		this.collBody = [];
@@ -77,35 +76,33 @@
 		detectionFunctors["TERRAIN"]["BOX"] = new CollDetectBoxTerrain();
 		detectionFunctors["TERRAIN"]["CAPSULE"] = new CollDetectCapsuleTerrain();
 		this.detectionFunctors=detectionFunctors;
-	}
+	};
 	CollisionSystem.prototype.detectionFunctors=null;
-        CollisionSystem.prototype.collBody=null;
+	CollisionSystem.prototype.collBody=null;
 	 
-        CollisionSystem.prototype.addCollisionBody=function(body){
-		if (!this.findBody(body)){
-                                this.collBody.push(body);
-		}
-	}
+	CollisionSystem.prototype.addCollisionBody=function(body){
+		if (!this.findBody(body))
+			this.collBody.push(body);
+	};
 
-        CollisionSystem.prototype.removeCollisionBody=function(body){
-		if (this.findBody(body)){
-                                this.collBody.splice(this.collBody.indexOf(body), 1);
-		}
-	}
+	CollisionSystem.prototype.removeCollisionBody=function(body){
+		if (this.findBody(body))
+			this.collBody.splice(this.collBody.indexOf(body), 1);
+	};
 
-        CollisionSystem.prototype.removeAllCollisionBodys=function(){
+	CollisionSystem.prototype.removeAllCollisionBodies=function(){
 		this.collBody = [];
-	}
+	};
 
 	// Detects collisions between the body and all the registered collision bodies
-        CollisionSystem.prototype.detectCollisions=function(body, collArr){
-		if (!body.isActive){
+	CollisionSystem.prototype.detectCollisions=function(body, collArr){
+		if (!body.isActive)
 			return;
-		}
+
 		var info;
 		var fu;
 
-		for(var i=0;i<this.collBody.length;i++){
+		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
 			if (body != _collBody && this.checkCollidables(body, _collBody) && this.detectionFunctors[body.get_type()][_collBody.get_type()] != undefined){
 				info = new CollDetectInfo();
@@ -115,16 +112,16 @@
 				fu.collDetect(info, collArr);
 			}
 		}
-	}
+	};
 	
 	// Detects collisions between the all bodies
-        CollisionSystem.prototype.detectAllCollisions=function(bodies, collArr){
+	CollisionSystem.prototype.detectAllCollisions=function(bodies, collArr){
 		var info;
 		var fu;
 		var bodyID;
 		var bodyType;
-                        
-		for(var i=0; i<bodies.length;i++){
+						
+		for(var i=0, bl=bodies.length; i<bl; i++){
 			var _body=bodies[i];
 			bodyID = _body.id;
 			bodyType = _body.get_type();
@@ -148,18 +145,18 @@
 				}
 			}
 		}
-	}
+	};
 
-        CollisionSystem.prototype.segmentIntersect=function(out, seg, ownerBody){
+	CollisionSystem.prototype.segmentIntersect=function(out, seg, ownerBody){
 		out.fracOut = JNumber3D.NUM_HUGE;
-		out.posOut = new Vector3D();
-		out.normalOut = new Vector3D();
+		out.posOut = [0,0,0,0];
+		out.normalOut = [0,0,0,0];
 
 		var obj= {};
 
-		for(var i=0;i <this.collBody.length;i++){
+		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
-			if (_collBody != ownerBody && segmentBounding(seg, _collBody)){
+			if (_collBody != ownerBody && this.segmentBounding(seg, _collBody)){
 				if (_collBody.segmentIntersect(obj, seg, _collBody.get_currentState())){
 					if (obj.fracOut < out.fracOut){
 						out.posOut = obj.posOut;
@@ -171,23 +168,23 @@
 			}
 		}
 
-		if (out.fracOut > 1){
+		if (out.fracOut > 1)
 			return false;
-		}
-		if (out.fracOut < 0){
+		
+		if (out.fracOut < 0)
 			out.fracOut = 0;
-		}else if (out.fracOut > 1){
+		else if (out.fracOut > 1)
 			out.fracOut = 1;
-		}
+		
 		return true;
-	}
+	};
 
-        CollisionSystem.prototype.segmentBounding=function(seg, obj){
+	CollisionSystem.prototype.segmentBounding=function(seg, obj){
 		var pos = seg.getPoint(0.5);
-		var r = seg.get_delta().get_length() / 2;
+		var r = Vector3DUtil.get_length(seg.delta) / 2;
 
 		if (obj.get_type() != "PLANE" && obj.get_type() != "TERRAIN"){
-			var num1 = pos.subtract(obj.get_currentState().position).get_length();
+			var num1 = Vector3DUtil.get_length(Vector3DUtil.subtract(pos, obj.get_currentState().position));
 			var num2 = r + obj.get_boundingSphere();
 			if (num1 <= num2){
 				return true;
@@ -197,38 +194,35 @@
 		}else{
 			return true;
 		}
-	}
+	};
 
-        CollisionSystem.prototype.findBody=function(body){
-		for(var i=0;i<this.collBody.length;i++){
+	CollisionSystem.prototype.findBody=function(body){
+		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
-			if (body == _collBody){
+			if (body == _collBody)
 				return true;
-			}
 		}
 		return false;
-	}
+	};
 
-        CollisionSystem.prototype.checkCollidables=function(body0, body1){
+	CollisionSystem.prototype.checkCollidables=function(body0, body1){
 		if (body0.get_nonCollidables().length == 0 && body1.get_nonCollidables().length == 0){
 			return true;
 		}
 		var nonCollidables=body0.get_nonCollidables();
-		for(var i=0;i<nonCollidables.length;i++){
+		for(var i=0, ncl=nonCollidables.length; i<ncl; i++){
 			var _body0=nonCollidables[i];
-			if (body1 == _body0){
+			if (body1 == _body0)
 				return false;
-			}
 		}
 		nonCollidables=body1.get_nonCollidables();
-		for(var i=0;i<nonCollidables.length;i++){
+		for(var i=0, ncl=nonCollidables.length; i<ncl; i++){
 			var _body1=nonCollidables[i];
-			if (body0 == _body1){
+			if (body0 == _body1)
 				return false;
-			}
 		}
 		return true;
-	}
+	};
 	 
 	jigLib.CollisionSystem=CollisionSystem;
-})(jigLib)
+})(jigLib);

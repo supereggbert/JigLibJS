@@ -24,7 +24,7 @@
  */
  
  (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
+	
 	 
 	var BodyPair=function(_body0, _body1, r0, r1){
 		if (_body0.id > _body1.id){
@@ -36,11 +36,11 @@
 			this.body1 = _body0;
 			this.r = r1;
 		}
-	}
+	};
 	BodyPair.prototype.body0=null;
 	BodyPair.prototype.body1=null;
 	BodyPair.prototype.r=null;
 	
 	jigLib.BodyPair=BodyPair;
 		
-})(jigLib)
+})(jigLib);

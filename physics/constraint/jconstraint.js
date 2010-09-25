@@ -28,24 +28,24 @@
 	var JConstraint=function(){
 		this._constraintEnabled = false;
 		this.enableConstraint();
-	}
+	};
 	JConstraint.prototype._satisfied=null;
 	JConstraint.prototype._constraintEnabled=null;
 
 	JConstraint.prototype.set_satisfied=function(s){
 		this._satisfied = s;
-	}
+	};
 
 	JConstraint.prototype.get_satisfied=function(){
 		return this._satisfied;
-	}
+	};
 
 	// prepare for applying constraints - the subsequent calls to
 	// apply will all occur with a constant position i.e. precalculate
 	// everything possible
 	JConstraint.prototype.preApply=function(dt){
 		this._satisfied = false;
-	}
+	};
 
 	// apply the constraint by adding impulses. Return value
 	// indicates if any impulses were applied. If impulses were applied
@@ -53,31 +53,31 @@
 	// body that is involved.
 	JConstraint.prototype.apply=function(dt){
 		return false;
-	}
+	};
 
 	// register with the physics system
 	JConstraint.prototype.enableConstraint=function(){
-		if (this._constraintEnabled){
+		if (this._constraintEnabled)
 			return;
-		}
+		
 		this._constraintEnabled = true;
 		jigLib.PhysicsSystem.getInstance().addConstraint(this);
-	}
+	};
 
 	// deregister from the physics system
 	JConstraint.prototype.disableConstraint=function(){
-		if (!this._constraintEnabled){
+		if (!this._constraintEnabled)
 			return;
-		}
+		
 		this._constraintEnabled = false;
 		jigLib.PhysicsSystem.getInstance().removeConstraint(this);
-	}
+	};
 
 	// are we registered with the physics system?
 	JConstraint.prototype.get_constraintEnabled=function(){
 		return this._constraintEnabled;
-	}
+	};
 	
 	jigLib.JConstraint=JConstraint;
 	
-})(jigLib)
+})(jigLib);

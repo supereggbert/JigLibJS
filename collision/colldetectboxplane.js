@@ -24,14 +24,13 @@
  */
  
 (function(jigLib){
-	var Vector3D=jigLib.Vector3D;
-	var JMatrix3D=jigLib.JMatrix3D;
-        var JNumber3D=jigLib.JNumber3D;
-        var JConstraint=jigLib.JConstraint;
-        var JConfig=jigLib.JConfig;
-        var JPlane=jigLib.JPlane;
-        var JSegment=jigLib.JSegment;
-        var JBox=jigLib.JBox;
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JPlane=jigLib.JPlane;
+	var JSegment=jigLib.JSegment;
+	var JBox=jigLib.JBox;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	var CollPointInfo=jigLib.CollPointInfo;
@@ -41,7 +40,7 @@
 		this.name = "BoxPlane";
 		this.type0 = "BOX";
 		this.type1 = "PLANE";
-	}
+	};
 	jigLib.extends(CollDetectBoxPlane,jigLib.CollDetectFunctor);
 
 	CollDetectBoxPlane.prototype.collDetect=function(info, collArr){
@@ -57,9 +56,8 @@
 
 		var centreDist= plane.pointPlaneDistance(box.get_currentState().position);
 
-		if (centreDist > box.get_boundingSphere() + JConfig.collToll){
+		if (centreDist > box.get_boundingSphere() + JConfig.collToll)
 			return;
-		}
 		
 		var newPts = box.getCornerPoints(box.get_currentState());
 		var oldPts = box.getCornerPoints(box.get_oldState());
@@ -69,15 +67,16 @@
 		var oldPt;
 		var newDepth;
 		var oldDepth;
-		for (var i in newPts){
+		
+		for (var i=0; i<8; i++){
 			newPt = newPts[i];
 			oldPt = oldPts[i];
 			newDepth = -1 * plane.pointPlaneDistance(newPt);
 			oldDepth = -1 * plane.pointPlaneDistance(oldPt);
 			if (Math.max(newDepth, oldDepth) > -JConfig.collToll){
 				cpInfo = new CollPointInfo();
-				cpInfo.r0 = oldPt.subtract(box.get_oldState().position);
-				cpInfo.r1 = oldPt.subtract(plane.get_oldState().position);
+				cpInfo.r0 = Vector3DUtil.subtract(oldPt, box.get_oldState().position);
+				cpInfo.r1 = Vector3DUtil.subtract(oldPt, plane.get_oldState().position);
 				cpInfo.initialPenetration = oldDepth;
 				collPts.push(cpInfo);
 			}
@@ -96,8 +95,8 @@
 			info.body0.collisions.push(collInfo);
 			info.body1.collisions.push(collInfo);
 		}
-	}
+	};
 	
 	jigLib.CollDetectBoxPlane=CollDetectBoxPlane;
 	
-})(jigLib)
+})(jigLib);
