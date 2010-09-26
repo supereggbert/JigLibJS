@@ -115,6 +115,8 @@
 		this._fwdFriction = fwdFriction;
 		this._damping = damping;
 		this._numRays = numRays;
+		this._wheelRest=0.01; //added
+		this._springConst=10; //added
 		this.reset();
 	};
 
@@ -213,7 +215,7 @@
 		var objArr = [];
 		var segments = [];
 
-		var deltaFwd = (2 * this._radius) / (numRays + 1);
+		var deltaFwd = (2 * this._radius) / (numRays +1);
 		var deltaFwdStart = deltaFwd;
 
 		this._lastOnFloor = false;
@@ -254,12 +256,68 @@
 			}
 			Vector3DUtil.normalize(groundNormal);
 		}else groundNormal = objArr[bestIRay].normalOut;
-
+		
+		wheelFwd=Vector3DUtil.crossProduct(wheelLeft,groundNormal);
+		
 		this._displacement = rayLen * (1 - frac);
 
 		if (this._displacement < 0) this._displacement = 0;
-		else if (this._displacement > this._travel) this._displacement = this._travel;
+		
+		
+		var gravity = PhysicsSystem.getInstance().get_gravity().slice(0);
+		var mass = carBody.get_mass();
+		var mass4 = 0.25*mass;
+		
+		//Normal Force
+		var forceMag=Vector3DUtil.dotProduct(gravity,groundNormal)*mass4
+		var extraForce = JNumber3D.getScaleVector(groundNormal, -forceMag);
+		force = Vector3DUtil.add(force, extraForce);
+		
+		var wheelCenterVel=carBody.getVelocity(this._pos);
+		
+		//hit floor hard
+		if (this._displacement > this._travel){
+			this._displacement=this._travel;
+			var cv=Vector3DUtil.dotProduct(wheelCenterVel,groundNormal)/dt*mass4;
+			cv=cv*(1+this._wheelRest*otherBody.get_restitution());
+			extraForce = JNumber3D.getScaleVector(groundNormal, -cv);
+			force = Vector3DUtil.add(force, extraForce);
+		}
+		//suspension spring force
+		extraForce = JNumber3D.getScaleVector(this._axisUp, this._springConst*(this._displacement-this._travel/2));
+		force = Vector3DUtil.add(force, extraForce);
+		
 
+		extraForce = JNumber3D.getScaleVector(wheelCenterVel, -mass4/dt*0.12);
+		extraForce=Vector3DUtil.subtract(extraForce,JNumber3D.getScaleVector(groundNormal,Vector3DUtil.dotProduct(extraForce,groundNormal)));
+		force = Vector3DUtil.add(force, extraForce);
+		
+		//var rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(wheelLeft, Vector3DUtil.subtract(groundPos, worldPos)), this._angVel);
+		//var rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(wheelLeft, groundNormal), -this._angVel*this._radius);
+		var rimVel = JNumber3D.getScaleVector(wheelFwd, -this._angVel*this._radius);
+		d(wheelCenterVel);
+		d(rimVel);
+
+		var fwdForce = JNumber3D.getScaleVector(rimVel, -mass4/dt);
+		
+		/*Vector3DUtil.normalize(gravity);
+		*/
+		//extraForce=Vector3DUtil.subtract(fwdForce,JNumber3D.getScaleVector(groundNormal,Vector3DUtil.dotProduct(fwdForce,groundNormal)));
+		
+		extraForce=fwdForce;
+		
+		force = Vector3DUtil.add(force, extraForce);
+		
+		this.wheelFwd=wheelFwd;
+		
+		
+
+
+				
+		//d(Vector3DUtil.dotProduct(force,groundNormal)*dt*dt/mass4);
+		//d(this._displacement);
+
+/*
 		var displacementForceMag = this._displacement * this._spring;
 		displacementForceMag *= Vector3DUtil.dotProduct(groundNormal, worldAxis);
 
@@ -322,6 +380,7 @@
 		wheelCentreVel = Vector3DUtil.add(carBody.get_currentState().linVelocity, Vector3DUtil.crossProduct(carBody.get_currentState().rotVelocity, tempv));
 		this._angVelForGrip = Vector3DUtil.dotProduct(wheelCentreVel, groundFwd) / this._radius;
 		this._torque += (-fwdForce * this._radius);
+*/
 
 		carBody.addWorldForce(force, groundPos);
 		if (otherBody.get_movable()){
@@ -345,13 +404,19 @@
 		if (this._locked){
 			this._angVel = 0;
 			this._torque = 0;
-		}else{
+		}else{					
 			this._angVel += (this._torque * dt / this._inertia);
 			this._torque = 0;
-
-			if (((origAngVel > this._angVelForGrip) && (this._angVel < this._angVelForGrip)) || ((origAngVel < this._angVelForGrip) && (this._angVel > this._angVelForGrip)))
+			
+			/*if(this.wheelFwd){
+				var wheelCenterVel=this._car._chassis.getVelocity(this._pos);
+				//this._angVel=Vector3DUtil.dotProduct(wheelCenterVel,this.wheelFwd)/ this._radius;
+				d(this._angVel);
+				d(Vector3DUtil.dotProduct(wheelCenterVel,this.wheelFwd)*dt/this._inertia/this._angVel);
+			}*/
+			/*if (((origAngVel > this._angVelForGrip) && (this._angVel < this._angVelForGrip)) || ((origAngVel < this._angVelForGrip) && (this._angVel > this._angVelForGrip)))
 				this._angVel = this._angVelForGrip;
-
+			*/
 			this._angVel += this._driveTorque * dt / this._inertia;
 			this._driveTorque = 0;
 
