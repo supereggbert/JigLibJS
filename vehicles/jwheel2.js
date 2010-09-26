@@ -287,31 +287,26 @@
 		extraForce = JNumber3D.getScaleVector(this._axisUp, this._springConst*(this._displacement-this._travel/2));
 		force = Vector3DUtil.add(force, extraForce);
 		
-
-		extraForce = JNumber3D.getScaleVector(wheelCenterVel, -mass4/dt*0.12);
-		extraForce=Vector3DUtil.subtract(extraForce,JNumber3D.getScaleVector(groundNormal,Vector3DUtil.dotProduct(extraForce,groundNormal)));
-		force = Vector3DUtil.add(force, extraForce);
 		
-		//var rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(wheelLeft, Vector3DUtil.subtract(groundPos, worldPos)), this._angVel);
+		groundUp = groundNormal;
+		groundLeft = Vector3DUtil.crossProduct(groundNormal, wheelFwd);
+		Vector3DUtil.normalize(groundLeft);
+		groundFwd = Vector3DUtil.crossProduct(groundLeft, groundUp);
+	
+		var rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(wheelLeft, Vector3DUtil.subtract(groundPos, worldPos)), -this._angVel);
 		//var rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(wheelLeft, groundNormal), -this._angVel*this._radius);
-		var rimVel = JNumber3D.getScaleVector(wheelFwd, -this._angVel*this._radius);
-		d(wheelCenterVel);
-		d(rimVel);
+		//var rimVel = JNumber3D.getScaleVector(groundFwd, this._angVel*this._radius);
+		var centerVel = JNumber3D.getScaleVector(groundFwd, Vector3DUtil.dotProduct(wheelCenterVel,groundFwd));
 
-		var fwdForce = JNumber3D.getScaleVector(rimVel, -mass4/dt);
-		
-		/*Vector3DUtil.normalize(gravity);
-		*/
-		//extraForce=Vector3DUtil.subtract(fwdForce,JNumber3D.getScaleVector(groundNormal,Vector3DUtil.dotProduct(fwdForce,groundNormal)));
-		
-		extraForce=fwdForce;
-		
+		var extraForce = JNumber3D.getScaleVector(Vector3DUtil.subtract(rimVel,centerVel), mass4);		
 		force = Vector3DUtil.add(force, extraForce);
 		
-		this.wheelFwd=wheelFwd;
+		//sideways friction
+		var leftVel = JNumber3D.getScaleVector(groundLeft, -Vector3DUtil.dotProduct(wheelCenterVel,groundLeft));
+		var extraForce = JNumber3D.getScaleVector(leftVel, mass4);	
+		force = Vector3DUtil.add(force, extraForce);
 		
-		
-
+		//this._torque += (-Vector3DUtil.dotProduct(force,groundFwd)* this._radius);
 
 				
 		//d(Vector3DUtil.dotProduct(force,groundNormal)*dt*dt/mass4);
@@ -407,13 +402,7 @@
 		}else{					
 			this._angVel += (this._torque * dt / this._inertia);
 			this._torque = 0;
-			
-			/*if(this.wheelFwd){
-				var wheelCenterVel=this._car._chassis.getVelocity(this._pos);
-				//this._angVel=Vector3DUtil.dotProduct(wheelCenterVel,this.wheelFwd)/ this._radius;
-				d(this._angVel);
-				d(Vector3DUtil.dotProduct(wheelCenterVel,this.wheelFwd)*dt/this._inertia/this._angVel);
-			}*/
+		
 			/*if (((origAngVel > this._angVelForGrip) && (this._angVel < this._angVelForGrip)) || ((origAngVel < this._angVelForGrip) && (this._angVel > this._angVelForGrip)))
 				this._angVel = this._angVelForGrip;
 			*/

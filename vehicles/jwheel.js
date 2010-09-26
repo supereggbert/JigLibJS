@@ -258,9 +258,21 @@
 		this._displacement = rayLen * (1 - frac);
 
 		if (this._displacement < 0) this._displacement = 0;
-		else if (this._displacement > this._travel) this._displacement = this._travel;
+		//else if (this._displacement > this._travel) this._displacement = this._travel;
+		
+		var tempv = this._pos.slice(0);
+		JMatrix3D.multiplyVector(carBody.get_currentState().get_orientation(), tempv);
+		wheelPointVel = Vector3DUtil.add(carBody.get_currentState().linVelocity, Vector3DUtil.crossProduct(carBody.get_currentState().rotVelocity, tempv));
+		
+		if (this._displacement > this._travel){
+			this._displacement=this._travel;
+			var cv=Vector3DUtil.dotProduct(wheelPointVel,groundNormal)/dt*(carBody.get_mass()*0.25);
+			cv=cv*(1+otherBody.get_restitution());
+			extraForce = JNumber3D.getScaleVector(groundNormal, -cv);
+			force = Vector3DUtil.add(force, extraForce);
+		}
 
-		var displacementForceMag = this._displacement * this._spring;
+		var displacementForceMag = (this._displacement-(this._travel/2)) * this._spring;
 		displacementForceMag *= Vector3DUtil.dotProduct(groundNormal, worldAxis);
 
 		var dampingForceMag = this._upSpeed * this._damping;
@@ -275,9 +287,6 @@
 		Vector3DUtil.normalize(groundLeft);
 		groundFwd = Vector3DUtil.crossProduct(groundLeft, groundUp);
 
-		var tempv = this._pos.slice(0);
-		JMatrix3D.multiplyVector(carBody.get_currentState().get_orientation(), tempv);
-		wheelPointVel = Vector3DUtil.add(carBody.get_currentState().linVelocity, Vector3DUtil.crossProduct(carBody.get_currentState().rotVelocity, tempv));
 
 		rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(wheelLeft, Vector3DUtil.subtract(groundPos, worldPos)), this._angVel);
 		wheelPointVel = Vector3DUtil.add(wheelPointVel, rimVel);
