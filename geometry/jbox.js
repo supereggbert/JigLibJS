@@ -57,7 +57,7 @@
 	};
 
 	JBox.prototype.set_sideLengths=function(size){
-		this._sideLengths = size.clone();
+		this._sideLengths = size.slice(0);
 		this._boundingSphere = 0.5 * this._sideLengths.length;
 		this.initPoint();
 		this.setInertia(this.getInertiaProperties(this.get_mass()));
@@ -118,6 +118,28 @@
 			//arr.push(transform.transformVector(new Vector3D(_point[0], _point[1], _point[2])));
 		}
 		//arr.fixed = true;
+		return arr;
+	};
+				
+	// Gets the corner points in another box space
+         JBox.prototype.getCornerPointsInBoxSpace=function(thisState, boxState){
+                        
+		var max = JMatrix3D.getTransposeMatrix(boxState.get_orientation());
+		var pos = Vector3DUtil.subtract(thisState.position,boxState.position);
+		JMatrix3D.multiplyVector(max, pos);
+                        
+		var orient = JMatrix3D.getAppendMatrix3D(thisState.get_orientation(), max);
+                        
+		var arr = [];
+                        
+		var transform = JMatrix3D.getTranslationMatrix(pos[0], pos[1], pos[2]);
+		transform = JMatrix3D.getAppendMatrix3D(orient, transform);
+                        
+		for(var i=0;i<this._points.length;i++){
+			_point=this._points[i].slice(0);
+			JMatrix3D.multiplyVector(transform,_point);
+			arr[i] = _point;
+		}
 		return arr;
 	};
 				

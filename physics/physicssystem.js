@@ -380,7 +380,6 @@
 		var approachScale = 0;
 		var numTiny = JNumber3D.NUM_TINY;
 		var allowedPenetration = JConfig.allowedPenetration;
-
 		var len = collision.pointInfo.length;
 		for (var i = 0; i < len; i++){
 			ptInfo = collision.pointInfo[i];
@@ -562,12 +561,13 @@
 			body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
 
 			var tempV;
-			var VR = Vector3DUtil.subtract(Vr0, Vr1);
+			var VR = Vr0.slice(0);
+			if(body1.get_movable()) VR = Vector3DUtil.subtract(Vr0, Vr1);
 			var tangent_vel = Vector3DUtil.subtract(VR, JNumber3D.getScaleVector(N, Vector3DUtil.dotProduct(VR, N)));
 			var tangent_speed = Vector3DUtil.get_length(tangent_vel);
 
 			if (tangent_speed > this._minVelForProcessing){
-				var T = JNumber3D.getScaleVector(JNumber3D.getDivideVector(tangent_vel, tangent_speed), -1);
+				var T = JNumber3D.getDivideVector(tangent_vel, -tangent_speed);
 				var denominator = 0;
 
 				if (body0.get_movable()){
@@ -583,7 +583,7 @@
 				}
 
 				if (denominator > JNumber3D.NUM_TINY){
-					var impulseToReverse = Math.pow(collision.mat.get_friction(), 3) * tangent_speed / denominator;
+					var impulseToReverse = tangent_speed / denominator;
 
 					T = JNumber3D.getScaleVector(T, impulseToReverse);
 					body0.applyBodyWorldImpulse(T, ptInfo.r0);
@@ -622,7 +622,6 @@
 			Vr0 = body0.getVelocity(ptInfo.r0);
 			Vr1 = body1.getVelocity(ptInfo.r1);
 			normalVel = Vector3DUtil.dotProduct(Vector3DUtil.subtract(Vr0, Vr1), N);
-
 			deltaVel = -normalVel;
 			if (ptInfo.minSeparationVel < 0)
 				deltaVel += ptInfo.minSeparationVel;
@@ -671,7 +670,7 @@
 				var tempV;
 				var VR = Vector3DUtil.subtract(Vr0, Vr1);
 				var tangent_vel = Vector3DUtil.subtract(VR, JNumber3D.getScaleVector(N, Vector3DUtil.dotProduct(VR, N)));
-				var tangent_speed = tangent_vel.length;
+				var tangent_speed = Vector3DUtil.get_length(tangent_vel);
 				if (tangent_speed > this._minVelForProcessing){
 					var T= JNumber3D.getScaleVector(JNumber3D.getDivideVector(tangent_vel, tangent_speed), -1);
 					var denominator = 0;
@@ -692,7 +691,7 @@
 						var origAccumulatedFrictionImpulse = ptInfo.accumulatedFrictionImpulse.slice(0);
 						ptInfo.accumulatedFrictionImpulse = Vector3DUtil.add(ptInfo.accumulatedFrictionImpulse, frictionImpulseVec);
 
-						var AFIMag = ptInfo.accumulatedFrictionImpulse.length;
+						var AFIMag = Vector3DUtil.get_length(ptInfo.accumulatedFrictionImpulse);
 						var maxAllowedAFIMag = collision.mat.friction * ptInfo.accumulatedNormalImpulse;
 
 						if (AFIMag > JNumber3D.NUM_TINY && AFIMag > maxAllowedAFIMag)
@@ -712,6 +711,103 @@
 			body1.setConstraintsAndCollisionsUnsatisfied();
 		}
 		return gotOne;
+	};
+	
+	
+	
+	
+	
+	
+	PhysicsSystem.prototype.sortPositionX=function(body0, body1){
+		if (body0.get_currentState().position[0] < body1.get_currentState().position[0])
+			return -1;
+		else if (body0.get_currentState().position[0] > body1.get_currentState().position[0])
+			return 1;
+		else
+			return 0;
+	}
+                
+	PhysicsSystem.prototype.sortPositionY=function(body0, body1){
+		if (body0.get_currentState().position[1] < body1.get_currentState().position[1])
+			return -1;
+		else if (body0.get_currentState().position[1] > body1.get_currentState().position[1])
+			return 1;
+		else
+			return 0;
+	}
+                
+	PhysicsSystem.prototype.sortPositionZ=function(body0, body1){
+		if (body0.get_currentState().position[2] < body1.get_currentState().position[2])
+			return -1;
+		else if (body0.get_currentState().position[2] > body1.get_currentState().position[2])
+			return 1;
+		else
+			return 0;
+	}
+                
+	PhysicsSystem.prototype.doShockStep=function(dt){
+		if (Math.abs(this._gravity[0]) > Math.abs(this._gravity[1]) && Math.abs(this._gravity[0]) > Math.abs(this._gravity[2])){
+			this._bodies = this._bodies.sort(this.sortPositionX);
+			this._collisionSystem.collBody = this._collisionSystem.collBody.sort(this.sortPositionX);
+		}else if (Math.abs(this._gravity[1]) > Math.abs(this._gravity[2]) && Math.abs(this._gravity[1]) > Math.abs(this._gravity[0])){
+			this._bodies = this._bodies.sort(this.sortPositionY);
+			this._collisionSystem.collBody = this._collisionSystem.collBody.sort(this.sortPositionY);
+		}else if (Math.abs(this._gravity[2]) > Math.abs(this._gravity[0]) && Math.abs(this._gravity[2]) > Math.abs(this._gravity[1])){
+			this._bodies = this._bodies.sort(this.sortPositionZ);
+			this._collisionSystem.collBody = this._collisionSystem.collBody.sort(this.sortPositionZ);
+		}
+                        
+		var info;
+		var setImmovable;
+		var gotOne = true;
+		var body_collisions=[];
+                        
+		var body0;
+		var body1;
+                        
+
+		while (gotOne){
+			gotOne = false;
+			for(var i=0;i<this._bodies.length;i++){
+				var body=this._bodies[i];
+				if (body.get_movable() && body.get_doShockProcessing()){
+					if (body.collisions.length == 0 || !body.isActive){
+						body.internalSetImmovable();
+					}else{
+						setImmovable = false;
+						body_collisions = body.collisions;
+						for(var j=0;j<body_collisions.length;j++){
+							info=body_collisions[j];
+
+							body0 = info.objInfo.body0;
+							body1 = info.objInfo.body1;
+                                                                
+							if ((body0 == body && !body1.get_movable()) || (body1 == body && !body0.get_movable())){
+								this.preProcessCollisionFast(info, dt);
+								this.processCollision(info, dt);
+								setImmovable = true;
+							}
+						}
+                                                        
+						if (setImmovable){
+							body.internalSetImmovable();
+							gotOne = true;
+						}
+					}
+				}
+			}
+		}
+
+		for(var i=0;i<this._bodies.length;i++){
+			body=this._bodies[i];
+			body.internalRestoreImmovable();
+			body_collisions = body.collisions;
+			for(var j=0;j<body_collisions.length;j++){
+				info=body_collisions[j];
+				this.preProcessCollisionFn(info, dt);
+				this.processCollisionFn(info, dt);
+			}
+		}
 	};
 	
 	PhysicsSystem.prototype.updateContactCache=function(){
@@ -975,6 +1071,10 @@
 		this.handleAllConstraints(dt, JConfig.numCollisionIterations, false);
 		this.updateAllVelocities(dt);
 		this.handleAllConstraints(dt, JConfig.numContactIterations, true);
+
+		if (JConfig.doShockStep) {
+			this.doShockStep(dt);
+		}
 
 		this.dampAllActiveBodies();
 		this.tryToFreezeAllObjects(dt);
