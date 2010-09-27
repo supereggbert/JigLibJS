@@ -139,6 +139,7 @@ Handbrake: spacebar<br /><br />
 			<!--camera id="mainCamera" loc_z="0" loc_y="10" fov_y="35" rot_x="-1.57" /-->
 			
 			<object id="groundObject" mesh="#groundMesh" material="#grid" rot_x="-1.57"  scale="100" loc_y="-40" />
+			<!--object id="groundObject" mesh="#Cube" material="#grid" scale_x="100" scale_z="100" scale_y="20" loc_y="-60" /-->
 			<object id="carObject" mesh="#Cube" material="#red" scale_x="20" scale_y="10" scale_z="45" />
 			<object id="wheelFRObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
 			<object id="wheelFLObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
@@ -174,18 +175,18 @@ XMLdoc.onLoad = function(){
 	var wheelFR = XMLdoc.getElement("wheelFRObject");
 	var steerFR = new GLGE.Group();
 	steerFR.addChild(wheelFR);
-	steerFR.setLocX(20).setLocY(-10).setLocZ(25);
+	steerFR.setLocX(20).setLocY(-30).setLocZ(25);
 	
 	var wheelFL = XMLdoc.getElement("wheelFLObject");
 	var steerFL = new GLGE.Group();
 	steerFL.addChild(wheelFL);
-	steerFL.setLocX(-20).setLocY(-10).setLocZ(25);
+	steerFL.setLocX(-20).setLocY(-30).setLocZ(25);
 	
 	var wheelBR = XMLdoc.getElement("wheelBRObject");
-	wheelBR.setLocX(20).setLocY(-10).setLocZ(-25);
+	wheelBR.setLocX(20).setLocY(-30).setLocZ(-25);
 	
 	var wheelBL = XMLdoc.getElement("wheelBLObject");
-	wheelBL.setLocX(-20).setLocY(-10).setLocZ(-25);
+	wheelBL.setLocX(-20).setLocY(-30).setLocZ(-25);
 	
 	var carG = new GLGE.Group();
 	carG.addChild(car).addChild(steerFR).addChild(steerFL).addChild(wheelBR).addChild(wheelBL);
