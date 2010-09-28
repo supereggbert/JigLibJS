@@ -67,7 +67,7 @@
 		this._driveTorque = driveTorque;
 	};
 
-	JCar.prototype.setupWheel=function(_name, pos, wheelSideFriction, wheelFwdFriction, wheelTravel, wheelRadius, wheelRestingFrac, wheelDampingFrac, wheelNumRays){
+	JCar.prototype.setupWheel=function(_name, pos, wheelSideFriction, wheelFwdFriction, wheelTravel, wheelRadius, wheelRestingFrac, wheelDampingFrac, wheelNumRays, drive){
 		if(wheelSideFriction==null) wheelSideFriction=2;
 		if(wheelFwdFriction==null) wheelFwdFriction=2;
 		if(wheelTravel==null) wheelTravel=3;
@@ -75,6 +75,8 @@
 		if(wheelRestingFrac==null) wheelRestingFrac=0.5;
 		if(wheelDampingFrac==null) wheelDampingFrac=0.5;
 		if(wheelNumRays==null) wheelNumRays=1;
+		if(drive==null) drive=1;
+
 		
 		var gravity = PhysicsSystem.getInstance().get_gravity().slice(0);
 		var mass = this._chassis.get_mass();
@@ -85,14 +87,15 @@
 		var axis = JNumber3D.getScaleVector(gravity,-1);
 		var spring = mass4 * gravityLen / (wheelRestingFrac * wheelTravel);
 		var inertia = 0.015 * wheelRadius * wheelRadius * mass;
-		var damping = 2 * mrSqrt(spring * mass);
-		damping *= (0.25 * wheelDampingFrac);
+		var damping = wheelDampingFrac/2;
+		//var damping = 2 * mrSqrt(spring * mass);
+		//damping *= (0.25 * wheelDampingFrac);
 //		damping /= this._steerRate;
 //		damping *= wheelDampingFrac;
 
 		var wheel = new JWheel(this);
 		wheel.name = _name;
-		wheel.setup(pos, axis, spring, wheelTravel, inertia, wheelRadius, wheelSideFriction, wheelFwdFriction, damping, wheelNumRays);
+		wheel.setup(pos, axis, spring, wheelTravel, inertia, wheelRadius, wheelSideFriction, wheelFwdFriction, damping, wheelNumRays, drive);
 		this._wheels.push(wheel);
 	};
 
