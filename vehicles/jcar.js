@@ -88,6 +88,8 @@
 		var spring = mass4 * gravityLen / (wheelRestingFrac * wheelTravel);
 		var inertia = 0.015 * wheelRadius * wheelRadius * mass;
 		var damping = wheelDampingFrac/2;
+		//var normalForce = gravityLen*mass4/Math.sqrt(wheelFwdFriction*wheelFwdFriction+wheelSideFriction*wheelSideFriction);
+		var normalForce = gravityLen*mass4;
 		//var damping = 2 * mrSqrt(spring * mass);
 		//damping *= (0.25 * wheelDampingFrac);
 //		damping /= this._steerRate;
@@ -95,7 +97,7 @@
 
 		var wheel = new JWheel(this);
 		wheel.name = _name;
-		wheel.setup(pos, axis, spring, wheelTravel, inertia, wheelRadius, wheelSideFriction, wheelFwdFriction, damping, wheelNumRays, drive);
+		wheel.setup(pos, axis, spring, wheelTravel, inertia, wheelRadius, wheelSideFriction, wheelFwdFriction, damping, wheelNumRays, drive, normalForce);
 		this._wheels.push(wheel);
 	};
 

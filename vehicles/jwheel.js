@@ -65,6 +65,7 @@
 	JWheel.prototype._displacement=null;
 	JWheel.prototype._upSpeed=null;
 	JWheel.prototype._rotDamping=null;
+	JWheel.prototype._normalForce=null;
 
 	JWheel.prototype._locked=null;
 	JWheel.prototype._lastDisplacement=null;
@@ -96,7 +97,7 @@
 	* inertia: inertia about the axel
 	* radius: wheel radius
 	*/
-	JWheel.prototype.setup=function(pos, axisUp, spring, travel, inertia, radius, sideFriction, fwdFriction, damping, numRays, drive){
+	JWheel.prototype.setup=function(pos, axisUp, spring, travel, inertia, radius, sideFriction, fwdFriction, damping, numRays, drive, normalForce){
 		if(spring==null) spring=0;
 		if(travel==null) travel=0;
 		if(inertia==null) inertia=0;
@@ -106,6 +107,7 @@
 		if(damping==null) damping=0;
 		if(numRays==null) numRays=0;
 		if(drive==null) drive=0;
+		if(normalForce==null) normalForce=0;
 		
 		this._pos = pos;
 		this._axisUp = axisUp;
@@ -118,6 +120,7 @@
 		this._damping = damping;
 		this._numRays = numRays;
 		this._drive = drive;
+		this._normalForce = normalForce;
 		this._torque = 0;
 		this.reset();
 	};
@@ -184,7 +187,7 @@
 	JWheel.prototype.getOnFloor=function(){
 		return this._lastOnFloor;
 	};
-
+	var maxforce=0;
 	// Adds the forces die to this wheel to the parent. Return value indicates if it's on the ground.
 	JWheel.prototype.addForcesToCar=function(dt){
 		var force = [0,0,0,0];
@@ -266,8 +269,8 @@
 		if (this._displacement < 0) this._displacement = 0;
 		
 		var mass = carBody.get_mass();
-		var mass4 = 0.25*mass;
-		
+		var mass4 = mass/4;
+		var otherFriction=otherBody.get_friction()
 	
 		var wheelCenterVel=carBody.getVelocity(this._pos);
 		
@@ -275,11 +278,11 @@
 		//hit floor hard
 		var origDisplacement=this._displacement;
 		if (this._displacement > this._travel){
-			var cv=(Vector3DUtil.dotProduct(wheelCenterVel,groundNormal)-this._upSpeed*this._damping)/dt*mass4;
-			cv=cv*(1+otherBody.get_restitution());
-			extraForce = JNumber3D.getScaleVector(groundNormal, -cv);
-			force = Vector3DUtil.add(force, extraForce);
 			this._displacement=this._travel;
+			var cv=Vector3DUtil.dotProduct(wheelCenterVel,wheelUp)/dt*mass4;
+			cv=cv*2*otherBody.get_restitution()/5;
+			extraForce = JNumber3D.getScaleVector(wheelUp, -cv);
+			force = Vector3DUtil.add(force, extraForce);
 		}
 		//suspension spring force
 		extraForce = JNumber3D.getScaleVector(this._axisUp, this._spring*this._displacement+this._upSpeed*this._damping);
@@ -294,15 +297,24 @@
 		var rimVel = JNumber3D.getScaleVector(Vector3DUtil.crossProduct(groundLeft, Vector3DUtil.subtract(groundPos, worldPos)), -this._angVel);
 		var centerVel = JNumber3D.getScaleVector(groundFwd, Vector3DUtil.dotProduct(wheelCenterVel,groundFwd));
 
-		var extraForce = JNumber3D.getScaleVector(Vector3DUtil.subtract(rimVel,centerVel), mass4/dt/this._radius*this._fwdFriction);
+		var friction=this._fwdFriction*otherFriction;
+		var extraForce = JNumber3D.getScaleVector(Vector3DUtil.subtract(rimVel,centerVel), mass4/dt/this._radius*friction);
+		var forceSize=Vector3DUtil.get_length(extraForce);
+		if(forceSize>this._normalForce*friction) extraForce = JNumber3D.getScaleVector(extraForce,this._normalForce*friction/forceSize);
 		force = Vector3DUtil.add(force, extraForce);		
-		
 		this._torque-=Vector3DUtil.dotProduct(Vector3DUtil.subtract(rimVel,centerVel),groundFwd)/this._radius*mass4/dt;
 		this._angVelForGrip = Vector3DUtil.dotProduct(wheelCenterVel, groundFwd) / this._radius;
 
 		//sideways friction
-		var leftVel = JNumber3D.getScaleVector(groundLeft, -Vector3DUtil.dotProduct(wheelCenterVel,groundLeft)*this._sideFriction);
+		var sideVel = Vector3DUtil.dotProduct(wheelCenterVel,groundLeft);
+		var friction=this._sideFriction*otherFriction;		
+		var leftVel = JNumber3D.getScaleVector(groundLeft, -sideVel*friction);
+
+		
 		var extraForce = JNumber3D.getScaleVector(leftVel, mass4/dt/this._radius);	
+		var forceSize=Vector3DUtil.get_length(extraForce);
+		if(forceSize>this._normalForce*friction) extraForce = JNumber3D.getScaleVector(extraForce,this._normalForce*friction/forceSize);
+		
 		force = Vector3DUtil.add(force, extraForce);
 
 		carBody.addWorldForce(force, groundPos);
