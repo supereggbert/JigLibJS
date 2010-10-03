@@ -88,7 +88,6 @@
 		var spring = mass4 * gravityLen / (wheelRestingFrac * wheelTravel);
 		var inertia = 0.015 * wheelRadius * wheelRadius * mass;
 		var damping = wheelDampingFrac/2;
-		//var normalForce = gravityLen*mass4/Math.sqrt(wheelFwdFriction*wheelFwdFriction+wheelSideFriction*wheelSideFriction);
 		var normalForce = gravityLen*mass4;
 		//var damping = 2 * mrSqrt(spring * mass);
 		//damping *= (0.25 * wheelDampingFrac);

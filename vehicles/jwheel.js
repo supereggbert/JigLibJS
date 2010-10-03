@@ -279,9 +279,9 @@
 		var origDisplacement=this._displacement;
 		if (this._displacement > this._travel){
 			this._displacement=this._travel;
-			var cv=Vector3DUtil.dotProduct(wheelCenterVel,wheelUp)/dt*mass4;
-			cv=cv*2*otherBody.get_restitution()/5;
-			extraForce = JNumber3D.getScaleVector(wheelUp, -cv);
+			var cv=Vector3DUtil.dotProduct(wheelCenterVel,groundNormal)/dt*mass4;
+			cv=cv*2*otherBody.get_restitution()/10;
+			extraForce = JNumber3D.getScaleVector(groundNormal, -cv);
 			force = Vector3DUtil.add(force, extraForce);
 		}
 		//suspension spring force
