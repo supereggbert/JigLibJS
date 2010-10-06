@@ -14,11 +14,11 @@
 	 * @param {Array}	exclusions	optional - a list of bodies that should be excluded from the effect 
 	 **/
 	var Wind=function(_direction, _exclusions) {
-		this.super();
+		this.Super();
 		this.direction=_direction;
 		if (_exclusions) this.exclusions=_exclusions;
 	};
-	jigLib.extends(Wind,jigLib.JEffect);
+	jigLib.extend(Wind,jigLib.JEffect);
 
 	Wind.prototype.direction = null;
 	Wind.prototype.exclusions = [];

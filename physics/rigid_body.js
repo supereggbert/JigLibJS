@@ -186,6 +186,17 @@
 		this._rotationZ = pz;
 		this.setOrientation(this.createRotationMatrix());
 	};
+	
+	/**
+	 * @param vect - [x,y,z] rotation
+	 * @returns
+	 */
+	RigidBody.prototype.setRotation=function(vect){
+		this._rotationX=vect[0];
+		this._rotationY=vect[1];
+		this._rotationZ=vect[2];
+		this.setOrientation(this.createRotationMatrix());
+	};
 
 	RigidBody.prototype.pitch=function(rot){
 		this.setOrientation(JMatrix3D.getAppendMatrix3D(this.get_currentState().orientation, JMatrix3D.getRotationMatrixAxis(rot, Vector3DUtil.X_AXIS)));
@@ -791,10 +802,10 @@
 	
 	RigidBody.prototype.get_doShockProcessing=function(){
 		return this._doShockProcessing;
-	}
+	};
 	RigidBody.prototype.set_doShockProcessing=function(doShock){
 		this._doShockProcessing = doShock;
-	}
+	};
 
 	//every dimension should be set to 0-1;
 	RigidBody.prototype.set_linVelocityDamping=function(vel){

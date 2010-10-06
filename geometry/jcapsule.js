@@ -33,7 +33,7 @@ distribution.
 	var JSegment=jigLib.JSegment;
 	
 	var JCapsule=function(skin, r, l) {
-		this.super(skin);
+		this.Super(skin);
 		this._type = "CAPSULE";
 		this._radius = r;
 		this._length = l;
@@ -41,7 +41,7 @@ distribution.
 		this.set_mass(1);
 		this.updateBoundingBox();
 	};
-	jigLib.extends(JCapsule,jigLib.RigidBody);
+	jigLib.extend(JCapsule,jigLib.RigidBody);
 	
 	JCapsule.prototype._length=null;
 	JCapsule.prototype._radius=null;

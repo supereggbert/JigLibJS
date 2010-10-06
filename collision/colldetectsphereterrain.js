@@ -38,7 +38,7 @@
 		this.type0 = "SPHERE";
 		this.type1 = "TERRAIN";
 	};
-	jigLib.extends(CollDetectSphereTerrain,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectSphereTerrain,jigLib.CollDetectFunctor);
 	CollDetectSphereTerrain.prototype.collDetect=function(info, collArr){
 		var tempBody;
 		if (info.body0.type == "TERRAIN"){

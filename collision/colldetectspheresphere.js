@@ -35,7 +35,7 @@
 		this.type0 = "SPHERE";
 		this.type1 = "SPHERE";
 	};
-	jigLib.extends(CollDetectSphereSphere,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectSphereSphere,jigLib.CollDetectFunctor);
 	
 	CollDetectSphereSphere.prototype.collDetect=function(info, collArr){
 		var sphere0 = info.body0;

@@ -42,7 +42,7 @@
 		this.type0 = "CAPSULE";
 		this.type1 = "BOX";
 	};
-	jigLib.extends(CollDetectCapsuleBox,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectCapsuleBox,jigLib.CollDetectFunctor);
 
 	CollDetectCapsuleBox.prototype.collDetect=function(info, collArr){
 		var tempBody;

@@ -38,7 +38,7 @@
 		this.type0 = "CAPSULE";
 		this.type1 = "TERRAIN";
 	};
-	jigLib.extends(CollDetectCapsuleTerrain,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectCapsuleTerrain,jigLib.CollDetectFunctor);
 
 	CollDetectCapsuleTerrain.prototype.collDetect=function(info, collArr){
 		var tempBody;

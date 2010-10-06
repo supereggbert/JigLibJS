@@ -15,12 +15,12 @@
 	*/
 	
 	var JTerrain=function(tr){
-		this.super(null);
+		this.Super(null);
 		this._terrain = tr;
 		this.set_movable(false);
 		this._type = "TERRAIN";
 	};
-	jigLib.extends(JTerrain,jigLib.RigidBody);
+	jigLib.extend(JTerrain,jigLib.RigidBody);
 	JTerrain.prototype._terrain=null;
 	
 	JTerrain.prototype.get_terrainMesh=function(){

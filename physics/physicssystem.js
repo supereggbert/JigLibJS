@@ -191,12 +191,6 @@
 	PhysicsSystem.prototype.setSolverType=function(type){
 		switch (type)
 		{
-			case "SIMPLE":
-				this.preProcessCollisionFn = this.preProcessCollisionSimple;
-				this.preProcessContactFn = this.preProcessCollisionSimple;
-				this.processCollisionFn = this.processCollision;
-				this.processContactFn = this.processCollision;
-				return;
 			case "FAST":
 				this.preProcessCollisionFn = this.preProcessCollisionFast;
 				this.preProcessContactFn = this.preProcessCollisionFast;
@@ -454,62 +448,6 @@
 		}
 	};
 	
-	/**
-	 * a simplified, faster version of the accumulated solver
-	 */
-	PhysicsSystem.prototype.preProcessCollisionSimple=function(collision, dt){
-		collision.satisfied = false;
-		var body0 = collision.objInfo.body0;
-		var body1 = collision.objInfo.body1;
-		var N = collision.dirToBody;
-		var timescale = JConfig.numPenetrationRelaxationTimesteps * dt;
-		var tempV;
-		var ptInfo;
-		var initMinAllowedPen;
-		var approachScale = 0;
-		var numTiny = JNumber3D.NUM_TINY;
-		var allowedPenetration = JConfig.allowedPenetration;
-
-		var i = collision.pointInfo.length - 1;
-		do{
-			ptInfo = collision.pointInfo[i];
-			initMinAllowedPen = ptInfo.initialPenetration - allowedPenetration;
-			if (!body0.get_movable()){
-				ptInfo.denominator = 0;
-			}else{
-				tempV = Vector3DUtil.crossProduct(ptInfo.r0, N);
-				JMatrix3D.multiplyVector(body0.get_worldInvInertia(), tempV);
-				ptInfo.denominator = body0.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r0));
-			}
-
-			if (body1.get_movable()){
-				tempV = Vector3DUtil.crossProduct(ptInfo.r1, N);
-				JMatrix3D.multiplyVector(body1.get_worldInvInertia(), tempV);
-				ptInfo.denominator += (body1.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, ptInfo.r1)));
-			}
-			if (ptInfo.denominator < numTiny) ptInfo.denominator = numTiny;
-
-			if (ptInfo.initialPenetration > allowedPenetration){
-				ptInfo.minSeparationVel = initMinAllowedPen / timescale;
-			}else{
-				approachScale = -0.1 * initMinAllowedPen / allowedPenetration;
-				
-				if (approachScale < numTiny) approachScale = numTiny;
-				else if (approachScale > 1) approachScale = 1;
-				
-				var max=(dt>numTiny) ? dt : numTiny;
-				ptInfo.minSeparationVel = approachScale * initMinAllowedPen / max;
-			}
-
-			ptInfo.accumulatedNormalImpulse = 0;
-			ptInfo.accumulatedNormalImpulseAux = 0;
-			ptInfo.accumulatedFrictionImpulse = [0,0,0,0];
-
-			var bestDistSq = 0.04;
-			var bp = new BodyPair(body0, body1, [0,0,0,0], [0,0,0,0]);
-		} while (i--);
-	};
-	
 	/* Handle an individual collision by classifying it, calculating
 	impulse, applying impulse and updating the velocities of the
 	objects. Allows over-riding of the elasticity. Ret val indicates
@@ -725,7 +663,7 @@
 			return 1;
 		else
 			return 0;
-	}
+	};
                 
 	PhysicsSystem.prototype.sortPositionY=function(body0, body1){
 		if (body0.get_currentState().position[1] < body1.get_currentState().position[1])
@@ -734,7 +672,7 @@
 			return 1;
 		else
 			return 0;
-	}
+	};
                 
 	PhysicsSystem.prototype.sortPositionZ=function(body0, body1){
 		if (body0.get_currentState().position[2] < body1.get_currentState().position[2])
@@ -743,7 +681,7 @@
 			return 1;
 		else
 			return 0;
-	}
+	};
                 
 	PhysicsSystem.prototype.doShockStep=function(dt){
 		if (Math.abs(this._gravity[0]) > Math.abs(this._gravity[1]) && Math.abs(this._gravity[0]) > Math.abs(this._gravity[2])){

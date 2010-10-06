@@ -40,7 +40,7 @@
 		this.type0 = "SPHERE";
 		this.type1 = "PLANE";
 	};
-	jigLib.extends(CollDetectSpherePlane,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectSpherePlane,jigLib.CollDetectFunctor);
 	
 	CollDetectSpherePlane.prototype.collDetect=function(info, collArr){
 		var tempBody;

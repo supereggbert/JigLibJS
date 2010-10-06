@@ -16,13 +16,13 @@
 	 * @param {Object}	parent		optional - a RigidBody that the gravitational field will follow - excluded from effect 
 	 **/
 	var GravityField=function(_location, _radius, _force, _parent) {
-		this.super();
+		this.Super();
 		this.location=_location;
 		this.radius=_radius;
 		this.force=_force;
 		if (_parent) this.parent=_parent;
 	};
-	jigLib.extends(GravityField,jigLib.JEffect);
+	jigLib.extend(GravityField,jigLib.JEffect);
 
 	GravityField.prototype.location = null;
 	GravityField.prototype.radius = null;

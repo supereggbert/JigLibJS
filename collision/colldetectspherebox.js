@@ -39,7 +39,7 @@ distribution.
 		this.type0 = "SPHERE";
 		this.type1 = "BOX";
 	};
-	jigLib.extends(CollDetectSphereBox,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectSphereBox,jigLib.CollDetectFunctor);
 	
 				
 	CollDetectSphereBox.prototype.collDetect=function(info, collArr){

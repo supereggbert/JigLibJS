@@ -33,11 +33,11 @@
 		if(depth==null) depth=70;
 		if(height==null) height=30;
 		
-		this.super(skin, width, depth, height);
+		this.Super(skin, width, depth, height);
 
 		this._car = car;
 	};
-	jigLib.extends(JChassis,jigLib.JBox);
+	jigLib.extend(JChassis,jigLib.JBox);
 	
 	JChassis.prototype._car=null;
 	

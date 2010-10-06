@@ -32,7 +32,7 @@
 
 	var JConstraintMaxDistance=function(body0, body0Pos, body1, body1Pos, maxDistance){
 		if(!maxDistance) maxDistance=1;
-		this.super();
+		this.Super();
 		this._body0 = body0;
 		this._body0Pos = body0Pos;
 		this._body1 = body1;
@@ -41,7 +41,7 @@
 		body0.addConstraint(this);
 		body1.addConstraint(this);
 	};
-	jigLib.extends(JConstraintMaxDistance,jigLib.JConstraint);
+	jigLib.extend(JConstraintMaxDistance,jigLib.JConstraint);
 	
 	JConstraintMaxDistance.prototype._maxVelMag = 20;
 	JConstraintMaxDistance.prototype._minVelForProcessing = 0.01;
