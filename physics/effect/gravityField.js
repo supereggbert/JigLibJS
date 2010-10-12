@@ -36,7 +36,8 @@
 	 * @returns
 	 */
 	GravityField.prototype.Apply = function() {
-		var bodies=jigLib.PhysicsSystem.getInstance().get_bodies();
+		var system=jigLib.PhysicsSystem.getInstance();
+		var bodies=system.get_bodies();
 		var i=bodies.length-1;
 		var curBody, distance, force, forceV;
 		
@@ -55,6 +56,7 @@
 				force=(1-(distance / this.radius)) * this.force;
 				Vector3DUtil.scaleBy(forceV, force);
 				Vector3DUtil.negate(forceV);
+				system.activateObject(curBody);
 				curBody.addWorldForce(forceV, this.location);
 			}
 		} while(i--);

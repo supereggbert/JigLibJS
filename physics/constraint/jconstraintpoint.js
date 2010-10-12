@@ -34,7 +34,7 @@
 	/// timescale indicates the timescale over which deviation is eliminated
 	/// (suggest a few times dt - be careful if there's a variable timestep!)
 	/// if timescale < 0 then the value indicates the number of dts
-	var JConstraintPoint=function(body0, body0Pos, body1, body1Pos, allowedDistance , timescale ){
+	var JConstraintPoint=function(body0, body0Pos, body1, body1Pos, allowedDistance, timescale ){
 		if(!allowedDistance) allowedDistance=1;
 		if(!timescale) timescale=1;
 		this.Super();

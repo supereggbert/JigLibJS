@@ -36,9 +36,7 @@
 
 	/**
 	 * Sets the effect to fire the next time Apply() is called
-	 * 
-	 * @returns
-	 */
+	 **/
 	Explosion.prototype.explode = function() {
 		this.enabled = true;
 	};
@@ -46,9 +44,7 @@
 	/**
 	 * Applies the effect to the relevant bodies.
 	 * Typically called by PhysicsSystem.handleAllEffects. 
-	 * 
-	 * @returns
-	 */
+	 **/
 	Explosion.prototype.Apply = function() {
 		this.enabled = false;
 		var system=jigLib.PhysicsSystem.getInstance();

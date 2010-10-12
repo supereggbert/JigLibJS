@@ -39,7 +39,8 @@
 	 * @returns
 	 */
 	Wind.prototype.Apply = function() {
-		var bodies=jigLib.PhysicsSystem.getInstance().get_bodies();
+		var system=jigLib.PhysicsSystem.getInstance();
+		var bodies=system.get_bodies();
 		var i=bodies.length;
 		var curBody;
 		
@@ -47,6 +48,7 @@
 		while(i--) {
 			curBody=bodies[i];
 			if (!curBody.get_movable() || this.isExcluded(curBody)) continue;
+			system.activateObject(curBody);
 			curBody.addWorldForce(this.direction, [0,0,0]);
 		}
 	};
