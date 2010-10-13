@@ -41,7 +41,7 @@
 		this.type0 = "CAPSULE";
 		this.type1 = "CAPSULE";
 	};
-	jigLib.extends(CollDetectCapsuleCapsule,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectCapsuleCapsule,jigLib.CollDetectFunctor);
 
 	CollDetectCapsuleCapsule.prototype.collDetect=function(info, collArr){
 		var capsule0 = info.body0;

@@ -32,13 +32,13 @@ distribution.
 
 	// pointOnBody is in body coords
 	var JConstraintWorldPoint=function(body, pointOnBody, worldPosition) {
-		this.super();
+		this.Super();
 		this._body = body;
 		this._pointOnBody = pointOnBody;
 		this._worldPosition = worldPosition;
 		body.addConstraint(this);
 	};
-	jigLib.extends(JConstraintWorldPoint,jigLib.JConstraint);
+	jigLib.extend(JConstraintWorldPoint,jigLib.JConstraint);
 
 	JConstraintWorldPoint.prototype.minVelForProcessing = 0.001;
 	JConstraintWorldPoint.prototype.allowedDeviation = 0.01;

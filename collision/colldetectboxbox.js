@@ -43,7 +43,7 @@
 		this.type1 = "BOX";
 	};
 	
-	jigLib.extends(CollDetectBoxBox,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectBoxBox,jigLib.CollDetectFunctor);
 	
 	CollDetectBoxBox.prototype.MAX_SUPPORT_VERTS = 10;
 	CollDetectBoxBox.prototype.combinationDist=null;
@@ -87,13 +87,13 @@
 		return true;
 	};
 
-                
+				
 	CollDetectBoxBox.prototype.getSupportPoint=function(box, axis) {
 		var orientationCol = box.get_currentState().getOrientationCols();
 		var _as = Vector3DUtil.dotProduct(axis,orientationCol[0]);
 		var _au = Vector3DUtil.dotProduct(axis,orientationCol[1]);
 		var _ad = Vector3DUtil.dotProduct(axis,orientationCol[2]);
-                        
+						
 		var p = box.get_currentState().position.slice(0);
   
 		var sideLengths=box.get_sideLengths();
@@ -116,7 +116,7 @@
 			p = Vector3DUtil.subtract(p,JNumber3D.getScaleVector(orientationCol[2], 0.5 * sideLengths[2]));
 		}
 		return p;
-	}
+	};
 
 	CollDetectBoxBox.prototype.getAABox2EdgeIntersectionPoints=function(contactPoint, origBoxSides, origBoxState, edgePt0, edgePt1){
 		var jDir;
@@ -127,7 +127,7 @@
 		var num=0;
 		var pt;
 		var edgeDir = Vector3DUtil.subtract(edgePt1, edgePt0);
-                 Vector3DUtil.normalize(edgeDir);
+				 Vector3DUtil.normalize(edgeDir);
 		var ptArr=[];
 		var faceOffsets=[];
 		var edgePt0Arr = edgePt0;
@@ -168,9 +168,9 @@
 			}
 		}
 		return num;
-	}
-                
-        CollDetectBoxBox.prototype.getBox2BoxEdgesIntersectionPoints=function(contactPoint, box0, box1, newState){
+	};
+				
+	CollDetectBoxBox.prototype.getBox2BoxEdgesIntersectionPoints=function(contactPoint, box0, box1, newState){
 		var num = 0;
 		var seg;
 		var box0State = (newState) ? box0.get_currentState() : box0.get_oldState();
@@ -190,15 +190,15 @@
 			}
 		}
 		return num;
-	}
+	};
 
-        CollDetectBoxBox.prototype.getBoxBoxIntersectionPoints=function(contactPoint, box0, box1, newState){
+		CollDetectBoxBox.prototype.getBoxBoxIntersectionPoints=function(contactPoint, box0, box1, newState){
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box0, box1, newState);
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box1, box0, newState);
 		return Vector3DUtil.get_length(contactPoint);
-	}
-                
-        CollDetectBoxBox.prototype.collDetect=function(info, collArr){
+	};
+				
+		CollDetectBoxBox.prototype.collDetect=function(info, collArr){
 		var box0 = info.body0;
 		var box1 = info.body1;
 
@@ -214,16 +214,16 @@
 
 		// the 15 potential separating axes
 		var axes = [dirs0Arr[0], dirs0Arr[1], dirs0Arr[2],
-                                dirs1Arr[0], dirs1Arr[1], dirs1Arr[2],
-                                Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[0]),
-                                Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[0]),
-                                Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[0]),
-                                Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[1]),
-                                Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[1]),
-                                Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[1]),
-                                Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[2]),
-                                Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[2]),
-                                Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[2])];
+								dirs1Arr[0], dirs1Arr[1], dirs1Arr[2],
+								Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[0]),
+								Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[0]),
+								Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[0]),
+								Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[1]),
+								Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[1]),
+								Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[1]),
+								Vector3DUtil.crossProduct(dirs0Arr[0],dirs1Arr[2]),
+								Vector3DUtil.crossProduct(dirs0Arr[1],dirs1Arr[2]),
+								Vector3DUtil.crossProduct(dirs0Arr[2],dirs1Arr[2])];
 
 		var l2;
 		// the overlap depths along each axis
@@ -239,7 +239,7 @@
 
 			l2 = Vector3DUtil.get_lengthSquared(axes[i]);
 			if (l2 < numTiny) continue;
-                                
+								
 			var ax = axes[i].slice(0);
 			Vector3DUtil.normalize(ax);
 			if (this.disjoint(overlapDepths[i], ax, box0, box1)) return;
@@ -259,14 +259,14 @@
 				minAxis =i;
 			}
 		}
-                        
+						
 		if (minAxis == -1) return;
-                        
+						
 		// Make sure the axis is facing towards the box0. if not, invert it
 		var N= axes[minAxis].splice(0);
 		if (Vector3DUtil.dotProduct(Vector3DUtil.subtract(box1.get_currentState().position,box0.get_currentState().position),N) > 0) 
 			N = JNumber3D.getScaleVector(N, -1);
-                        
+						
 		var contactPointsFromOld = true;
 		var contactPoints = [];
 		var box0lengths=box0.get_sideLengths();
@@ -277,16 +277,16 @@
 
 		if (minDepth > -JNumber3D.NUM_TINY)
 			this.getBoxBoxIntersectionPoints(contactPoints, box0, box1, false);
-                        
+						
 		if (contactPoints.length == 0){
 			contactPointsFromOld = false;
 			this.getBoxBoxIntersectionPoints(contactPoints, box0, box1, true);
 		}
-                        
+						
 		var bodyDelta = Vector3DUtil.subtract(Vector3DUtil.subtract(box0.get_currentState().position,box0.get_oldState().position),Vector3DUtil.subtract(box1.get_currentState().position,box1.get_oldState().position));
 		var bodyDeltaLen = Vector3DUtil.dotProduct(bodyDelta,N);
 		var oldDepth = minDepth + bodyDeltaLen;
-                        
+						
 		var SATPoint = [];
 		switch(minAxis){
 			//-----------------------------------------------------------------
@@ -334,29 +334,29 @@
 			//-----------------------------------------------------------------
 			var P0 = this.getSupportPoint(box0, N);
 			var P1 = this.getSupportPoint(box1, JNumber3D.getScaleVector(N, -1));
-      
+	  
 			//-----------------------------------------------------------------
 			// Find the edge intersection. 
 			//-----------------------------------------------------------------
-     
+	 
 			//-----------------------------------------------------------------
 			// plane along N and F, and passing through PB
 			//-----------------------------------------------------------------
 			var planeNormal = Vector3DUtil.crossProduct(N,dirs1Arr[ib]);
 			var planeD = Vector3DUtil.dotProduct(planeNormal,P1);
-      
+	  
 			//-----------------------------------------------------------------
 			// find the intersection t, where Pintersection = P0 + t*box edge dir
 			//-----------------------------------------------------------------
 			var div = Vector3DUtil.dotProduct(dirs0Arr[ia],planeNormal);
-      
+	  
 			//-----------------------------------------------------------------
 			// plane and ray colinear, skip the intersection.
 			//-----------------------------------------------------------------
 			if (Math.abs(div) < JNumber3D.NUM_TINY) return;
-      
+	  
 			var t = (planeD - Vector3DUtil.dotProduct(P0,planeNormal)) / div;
-      
+	  
 			//-----------------------------------------------------------------
 			// point on edge of box0
 			//-----------------------------------------------------------------
@@ -390,7 +390,7 @@
 			if (maxDist < minDist + JNumber3D.NUM_TINY) maxDist = minDist + JNumber3D.NUM_TINY;
 
 			i = 0;
-                              
+							  
 			for(var j=0;j<contactPoints.length;j++){
 				contactPoint=contactPoints[j];
 				dist = Vector3DUtil.get_length(Vector3DUtil.subtract(contactPoint,SATPoint));
@@ -414,7 +414,7 @@
 			cpInfo.r0 = Vector3DUtil.subtract(SATPoint,box0.get_currentState().position);
 			cpInfo.r1 = Vector3DUtil.subtract(SATPoint,box1.get_currentState().position);
 			cpInfo.initialPenetration = oldDepth;
-                                
+
 			collPts = [];
 			collPts[0] = cpInfo;
 		}
@@ -431,7 +431,7 @@
 
 		info.body0.collisions.push(collInfo);
 		info.body1.collisions.push(collInfo);
-	}
+	};
 
 	jigLib.CollDetectBoxBox=CollDetectBoxBox;
 	

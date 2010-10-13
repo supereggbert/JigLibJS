@@ -41,7 +41,7 @@
 		this.type0 = "BOX";
 		this.type1 = "PLANE";
 	};
-	jigLib.extends(CollDetectBoxPlane,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectBoxPlane,jigLib.CollDetectFunctor);
 
 	CollDetectBoxPlane.prototype.collDetect=function(info, collArr){
 		var tempBody;

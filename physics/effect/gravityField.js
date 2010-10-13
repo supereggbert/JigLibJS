@@ -16,13 +16,13 @@
 	 * @param {Object}	parent		optional - a RigidBody that the gravitational field will follow - excluded from effect 
 	 **/
 	var GravityField=function(_location, _radius, _force, _parent) {
-		this.super();
+		this.Super();
 		this.location=_location;
 		this.radius=_radius;
 		this.force=_force;
 		if (_parent) this.parent=_parent;
 	};
-	jigLib.extends(GravityField,jigLib.JEffect);
+	jigLib.extend(GravityField,jigLib.JEffect);
 
 	GravityField.prototype.location = null;
 	GravityField.prototype.radius = null;
@@ -36,7 +36,8 @@
 	 * @returns
 	 */
 	GravityField.prototype.Apply = function() {
-		var bodies=jigLib.PhysicsSystem.getInstance().get_bodies();
+		var system=jigLib.PhysicsSystem.getInstance();
+		var bodies=system.get_bodies();
 		var i=bodies.length-1;
 		var curBody, distance, force, forceV;
 		
@@ -55,6 +56,7 @@
 				force=(1-(distance / this.radius)) * this.force;
 				Vector3DUtil.scaleBy(forceV, force);
 				Vector3DUtil.negate(forceV);
+				system.activateObject(curBody);
 				curBody.addWorldForce(forceV, this.location);
 			}
 		} while(i--);

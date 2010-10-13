@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="YUICompression" basedir="../">
+	<target name="default" description="Minifiy a set of files">
+		<taskdef name="yuicompress"
+			classname="com.yahoo.platform.yui.compressor.YUICompressTask">
+			<classpath>
+				<pathelement path="${basedir}/build/yuicompressor-2.4.2.jar" />
+				<pathelement path="${basedir}/build/YUIAnt.jar" />
+			</classpath>
+		</taskdef>
+		<yuicompress linebreak="16000" warn="false" munge="yes"
+			preserveallsemicolons="true" outputfolder="${basedir}/build/output/">
+			<fileset dir="${basedir}">
+				<exclude name="build/**" />
+				<exclude name="tests/**" />
+				<include name="**/*.js" />
+				<!--include name="**/*.css" / -->
+			</fileset>
+		</yuicompress>
+	</target>
+</project>

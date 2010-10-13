@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 
 <title>GLGE with jigLib Demo</title>
@@ -8,7 +8,7 @@
 <script type="text/javascript" src="slider/timer.js"></script>
 <script type="text/javascript" src="slider/slider.js"></script>
 <link type="text/css" rel="StyleSheet" href="slider/winclassic.css" />
-    
+
 <script type="text/javascript" src="../jiglib.js"></script>
 
 <script type="text/javascript" src="../cof/jconfig.js"></script>
@@ -54,21 +54,33 @@
 <script type="text/javascript" src="../collision/colldetectfunctor.js"></script>
 <script type="text/javascript" src="../collision/colldetectboxbox.js"></script>
 <script type="text/javascript" src="../collision/colldetectboxplane.js"></script>
-<script type="text/javascript" src="../collision/colldetectboxterrain.js"></script>
-<script type="text/javascript" src="../collision/colldetectcapsulebox.js"></script>
-<script type="text/javascript" src="../collision/colldetectcapsulecapsule.js"></script>
-<script type="text/javascript" src="../collision/colldetectcapsuleplane.js"></script>
-<script type="text/javascript" src="../collision/colldetectcapsuleterrain.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectboxterrain.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectcapsulebox.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectcapsulecapsule.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectcapsuleplane.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectcapsuleterrain.js"></script>
 <script type="text/javascript" src="../collision/colldetectspherebox.js"></script>
-<script type="text/javascript" src="../collision/colldetectspherecapsule.js"></script>
-<script type="text/javascript" src="../collision/colldetectsphereplane.js"></script>
-<script type="text/javascript" src="../collision/colldetectspheresphere.js"></script>
-<script type="text/javascript" src="../collision/colldetectsphereterrain.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectspherecapsule.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectsphereplane.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectspheresphere.js"></script>
+<script type="text/javascript"
+	src="../collision/colldetectsphereterrain.js"></script>
 <script type="text/javascript" src="../collision/collisionsystem.js"></script>
 
-<script type="text/javascript" src="../physics/constraint/jconstraint.js"></script>
-<script type="text/javascript" src="../physics/constraint/jconstraintmaxdistance.js"></script>
-<script type="text/javascript" src="../physics/constraint/jconstraintpoint.js"></script>
+<script type="text/javascript"
+	src="../physics/constraint/jconstraint.js"></script>
+<script type="text/javascript"
+	src="../physics/constraint/jconstraintmaxdistance.js"></script>
+<script type="text/javascript"
+	src="../physics/constraint/jconstraintpoint.js"></script>
 <script type="text/javascript" src="../physics/hingejoint.js"></script>
 
 <script type="text/javascript" src="../physics/physicssystem.js"></script>
@@ -77,26 +89,41 @@
 <script type="text/javascript" src="../vehicles/jwheel.js"></script>
 <script type="text/javascript" src="../vehicles/jcar.js"></script>
 
-<script type="text/javascript" src="glge_math.js"></script> 
-<script type="text/javascript" src="glge.js"></script> 
+<script type="text/javascript" src="glge_math.js"></script>
+<script type="text/javascript" src="glge.js"></script>
 <style>
-body{margin:auto; background-color: #888; padding-top: 50px; font-family:sans; color: #666; font-size: 0.8em}
-#container{ margin:auto; width: 900px; padding: 10px; background-color: #fff; border-radius: 5px; -webkit-box-shadow: 5px 5px 2px #444; }
+body {
+	margin: auto;
+	background-color: #888;
+	padding-top: 50px;
+	font-family: sans;
+	color: #666;
+	font-size: 0.8em
+}
+
+#container {
+	margin: auto;
+	width: 900px;
+	padding: 10px;
+	background-color: #fff;
+	border-radius: 5px;
+	-webkit-box-shadow: 5px 5px 2px #444;
+}
 </style>
 </head>
 <body>
 
 
-<div id="container">
-<canvas id="canvas" width="900" height="400"></canvas>
+<div id="container"><canvas id="canvas" width="900" height="400"></canvas>
 
 <h2>GLGE vehicle Demo</h2>
 Acceleration/steering: arrow keys<br />
-Handbrake: spacebar<br /><br />
-<div id="details" style="width:100%">
-	<div id="debug" style="width:50%; float:left;">left div</div>
-	<div id="debug2" style="width:50%; float:left;"></div>
-	<div style="clear:both;"></div>
+Handbrake: spacebar<br />
+<br />
+<div id="details" style="width: 100%">
+<div id="debug" style="width: 50%; float: left;">left div</div>
+<div id="debug2" style="width: 50%; float: left;"></div>
+<div style="clear: both;"></div>
 </div>
 
 
@@ -139,6 +166,7 @@ Handbrake: spacebar<br /><br />
 			<!--camera id="mainCamera" loc_z="0" loc_y="10" fov_y="35" rot_x="-1.57" /-->
 			
 			<object id="groundObject" mesh="#groundMesh" material="#grid" rot_x="-1.57"  scale="100" loc_y="-40" />
+			<!--object id="groundObject" mesh="#Cube" material="#grid" scale_x="100" scale_z="100" scale_y="20" loc_y="-60" /-->
 			<object id="carObject" mesh="#Cube" material="#red" scale_x="20" scale_y="10" scale_z="45" />
 			<object id="wheelFRObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
 			<object id="wheelFLObject" mesh="#Cube" material="#grey" scale_x="3" scale_y="8" scale_z="8" />
@@ -151,9 +179,7 @@ Handbrake: spacebar<br /><br />
 			
 		</scene>
 	</glge>
-</script>
-
-<script><!--
+</script> <script><!--
 
 var canvas = document.getElementById( 'canvas' )
 var renderer = new GLGE.Renderer( canvas );
@@ -174,18 +200,18 @@ XMLdoc.onLoad = function(){
 	var wheelFR = XMLdoc.getElement("wheelFRObject");
 	var steerFR = new GLGE.Group();
 	steerFR.addChild(wheelFR);
-	steerFR.setLocX(20).setLocY(-10).setLocZ(25);
+	steerFR.setLocX(20).setLocY(-30).setLocZ(25);
 	
 	var wheelFL = XMLdoc.getElement("wheelFLObject");
 	var steerFL = new GLGE.Group();
 	steerFL.addChild(wheelFL);
-	steerFL.setLocX(-20).setLocY(-10).setLocZ(25);
+	steerFL.setLocX(-20).setLocY(-30).setLocZ(25);
 	
 	var wheelBR = XMLdoc.getElement("wheelBRObject");
-	wheelBR.setLocX(20).setLocY(-10).setLocZ(-25);
+	wheelBR.setLocX(20).setLocY(-30).setLocZ(-25);
 	
 	var wheelBL = XMLdoc.getElement("wheelBLObject");
-	wheelBL.setLocX(-20).setLocY(-10).setLocZ(-25);
+	wheelBL.setLocX(-20).setLocY(-30).setLocZ(-25);
 	
 	var carG = new GLGE.Group();
 	carG.addChild(car).addChild(steerFR).addChild(steerFL).addChild(wheelBR).addChild(wheelBL);
@@ -417,9 +443,7 @@ XMLdoc.onLoad = function(){
 
 XMLdoc.parseScript("glge_document");
 
---></script>
-
-</div>
+--></script></div>
 </body>
 </html>
 

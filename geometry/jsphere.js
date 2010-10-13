@@ -32,14 +32,14 @@
 	var RigidBody=jigLib.RigidBody;
 
 	var JSphere=function(skin, r){
-		this.super(skin);
+		this.Super(skin);
 		this._type = "SPHERE";
 		this._radius = r;
 		this._boundingSphere = this._radius;
 		this.set_mass(1);
 		this.updateBoundingBox();
 	};
-	jigLib.extends(JSphere,jigLib.RigidBody);
+	jigLib.extend(JSphere,jigLib.RigidBody);
 	JSphere.prototype.name=null;
 	JSphere.prototype._radius=null;
 

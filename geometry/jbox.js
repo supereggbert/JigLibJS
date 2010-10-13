@@ -10,13 +10,13 @@
 	var SpanData=jigLib.SpanData;
 
 	/**
-		 * @author Muzer(muzerly@gmail.com)
-		 * @link http://code.google.com/p/jiglibflash
-		 */
+	 * @author Muzer(muzerly@gmail.com)
+	 * @link http://code.google.com/p/jiglibflash
+	 */
 	
 	var JBox=function(skin, width, depth, height){
-		//	calling "this.super" causes recursion in inheritance chains longer than 1
-		//this.super(skin);
+		//	calling "this.Super" causes recursion in inheritance chains longer than 1
+		//this.Super(skin);
 		jigLib.RigidBody.call(this);
 		
 		this._edges=[new EdgeData( 0, 1 ), new EdgeData( 3, 1 ), new EdgeData( 2, 3 ),
@@ -37,7 +37,7 @@
 		this.updateBoundingBox();
 	};
 	
-	jigLib.extends(JBox,jigLib.RigidBody);
+	jigLib.extend(JBox,jigLib.RigidBody);
 	JBox.prototype._sideLengths=null;
 	JBox.prototype._points=null;
 	JBox.prototype._edges=null; 
@@ -249,7 +249,7 @@
 
 		var _v0 =vertices[0] = this.get_currentState().position.slice(0);
 		k = (d[0] > 0) ? -1 : 1;
-		vertices[0] = Vector3DUtil.add(_v0, JNumber3D.getScaleVector(temp[0], k *this. _sideLengths[0] / 2));
+		vertices[0] = Vector3DUtil.add(_v0, JNumber3D.getScaleVector(temp[0], k * this._sideLengths[0] / 2));
 		k = (d[1] > 0) ? -1 : 1;
 		vertices[0] = Vector3DUtil.add(_v0, JNumber3D.getScaleVector(temp[1], k * this._sideLengths[1] / 2));
 		k = (d[2] > 0) ? -1 : 1;

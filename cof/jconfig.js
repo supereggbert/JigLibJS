@@ -1,6 +1,6 @@
 (function(jigLib){
 	jigLib.JConfig={
-		solverType: "ACCUMULATED", //allowable value: FAST,NORMAL,ACCUMULATED,SIMPLE								// WAS ACCUMULATED
+		solverType: "ACCUMULATED", //allowable value: FAST,NORMAL,ACCUMULATED						// WAS ACCUMULATED
 		boxCollisionsType: "EDGEBASE", //allowable value: EDGEBASE or SORTBASE
 		rotationType: "DEGREES", // can be either RADIANS or DEGREES;								// WAS DEGREES
 		aabbDetection: true, //if execute the aabb detection;

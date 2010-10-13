@@ -96,7 +96,7 @@
 
 		this.enableHinge();
 	};
-	jigLib.extends(HingeJoint,jigLib.PhysicsController);
+	jigLib.extend(HingeJoint,jigLib.PhysicsController);
 	
 	HingeJoint.prototype.MAX_HINGE_ANGLE_LIMIT = 150;
 	HingeJoint.prototype._hingeAxis = null;

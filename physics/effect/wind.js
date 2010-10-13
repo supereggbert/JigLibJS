@@ -14,11 +14,11 @@
 	 * @param {Array}	exclusions	optional - a list of bodies that should be excluded from the effect 
 	 **/
 	var Wind=function(_direction, _exclusions) {
-		this.super();
+		this.Super();
 		this.direction=_direction;
 		if (_exclusions) this.exclusions=_exclusions;
 	};
-	jigLib.extends(Wind,jigLib.JEffect);
+	jigLib.extend(Wind,jigLib.JEffect);
 
 	Wind.prototype.direction = null;
 	Wind.prototype.exclusions = [];
@@ -39,7 +39,8 @@
 	 * @returns
 	 */
 	Wind.prototype.Apply = function() {
-		var bodies=jigLib.PhysicsSystem.getInstance().get_bodies();
+		var system=jigLib.PhysicsSystem.getInstance();
+		var bodies=system.get_bodies();
 		var i=bodies.length;
 		var curBody;
 		
@@ -47,6 +48,7 @@
 		while(i--) {
 			curBody=bodies[i];
 			if (!curBody.get_movable() || this.isExcluded(curBody)) continue;
+			system.activateObject(curBody);
 			curBody.addWorldForce(this.direction, [0,0,0]);
 		}
 	};

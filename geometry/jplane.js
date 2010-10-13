@@ -33,7 +33,7 @@
 	var RigidBody=jigLib.RigidBody;
 	
 	var JPlane=function(skin, initNormal){
-		this.super(skin);
+		this.Super(skin);
 		if (initNormal == undefined) {
 			this._initNormal = [0, 0, -1, 0];
 			this._normal = this._initNormal.slice(0);
@@ -46,7 +46,7 @@
 		this._type = "PLANE";
 		this._movable=false;
 	};
-	jigLib.extends(JPlane,jigLib.RigidBody);
+	jigLib.extend(JPlane,jigLib.RigidBody);
 	
 	JPlane.prototype._initNormal=null;
 	JPlane.prototype._normal=null;
@@ -93,7 +93,7 @@
 	};
 
 	JPlane.prototype.updateState=function(){
-		this.super.prototype.updateState.call(this);
+		this.Super.prototype.updateState.call(this);
 		this._normal = this._initNormal.slice(0);
 		JMatrix3D.multiplyVector(this._currState._orientation, this._normal);
 		//_normal = _currState.orientation.transformVector(new Vector3D(0, 0, -1));

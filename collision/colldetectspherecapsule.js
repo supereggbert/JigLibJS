@@ -41,7 +41,7 @@
 		this.type0 = "SPHERE";
 		this.type1 = "CAPSULE";
 	};
-	jigLib.extends(CollDetectSphereCapsule,jigLib.CollDetectFunctor);
+	jigLib.extend(CollDetectSphereCapsule,jigLib.CollDetectFunctor);
 	
 	CollDetectSphereCapsule.prototype.collDetect=function(info, collArr){
 		var tempBody;
