@@ -136,6 +136,17 @@
 		return new Matrix3D(this.glmatrix);
 	};
 	
+	/**
+	 * this method is similar to JMatrix3D.multiplyVector except it uses  
+	 * the GLMatrix methed which uses the same cell references as the Flash 
+	 * version - added to aid in debugging the point constraint problems
+	 * @param vector
+	 * @returns
+	 */
+	Matrix3D.prototype.transformVector=function(vector){
+		return GLMatrix.multiplyVec3(this.glmatrix, vector);
+	};
+	
 	jigLib.Matrix3D=Matrix3D;
 	
 })(jigLib);

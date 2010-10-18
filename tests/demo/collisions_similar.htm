@@ -4,10 +4,6 @@
 <head>
 
 <title>jigLib benchmarking / regression test: similar collisions</title>
-<script type="text/javascript" src="slider/range.js"></script>
-<script type="text/javascript" src="slider/timer.js"></script>
-<script type="text/javascript" src="slider/slider.js"></script>
-<link type="text/css" rel="StyleSheet" href="slider/winclassic.css" />
 
 <script type="text/javascript" src="jiglib/jiglib.js"></script>
 
@@ -35,10 +31,6 @@
 <script type="text/javascript" src="jiglib/physics/physicscontroller.js"></script>
 <script type="text/javascript" src="jiglib/physics/physicsstate.js"></script>
 <script type="text/javascript" src="jiglib/physics/rigid_body.js"></script>
-<script type="text/javascript" src="jiglib/physics/hingejoint.js"></script>
-
-<script type="text/javascript" src="jiglib/physics/effect/jeffect.js"></script>
-<script type="text/javascript" src="jiglib/physics/effect/wind.js"></script>
 
 <script type="text/javascript" src="jiglib/geometry/jbox.js"></script>
 <script type="text/javascript" src="jiglib/geometry/jcapsule.js"></script>
@@ -66,59 +58,53 @@
 <script type="text/javascript" src="jiglib/collision/colldetectsphereterrain.js"></script>
 <script type="text/javascript" src="jiglib/collision/collisionsystem.js"></script>
 
-<script type="text/javascript" src="jiglib/physics/constraint/jconstraint.js"></script>
-<script type="text/javascript" src="jiglib/physics/constraint/jconstraintmaxdistance.js"></script>
-<script type="text/javascript" src="jiglib/physics/constraint/jconstraintpoint.js"></script>
-<script type="text/javascript" src="jiglib/physics/hingejoint.js"></script>
-
 <script type="text/javascript" src="jiglib/physics/physicssystem.js"></script>
-
-<script type="text/javascript" src="jiglib/vehicles/jchassis.js"></script>
-<script type="text/javascript" src="jiglib/vehicles/jwheel.js"></script>
-<script type="text/javascript" src="jiglib/vehicles/jcar.js"></script>
 
 <script type="text/javascript" src="glge/glge_math.js"></script>
 <script type="text/javascript" src="glge/glge.js"></script>
-<style>
-body {
-	margin: auto;
-	background-color: #888;
-	padding-top: 50px;
-	font-family: sans;
-	color: #666;
-	font-size: 0.8em
-}
 
-#container {
-	margin: auto;
-	width: 900px;
-	padding: 10px;
-	background-color: #fff;
-	border-radius: 5px;
-	-webkit-box-shadow: 5px 5px 2px #444;
-}
+<style>
+	body {
+		margin: auto;
+		background-color: #888;
+		padding-top: 50px;
+		font-family: sans;
+		color: #666;
+		font-size: 0.8em
+	}
+	
+	#container {
+		margin: auto;
+		width: 900px;
+		padding: 10px;
+		background-color: #fff;
+		border-radius: 5px;
+		-webkit-box-shadow: 5px 5px 2px #444;
+	}
 </style>
 </head>
 <body>
 
 
-<div id="container"><canvas id="canvas" width="900" height="400"></canvas>
+<div id="container">
+<canvas id="canvas" width="900" height="400"></canvas>
 
-<h2>Similar collisions</h2>
-This test is designed to act as a simple benchmark for box->plane,
-box->box, sphere->plane, sphere-sphere, capsule->plane and capsule->capsule collisions.<br />
-Should be used to measure the performance impact of optimisations,
-changes to the codebase and browser updates.<br />
-<br />
-<div id="details" style="width: 100%">
-<div id="debug" style="width: 50%; float: left;"></div>
-<div id="debug2" style="width: 50%; float: left;"></div>
-<div style="clear: both;"></div>
-</div>
-
-
-
-<script id="glge_document" type="text/xml">
+	<h2>Similar collisions</h2>
+	This test is designed to act as a simple benchmark for box->plane,
+	box->box, sphere->plane, sphere-sphere, capsule->plane and capsule->capsule collisions.<br />
+	Should be used to measure the performance impact of optimisations,
+	changes to the codebase and browser updates.<br />
+	<br />
+	<div id="details" style="width: 100%">
+		<!-- divs for echoing test output and debug information -->
+		<div id="debug" style="width: 50%; float: left;"></div>
+		<div id="debug2" style="width: 50%; float: left;"></div>
+		<div style="clear: both;"></div>
+	</div>
+	
+	
+	<!-- GLGE scene definitions (meshes, objects, lights, cameras etc.) -->
+	<script id="glge_document" type="text/xml">
 	<glge>
 
 		<mesh id="groundMesh">
@@ -175,251 +161,272 @@ changes to the codebase and browser updates.<br />
 			
 		</scene>
 	</glge>
-</script> <script><!--
-
-var canvas = document.getElementById( 'canvas' )
-var renderer = new GLGE.Renderer( canvas );
-var wind;
-var system;
-var start;
-
-var XMLdoc = new GLGE.Document();
-
-XMLdoc.onLoad = function(){
-	var scene = XMLdoc.getElement( "mainscene" );
-	renderer.setScene( scene );
-	renderer.render();
+	</script> 
+	<script>
+	<!--
 	
-	var blue = XMLdoc.getElement("blue");
-	var smesh = XMLdoc.getElement("Sphere");
-	var cmesh = XMLdoc.getElement("Cube");
-	var cymesh = XMLdoc.getElement("Cylinder");
-	var groundObj = XMLdoc.getElement( "groundObject" );
-	var bWallObj = XMLdoc.getElement( "backWall" );
-	var lWallObj = XMLdoc.getElement( "leftWall" );
-	var rWallObj = XMLdoc.getElement( "rightWall" );
-	var camera = XMLdoc.getElement( "mainCamera" );
-
-	document.onkeydown = function( e ){
-		return;
-		switch(e.keyCode)
-		{
-			case 32:
-				break;
-			case 38:
-				break;
-			case 40:
-				break;
-			case 37:
-				break;
-			case 39:
-				break;
-		}
-	}
-	
-	document.onkeyup = function( e ){
-		return;
-		switch(e.keyCode)
-		{
-		case 32:
-			break;
-		case 38:
-			break;
-		case 40:
-			break;
-		case 37:
-			break;
-		case 39:
-			break;
-		}
-	}
-	
-	canvas.onmouseup = function( e ){
+		var canvas = document.getElementById( 'canvas' )
+		var renderer = new GLGE.Renderer( canvas );
+		var system;
+		var start;
 		
-	}
-	canvas.onmousewheel = function( e ){
+		var XMLdoc = new GLGE.Document();
 		
-	}
-	
-	var links=[];
-	var rad=5;
-	function addObjects(shape) {
-		var c=(shape=='spheres') ? 4 : 3;
-		var s=(shape=='spheres') ? rad : rad*1.2;
-		var i=c;
-		do {
-			var ii=c;
-			do {
-				var iii=c;
-				do {
-					switch(shape) 
-					{
-						case 'spheres': addSphere(100-ii*s,180-i*s,iii*s); break;
-						case 'cubes': addCube(100-ii*s,180-i*s,iii*s); break;
-						case 'capsules': addCylinder(100-ii*s,180-i*s,iii*s); break;
-					}
-				} while(iii--);
-			} while(ii--);
-		} while(i--);
-		return true;
-	}
-
-	function clearObjects() {
-		var i=links.length-1;
-		var obj;
-		do {
-			if (links[i].type!='temporary')
-				continue;
-			obj=links.pop();
-			if (obj.type=='temporary')
-			{
-				scene.removeChild(obj.glge);
-				system.removeBody(obj.jig);
-				obj.glge=obj.jig=null;
-				obj=null;
+		XMLdoc.onLoad = function(){
+			// the GLGE scene
+			var scene = XMLdoc.getElement( "mainscene" );
+			renderer.setScene( scene );
+			renderer.render();
+			
+			// references to GLGE scene objects defined in the XML above
+			var blue = XMLdoc.getElement("blue");
+			var smesh = XMLdoc.getElement("Sphere");
+			var cmesh = XMLdoc.getElement("Cube");
+			var cymesh = XMLdoc.getElement("Cylinder");
+			var groundObj = XMLdoc.getElement( "groundObject" );
+			var bWallObj = XMLdoc.getElement( "backWall" );
+			var lWallObj = XMLdoc.getElement( "leftWall" );
+			var rWallObj = XMLdoc.getElement( "rightWall" );
+			var camera = XMLdoc.getElement( "mainCamera" );
+			
+			// user interaction event handlers
+			document.onkeydown = function( e ){
+				return; // not currently used in this demo
+				switch(e.keyCode)
+				{
+					case 32:
+						break;
+					case 38:
+						break;
+					case 40:
+						break;
+					case 37:
+						break;
+					case 39:
+						break;
+				}
 			}
-		} while(i--);
-	}
-	
-	var addSphere=function(x,y,z){
-		var newObject=new GLGE.Object();
-		newObject.setMesh(smesh);
-		newObject.setMaterial(blue);
-		newObject.setScale(rad);
-		scene.addObject(newObject);
-		var sphere=new jigLib.JSphere(null,rad);
-		sphere.set_mass(1);
-		sphere.set_friction(0);
-		system.addBody(sphere);
-		sphere.moveTo([x,y,z,0]);
-		links.push({glge:newObject,jig:sphere,type:'temporary'})
-	}
-
-	var addCube=function(x,y,z){
-		var newObject=new GLGE.Object();
-		newObject.setMesh(cmesh);
-		newObject.setMaterial(blue);
-		newObject.setScale(rad/2);
-		scene.addObject(newObject);
-		var cube=new jigLib.JBox(null, rad, rad, rad);
-		cube.set_mass(1);
-		cube.set_friction(0);
-		system.addBody(cube);
-		cube.moveTo([x,y,z,0]);
-		links.push({glge:newObject,jig:cube,type:'temporary'})
-	}
-	
-	var addCylinder=function(x,y,z){
-		var newObject=new GLGE.Object();
-		newObject.setMesh(cymesh);
-		newObject.setMaterial(blue);
-		newObject.setScale(rad/2);
-		scene.addObject(newObject);
-		var capsule=new jigLib.JCapsule(null, 1, 2);
-		capsule.set_rotationX(90);
-		capsule.set_mass(1);
-		capsule.set_friction(0);
-		system.addBody(capsule);
-		capsule.moveTo([x,y,z,0]);
-		links.push({glge:newObject,jig:capsule,type:'temporary'})
-	}
-	
-	system=jigLib.PhysicsSystem.getInstance();
-	system.setGravity([0,-9.8,0,0]);
-
-	var ground=new jigLib.JPlane(null,[0, 1, 0, 0]);
-	ground.set_friction(0);
-	system.addBody(ground);
-
-	var lWall=new jigLib.JPlane(null,[0,1,0]);
-	lWall.set_friction(0);
-	lWall.set_x(-50);
-	lWall.set_rotationZ(-45);
-	system.addBody(lWall);
-
-	var rWall=new jigLib.JPlane(null,[0,1,0]);
-	rWall.set_friction(0);
-	rWall.set_x(50);
-	rWall.set_rotationZ(-45);
-	system.addBody(rWall);
-
-	var bWall=new jigLib.JPlane(null,[0,1,0]);
-	bWall.set_friction(0);
-	bWall.set_rotationX(90);
-	bWall.set_z(-115);
-	bWall.set_y(-40);
-	system.addBody(bWall);
-
-	var fWall=new jigLib.JPlane(null,[0,-1,0]);
-	fWall.set_friction(0);
-	fWall.set_rotationX(-90);
-	fWall.set_z(20);
-	system.addBody(fWall);
-
-	links.push({glge:groundObj,jig:ground,type:'fixed'});
-	links.push({glge:bWallObj,jig:bWall,type:'fixed'});
-	links.push({glge:lWallObj,jig:lWall,type:'fixed'});
-	links.push({glge:rWallObj,jig:rWall,type:'fixed'});
-	
-	var lasttime;
-	var renderCount;
-	function render(){
-		renderCount++;
-		var now=(new Date()).getTime();
-		var inttime=(now-lasttime)/1000;
-		if (inttime<0.05) inttime=0.05;
-		system.integrate((now-lasttime)/1000);
-		lasttime=now;
+			
+			document.onkeyup = function( e ){
+				return; // not currently used in this demo
+				switch(e.keyCode)
+				{
+				case 32:
+					break;
+				case 38:
+					break;
+				case 40:
+					break;
+				case 37:
+					break;
+				case 39:
+					break;
+				}
+			}
+			
+			canvas.onmouseup = function( e ){
+				return; // not currently used in this demo
+			}
+			canvas.onmousewheel = function( e ){
+				return; // not currently used in this demo
+			}
+			
+			// array of links between JigLib objects and GLGE scene objects
+			var links=[];
+			// scale to be applied to objects
+			var rad=5;
+			
+			// adds objects to the scene
+			function addObjects(shape) {
+				var c=(shape=='spheres') ? 4 : 3;
+				var s=(shape=='spheres') ? rad : rad*1.2;
+				var i=c;
+				do {
+					var ii=c;
+					do {
+						var iii=c;
+						do {
+							switch(shape) 
+							{
+								case 'spheres': addSphere(100-ii*s,180-i*s,iii*s); break;
+								case 'cubes': addCube(100-ii*s,180-i*s,iii*s); break;
+								case 'capsules': addCylinder(100-ii*s,180-i*s,iii*s); break;
+							}
+						} while(iii--);
+					} while(ii--);
+				} while(i--);
+				return true;
+			}
+			
+			// removes all JigLib and GLGE objects from the scene
+			function clearObjects() {
+				var i=links.length-1;
+				var obj;
+				do {
+					if (links[i].type!='temporary')
+						continue;
+					obj=links.pop();
+					if (obj.type=='temporary')
+					{
+						scene.removeChild(obj.glge);
+						system.removeBody(obj.jig);
+						obj.glge=obj.jig=null;
+						obj=null;
+					}
+				} while(i--);
+			}
+			
+			// adds a sphere to the scene
+			var addSphere=function(x,y,z){
+				var newObject=new GLGE.Object();
+				newObject.setMesh(smesh);
+				newObject.setMaterial(blue);
+				newObject.setScale(rad);
+				scene.addObject(newObject);
+				var sphere=new jigLib.JSphere(null,rad);
+				sphere.set_mass(1);
+				sphere.set_friction(0);
+				system.addBody(sphere);
+				sphere.moveTo([x,y,z,0]);
+				links.push({glge:newObject,jig:sphere,type:'temporary'})
+			}
+			
+			// adds a cube / box to the scene
+			var addCube=function(x,y,z){
+				var newObject=new GLGE.Object();
+				newObject.setMesh(cmesh);
+				newObject.setMaterial(blue);
+				newObject.setScale(rad/2);
+				scene.addObject(newObject);
+				var cube=new jigLib.JBox(null, rad, rad, rad);
+				cube.set_mass(1);
+				cube.set_friction(0);
+				system.addBody(cube);
+				cube.moveTo([x,y,z,0]);
+				links.push({glge:newObject,jig:cube,type:'temporary'})
+			}
+			
+			// add a cylinder / capsule to the scene
+			var addCylinder=function(x,y,z){
+				var newObject=new GLGE.Object();
+				newObject.setMesh(cymesh);
+				newObject.setMaterial(blue);
+				newObject.setScale(rad/2);
+				scene.addObject(newObject);
+				var capsule=new jigLib.JCapsule(null, 1, 2);
+				capsule.set_rotationX(90);
+				capsule.set_mass(1);
+				capsule.set_friction(0);
+				system.addBody(capsule);
+				capsule.moveTo([x,y,z,0]);
+				links.push({glge:newObject,jig:capsule,type:'temporary'})
+			}
+			
+			// reference to the JigLibJS physics system singleton
+			system=jigLib.PhysicsSystem.getInstance();
+			system.setGravity([0,-9.8,0,0]);
+			
+			// initial JigLib bodies matching the GLGE objects added in the XML above
+			var ground=new jigLib.JPlane(null,[0, 1, 0, 0]);
+			ground.set_friction(0);
+			system.addBody(ground);
 		
-		for(var i=0; i<links.length;i++){
-			links[i].glge.setLocY(links[i].jig.get_currentState().position[1]);
-			links[i].glge.setLocX(links[i].jig.get_currentState().position[0]);
-			links[i].glge.setLocZ(links[i].jig.get_currentState().position[2]);
-			var ori=GLGE.Mat4(links[i].jig.get_currentState().get_orientation().glmatrix);
-			links[i].glge.setRotMatrix(ori);
+			var lWall=new jigLib.JPlane(null,[0,1,0]);
+			lWall.set_friction(0);
+			lWall.set_x(-50);
+			lWall.set_rotationZ(-45);
+			system.addBody(lWall);
+		
+			var rWall=new jigLib.JPlane(null,[0,1,0]);
+			rWall.set_friction(0);
+			rWall.set_x(50);
+			rWall.set_rotationZ(-45);
+			system.addBody(rWall);
+		
+			var bWall=new jigLib.JPlane(null,[0,1,0]);
+			bWall.set_friction(0);
+			bWall.set_rotationX(90);
+			bWall.set_z(-115);
+			bWall.set_y(-40);
+			system.addBody(bWall);
+		
+			var fWall=new jigLib.JPlane(null,[0,-1,0]);
+			fWall.set_friction(0);
+			fWall.set_rotationX(-90);
+			fWall.set_z(20);
+			system.addBody(fWall);
+			
+			// link the GLGE scene objects to the jiglib bodies
+			links.push({glge:groundObj,jig:ground,type:'fixed'});
+			links.push({glge:bWallObj,jig:bWall,type:'fixed'});
+			links.push({glge:lWallObj,jig:lWall,type:'fixed'});
+			links.push({glge:rWallObj,jig:rWall,type:'fixed'});
+			
+			var lasttime;
+			var renderCount;
+			
+			// renders the scene
+			function render(){
+				renderCount++;
+				var now=(new Date()).getTime();
+				var inttime=(now-lasttime)/1000;
+				if (inttime<0.05) inttime=0.05;
+				system.integrate((now-lasttime)/1000);
+				lasttime=now;
+				
+				for(var i=0; i<links.length;i++){
+					links[i].glge.setLocY(links[i].jig.get_currentState().position[1]);
+					links[i].glge.setLocX(links[i].jig.get_currentState().position[0]);
+					links[i].glge.setLocZ(links[i].jig.get_currentState().position[2]);
+					var ori=GLGE.Mat4(links[i].jig.get_currentState().get_orientation().glmatrix);
+					links[i].glge.setRotMatrix(ori);
+				}
+				
+				renderer.render();
+			}
+		
+			var renderT;
+			var runnerT;
+			
+			// starts rendering
+			start=function() {
+				document.getElementById('startBtn').disabled=true;
+				system.setSolverType(document.getElementById('solver').value);
+				clearObjects();
+				addObjects(document.getElementById('shape').value);
+				lasttime=(new Date()).getTime();
+				renderCount=0;
+				renderT=setInterval(render,30);
+				runnerT=setInterval(stop, 30000);
+			}
+			
+			// stops rendering
+			function stop() {
+				clearInterval(runnerT);
+				clearInterval(renderT);
+				alert('total renders: '+renderCount+'\nrenders per second: '+renderCount/30);
+				document.getElementById('startBtn').disabled=false;
+			}
 		}
 		
-		renderer.render();
-	}
-
-	var renderT;
-	var runnerT;
+		XMLdoc.parseScript("glge_document");
 	
-	start=function() {
-		document.getElementById('startBtn').disabled=true;
-		system.setSolverType(document.getElementById('solver').value);
-		clearObjects();
-		addObjects(document.getElementById('shape').value);
-		lasttime=(new Date()).getTime();
-		renderCount=0;
-		renderT=setInterval(render,30);
-		runnerT=setInterval(stop, 30000);
-	}
+	-->
+	</script> 
 	
-	function stop() {
-		clearInterval(runnerT);
-		clearInterval(renderT);
-		alert('total renders: '+renderCount+'\nrenders per second: '+renderCount/30);
-		document.getElementById('startBtn').disabled=false;
-	}
-}
-
-XMLdoc.parseScript("glge_document");
-
---></script> 
-
-object type: <select name="shape" id="shape">
-	<option value="spheres">spheres</option>
-	<option value="cubes">cubes</option>
-	<option value="capsules">capsules</option>
-</select> <br />
-solver: <select name="solver" id="solver">
-	<option value="FAST">fast</option>
-	<option value="NORMAL">normal</option>
-	<option value="ACCUMULATED" selected="selected">accumulated</option>
-</select> <br />
-start:
-<button id="startBtn" onclick="start();">go</button>
+	<!-- user controls -->
+	object type: <select name="shape" id="shape">
+		<option value="spheres">spheres</option>
+		<option value="cubes">cubes</option>
+		<option value="capsules">capsules</option>
+	</select> <br />
+	solver: <select name="solver" id="solver">
+		<option value="FAST">fast</option>
+		<option value="NORMAL">normal</option>
+		<option value="ACCUMULATED" selected="selected">accumulated</option>
+	</select> <br />
+	start:
+	<button id="startBtn" onclick="start();">go</button>
 
 </div>
 </body>
