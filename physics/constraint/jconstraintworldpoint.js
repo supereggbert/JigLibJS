@@ -71,7 +71,7 @@ distribution.
 		var deviationDir;
 		var deviation= Vector3DUtil.subtract(worldPos, this._worldPosition);
 		var deviationDistance = Vector3DUtil.get_length(deviation);
-		if (deviationDistance > allowedDeviation) {
+		if (deviationDistance > this.allowedDeviation) {
 			deviationDir = JNumber3D.getDivideVector(deviation, deviationDistance);
 			desiredVel = JNumber3D.getScaleVector(deviationDir, (this.allowedDeviation - deviationDistance) / (this.timescale * dt));
 		} else {
@@ -80,11 +80,11 @@ distribution.
 						
 		var N = Vector3DUtil.subtract(currentVel, desiredVel);
 		var normalVel = Vector3DUtil.get_length(N);
-		if (normalVel < minVelForProcessing) {
+		if (normalVel < this.minVelForProcessing) {
 			return false;
 		}
 		N = JNumber3D.getDivideVector(N, normalVel);
-						
+		
 		var tempV = Vector3DUtil.crossProduct(R, N);
 		JMatrix3D.multiplyVector(this._body.get_worldInvInertia(), tempV);
 		var denominator= this._body.get_invMass() + Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempV, R));

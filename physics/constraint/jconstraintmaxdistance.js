@@ -61,10 +61,12 @@
 		this.set_satisfied(false);
 		
 		this.r0 = this._body0Pos.slice(0);
-		JMatrix3D.multiplyVector(this._body0.get_currentState().get_orientation(), this.r0);
 		this.r1 = this._body1Pos.slice(0);
+		JMatrix3D.multiplyVector(this._body0.get_currentState().get_orientation(), this.r0);
 		JMatrix3D.multiplyVector(this._body1.get_currentState().get_orientation(), this.r1);
-
+		//this.r0 = this._body0.get_currentState().get_orientation().transformVector(this._body0Pos.slice(0));
+		//this.r1 = this._body1.get_currentState().get_orientation().transformVector(this._body1Pos.slice(0));
+		
 		var worldPos0 = Vector3DUtil.add(this._body0.get_currentState().position, this.r0);
 		var worldPos1 = Vector3DUtil.add(this._body1.get_currentState().position, this.r1);
 		this._worldPos = JNumber3D.getScaleVector(Vector3DUtil.add(worldPos0, worldPos1), 0.5);
@@ -75,9 +77,8 @@
 	JConstraintMaxDistance.prototype.apply=function(dt){
 		this.set_satisfied(true);
 
-		if (!this._body0.isActive && !this._body1.isActive){
+		if (!this._body0.isActive && !this._body1.isActive)
 			return false;
-		}
 		
 		var currentVel0 = this._body0.getVelocity(this.r0);
 		var currentVel1 = this._body1.getVelocity(this.r1);
@@ -85,21 +86,19 @@
 		var predRelPos0 = Vector3DUtil.add(this._currentRelPos0, JNumber3D.getScaleVector(Vector3DUtil.subtract(currentVel0, currentVel1), dt));
 		var clampedRelPos0 = predRelPos0.slice(0);
 		var clampedRelPos0Mag = Vector3DUtil.get_length(clampedRelPos0);
-		if (clampedRelPos0Mag <= JNumber3D.NUM_TINY){
+		
+		if (clampedRelPos0Mag <= JNumber3D.NUM_TINY)
 			return false;
-		}
-		if (clampedRelPos0Mag > this._maxDistance){
+		
+		if (clampedRelPos0Mag > this._maxDistance)
 			clampedRelPos0 = JNumber3D.getScaleVector(clampedRelPos0, this._maxDistance / clampedRelPos0Mag);
-		}
 
 		var desiredRelVel0 = JNumber3D.getDivideVector(Vector3DUtil.subtract(clampedRelPos0, this._currentRelPos0), dt);
-		var Vr = Vector3DUtil.subtract(Vector3DUtil.subtract(currentVel0, 
-															 currentVel1), 
-									   desiredRelVel0);
+		var Vr = Vector3DUtil.subtract(Vector3DUtil.subtract(currentVel0, currentVel1), desiredRelVel0);
 
 		var normalVel = Vector3DUtil.get_length(Vr);
 		if (normalVel > this._maxVelMag){
-			Vr = JNumber3D.getScaleVector(Vr,this. _maxVelMag / normalVel);
+			Vr = JNumber3D.getScaleVector(Vr, this._maxVelMag / normalVel);
 			normalVel = this._maxVelMag;
 		}else if (normalVel < this._minVelForProcessing){
 			return false;

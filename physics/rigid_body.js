@@ -342,9 +342,8 @@
 
 	// functions to add impulses in the world coordinate frame
 	RigidBody.prototype.applyWorldImpulse=function(impulse, pos){
-		if (!this._movable){
-			return;
-		}
+		if (!this._movable) return;
+		
 		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(impulse, this._invMass));
 
 		var rotImpulse = Vector3DUtil.crossProduct(Vector3DUtil.subtract(pos, this._currState.position), impulse);
@@ -355,9 +354,8 @@
 	};
 
 	RigidBody.prototype.applyWorldImpulseAux=function(impulse, pos){
-		if (!this._movable){
-			return;
-		}
+		if (!this._movable) return;
+		
 		this._currLinVelocityAux = Vector3DUtil.add(this._currLinVelocityAux, JNumber3D.getScaleVector(impulse, this._invMass));
 
 		var rotImpulse = Vector3DUtil.crossProduct(Vector3DUtil.subtract(pos, this._currState.position), impulse);
@@ -369,9 +367,8 @@
 
 	// functions to add impulses in the body coordinate frame
 	RigidBody.prototype.applyBodyWorldImpulse=function(impulse, delta){
-		if (!this._movable){
-			return;
-		}
+		if (!this._movable) return;
+		
 		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(impulse, this._invMass));
 		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse);
 		JMatrix3D.multiplyVector(this._worldInvInertia, rotImpulse);
@@ -381,9 +378,8 @@
 	};
 
 	RigidBody.prototype.applyBodyWorldImpulseAux=function(impulse, delta){
-		if (!this._movable){
-			return;
-		}
+		if (!this._movable) return;
+		
 		this._currLinVelocityAux = Vector3DUtil.add(this._currLinVelocityAux, JNumber3D.getScaleVector(impulse, this._invMass));
 
 		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse);

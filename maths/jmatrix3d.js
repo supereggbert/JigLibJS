@@ -94,8 +94,8 @@
 		v[0] = vx * _rawData[0] + vy * _rawData[4] + vz * _rawData[8]  + _rawData[12];
 		v[1] = vx * _rawData[1] + vy * _rawData[5] + vz * _rawData[9]  + _rawData[13];
 		v[2] = vx * _rawData[2] + vy * _rawData[6] + vz * _rawData[10] + _rawData[14];
-		
 		 */
+		
 		v[0] = vx * _rawData[0] + vy * _rawData[1] + vz * _rawData[2]  + _rawData[3];
 		v[1] = vx * _rawData[4] + vy * _rawData[5] + vz * _rawData[6]  + _rawData[7];
 		v[2] = vx * _rawData[8] + vy * _rawData[9] + vz * _rawData[10] + _rawData[11];

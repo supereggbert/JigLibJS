@@ -30,7 +30,7 @@
 	var JConstraint=jigLib.JConstraint;
 	var RigidBody=jigLib.RigidBody;
 	
-	// Constraints a point on one body to be fixed to a point on another body
+	// Constrains a point on one body to be fixed to a point on another body
 
 	/// allowed_distance indicated how much the points are allowed to deviate.
 	/// timescale indicates the timescale over which deviation is eliminated
@@ -71,15 +71,13 @@
 	{
 		this.set_satisfied(false);
 		
-		/*
 		this.r0 = this._body0Pos.slice(0);
 		JMatrix3D.multiplyVector(this._body0.get_currentState().get_orientation(), this.r0);
 		this.r1 = this._body1Pos.slice(0);
 		JMatrix3D.multiplyVector(this._body1.get_currentState().get_orientation(), this.r1);
-		*/
 		
-		this.r0 = this._body0.get_currentState().get_orientation().transformVector(this._body0Pos);
-		this.r1 = this._body1.get_currentState().get_orientation().transformVector(this._body1Pos);
+		//this.r0 = this._body0.get_currentState().get_orientation().transformVector(this._body0Pos);
+		//this.r1 = this._body1.get_currentState().get_orientation().transformVector(this._body1Pos);
 
 		var worldPos0 = Vector3DUtil.add(this._body0.get_currentState().position, this.r0);
 		var worldPos1 = Vector3DUtil.add(this._body1.get_currentState().position, this.r1);
@@ -87,7 +85,13 @@
 
 		var deviation = Vector3DUtil.subtract(worldPos0, worldPos1);
 		var deviationAmount = Vector3DUtil.get_length(deviation);
-		
+		/*
+		if (deviationAmount <= this._allowedDistance){
+			this.set_satisfied(true);
+			this._vrExtra = [0,0,0,0];
+			return;
+		}
+		*/
 		if (deviationAmount > this._allowedDistance)
 			this._vrExtra = JNumber3D.getScaleVector(deviation, (deviationAmount - this._allowedDistance) / (deviationAmount * Math.max(this._timescale, dt)));
 		else
@@ -96,11 +100,12 @@
 
 	JConstraintPoint.prototype.apply=function(dt)
 	{
+		//if (this._satisfied) return;
 		this.set_satisfied(true);
-
+		
 		if (!this._body0.isActive && !this._body1.isActive)
 			return false;
-
+		
 		var currentVel0 = this._body0.getVelocity(this.r0);
 		var currentVel1 = this._body1.getVelocity(this.r1);
 		var Vr = Vector3DUtil.add(this._vrExtra, Vector3DUtil.subtract(currentVel0, currentVel1));
@@ -116,11 +121,11 @@
 		
 		var N = JNumber3D.getDivideVector(Vr, normalVel);
 		var tempVec1 = Vector3DUtil.crossProduct(this.r0, N);
-		//JMatrix3D.multiplyVector(this._body0.get_worldInvInertia(), tempVec1);
-		tempVec1 = this._body0.get_worldInvInertia().transformVector(tempVec1);
+		JMatrix3D.multiplyVector(this._body0.get_worldInvInertia(), tempVec1);
+		//tempVec1 = this._body0.get_worldInvInertia().transformVector(tempVec1);
 		var tempVec2 = Vector3DUtil.crossProduct(this.r1, N);
-		//JMatrix3D.multiplyVector(this._body1.get_worldInvInertia(), tempVec2);
-		tempVec2 = this._body1.get_worldInvInertia().transformVector(tempVec2);
+		JMatrix3D.multiplyVector(this._body1.get_worldInvInertia(), tempVec2);
+		//tempVec2 = this._body1.get_worldInvInertia().transformVector(tempVec2);
 		
 		var denominator = this._body0.get_invMass() 
 						+ this._body1.get_invMass() 
@@ -131,9 +136,33 @@
 		if (denominator < JNumber3D.NUM_TINY)
 			return false;
 
-		var normalImpulse = JNumber3D.getScaleVector(N, -normalVel / denominator);
-		this._body0.applyWorldImpulse(normalImpulse, this._worldPos);
-		this._body1.applyWorldImpulse(JNumber3D.getScaleVector(normalImpulse, -1), this._worldPos);
+		var normalImpulse0=JNumber3D.getScaleVector(N, -normalVel / denominator);
+		//Vector3DUtil.scaleBy(normalImpulse0, 0.5);
+		var normalImpulse1=JNumber3D.getScaleVector(normalImpulse0, -1);
+		
+		/*limit the impulse applied to body1 so it does not exceed the velocity of body0
+		var vel1toAdd=JNumber3D.getScaleVector(normalImpulse1, this._body1._invMass);
+		var newVel1=Vector3DUtil.add(this._body1._currState.linVelocity, vel1toAdd);
+		var vel0Sum=Vector3DUtil.getSum(currentVel0);
+		var newVel1Sum=Vector3DUtil.getSum(newVel1);
+		if (newVel1Sum > vel0Sum){
+			var diff=newVel1Sum-vel0Sum;
+			Vector3DUtil.limitSum(normalImpulse1,newVel1Sum-diff);
+		}
+		
+		//limit the impulse applied to body1 so it does not exceed the velocity of body0
+		var vel0toAdd=JNumber3D.getScaleVector(normalImpulse0, this._body1._invMass);
+		var newVel0=Vector3DUtil.add(this._body0._currState.linVelocity, vel0toAdd);
+		//var vel0Sum=Vector3DUtil.getSum(currentVel0);
+		var newVel0Sum=Vector3DUtil.getSum(newVel0);
+		if (newVel0Sum > vel0Sum){
+			var diff=newVel0Sum-vel0Sum;
+			Vector3DUtil.limitSum(normalImpulse0,newVel0Sum-diff);
+		}
+		*/
+		
+		this._body0.applyWorldImpulse(normalImpulse0, this._worldPos);
+		this._body1.applyWorldImpulse(normalImpulse1, this._worldPos);
 		
 		this._body0.setConstraintsAndCollisionsUnsatisfied();
 		this._body1.setConstraintsAndCollisionsUnsatisfied();

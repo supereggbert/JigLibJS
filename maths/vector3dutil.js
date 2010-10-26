@@ -150,6 +150,17 @@
 	};
 
 	/**
+	 * gets the absolute sum of each value of a given 3D vector
+	 * useful for determining the total amount of force acting on a given body for example
+	 * @param v {Array} in the format [x,y,z,w]
+	 * @returns {Number}
+	 **/
+	Vector3DUtil.getSum=function(v){
+		var abs=Math.abs;
+		return abs(v[0])+abs(v[1])+abs(v[2]);
+	};
+	
+	/**
 	 * scales Vector3D v so that the absolute sum of x,y & z is no greater than s
 	 * useful in situations when a force vector must be limited to some maximum total amount of force
 	 * @param v {Array} in the format [x,y,z,w]
@@ -157,7 +168,7 @@
 	 **/
 	Vector3DUtil.limitSum=function(v,s){
 		var abs=Math.abs;
-		c=abs(v[0])+abs(v[1])+abs(v[2]);
+		c=Vector3DUtil.getSum(v);
 		if (s>=c) return;
 		f=s/c;
 		Vector3DUtil.scaleBy(v,f);
