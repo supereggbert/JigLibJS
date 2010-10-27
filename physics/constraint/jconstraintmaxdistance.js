@@ -105,10 +105,13 @@
 		}
 
 		var N = JNumber3D.getDivideVector(Vr, normalVel);
+		
 		var tempVec1 = Vector3DUtil.crossProduct(this.r0, N);
 		JMatrix3D.multiplyVector(this._body0.get_worldInvInertia(), tempVec1);
+		
 		var tempVec2 = Vector3DUtil.crossProduct(this.r1, N);
 		JMatrix3D.multiplyVector(this._body1.get_worldInvInertia(), tempVec2);
+		
 		var denominator = this._body0.get_invMass()  
 						+ this._body1.get_invMass() 
 						+ Vector3DUtil.dotProduct(N, Vector3DUtil.crossProduct(tempVec1, this.r0)) 

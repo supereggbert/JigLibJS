@@ -49,7 +49,7 @@
 			curBody=bodies[i];
 			if (!curBody.get_movable() || this.isExcluded(curBody)) continue;
 			system.activateObject(curBody);
-			curBody.addWorldForce(this.direction, [0,0,0]);
+			curBody.applyWorldImpulse(this.direction, curBody.get_position());
 		}
 	};
 	

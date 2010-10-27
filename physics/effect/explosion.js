@@ -98,7 +98,7 @@
 			Vector3DUtil.limitSum(forceVP,this.force);
 			Vector3DUtil.negate(forceVP);
 			system.activateObject(this.parent);
-			this.parent.addWorldForce(forceVP, this.location);
+			this.parent.applyWorldImpulse(forceVP, this.location);
 		}
 	};
 	

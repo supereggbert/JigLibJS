@@ -57,7 +57,7 @@
 				Vector3DUtil.scaleBy(forceV, force);
 				Vector3DUtil.negate(forceV);
 				system.activateObject(curBody);
-				curBody.addWorldForce(forceV, this.location);
+				curBody.applyWorldImpulse(forceV, this.location);
 			}
 		} while(i--);
 	};

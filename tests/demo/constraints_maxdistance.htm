@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 
-<title>jigLib benchmarking / regression test: point constraints with cubes</title>
+<title>jigLib benchmarking / regression test: max distance constraints</title>
 
 <script type="text/javascript" src="jiglib/jiglib.js"></script>
 
@@ -60,7 +60,6 @@
 
 <script type="text/javascript" src="jiglib/physics/constraint/jconstraint.js"></script>
 <script type="text/javascript" src="jiglib/physics/constraint/jconstraintmaxdistance.js"></script>
-<script type="text/javascript" src="jiglib/physics/constraint/jconstraintpoint.js"></script>
 
 <script type="text/javascript" src="jiglib/physics/physicssystem.js"></script>
 
@@ -88,13 +87,12 @@
 </head>
 <body>
 
-
 <div id="container">
 	<canvas id="canvas" width="900" height="400"></canvas>
 	
-	<h2>Constraints: points -&gt; cubes</h2>
-	This is a test for point constraints working with cubes.<br />
-	You can control the red cube with your arrow keys, and make it jump/fly by pushing/holding your spacebar.
+	<h2>Constraints: max distance -&gt; spheres</h2>
+	This is a test for max distance constraints working with spheres.<br />
+	You can control the red sphere with your arrow keys, and make it jump/fly by pushing/holding your spacebar.
 	<br />
 	<!-- divs for echoing test output and debug information -->
 	<div id="details" style="width: 100%">
@@ -144,7 +142,7 @@
 
 		<scene id="mainscene" ambient_color="#555" camera="#mainCamera" background_color="#338">
 			<!-- original -->
-			<camera id="mainCamera" loc_z="140" loc_y="50" fov_y="50" rot_x="0" />
+			<camera id="mainCamera" loc_z="140" loc_y="150" fov_y="50" rot_x="0" />
 			<!-- right -->
 			<!--camera id="mainCamera" loc_z="7" loc_y="0.28" loc_x="0" fov_y="35" rot_x="0" /-->
 			<!-- left -->
@@ -152,17 +150,17 @@
 			<!-- top -->
 			<!--camera id="mainCamera" loc_z="0" loc_y="150" fov_y="35" rot_x="-1.57" /-->
 			
-			<object id="groundObject" mesh="#groundMesh" material="#grid" scale="100" />
-			<object id="roofObject" mesh="#groundMesh" material="#grid" scale="100" />
-			<object id="backWall" mesh="#groundMesh" material="#grid" scale="100" loc_z="-100" rot_x="-1.57" />
-			<object id="leftWall" mesh="#groundMesh" material="#grid" scale="100" rot_z="-1.57" loc_x="-50" />
-			<object id="rightWall" mesh="#groundMesh" material="#grid" scale="100" rot_z="-1.57" loc_x="50" />
+			<object id="groundObject" mesh="#groundMesh" material="#grid" scale="500" />
+			<object id="roofObject" mesh="#groundMesh" material="#grid" scale="500" />
+			<object id="backWall" mesh="#groundMesh" material="#grid" scale="500" loc_z="-100" rot_x="-1.57" />
+			<object id="leftWall" mesh="#groundMesh" material="#grid" scale="500" rot_z="-1.57" loc_x="-50" />
+			<object id="rightWall" mesh="#groundMesh" material="#grid" scale="500" rot_z="-1.57" loc_x="50" />
 
-			<object id="box1Obj" mesh="#Cube" material="#red" loc_x="0" loc_y="10" />
-			<object id="box2Obj" mesh="#Cube" material="#blue" loc_x="4" loc_y="10" />
-			<object id="box3Obj" mesh="#Cube" material="#blue" loc_x="8" loc_y="10" />
-			<object id="box4Obj" mesh="#Cube" material="#blue" loc_x="12" loc_y="10" />
-			<object id="box5Obj" mesh="#Cube" material="#blue" loc_x="16" loc_y="10" />
+			<object id="ball1Obj" mesh="#Sphere" material="#red" loc_x="0" loc_y="10" scale="20" />
+			<object id="ball2Obj" mesh="#Sphere" material="#blue" loc_x="4" loc_y="10" scale="20" />
+			<object id="ball3Obj" mesh="#Sphere" material="#blue" loc_x="8" loc_y="10" scale="20" />
+			<object id="ball4Obj" mesh="#Sphere" material="#blue" loc_x="12" loc_y="10" scale="20" />
+			<object id="ball5Obj" mesh="#Sphere" material="#blue" loc_x="16" loc_y="10" scale="20" />
 
 			<light id="light1" loc_x="-40" loc_y="150" loc_z="0" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1" type="L_POINT" />
 		
@@ -178,7 +176,7 @@
 	var renderer = new GLGE.Renderer( canvas );
 	var system;
 	var start, stop;
-	var JConstraintPoint=jigLib.JConstraintPoint;
+	var JConstraintMaxDistance=jigLib.JConstraintMaxDistance;
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	
 	var XMLdoc = new GLGE.Document();
@@ -201,11 +199,11 @@
 		var lWallObj = XMLdoc.getElement("leftWall");
 		var rWallObj = XMLdoc.getElement("rightWall");
 		
-		var box1 = XMLdoc.getElement("box1Obj");
-		var box2 = XMLdoc.getElement("box2Obj");
-		var box3 = XMLdoc.getElement("box3Obj");
-		var box4 = XMLdoc.getElement("box4Obj");
-		var box5 = XMLdoc.getElement("box5Obj");
+		var ball1 = XMLdoc.getElement("ball1Obj");
+		var ball2 = XMLdoc.getElement("ball2Obj");
+		var ball3 = XMLdoc.getElement("ball3Obj");
+		var ball4 = XMLdoc.getElement("ball4Obj");
+		var ball5 = XMLdoc.getElement("ball5Obj");
 		
 		var camera = XMLdoc.getElement("mainCamera");
 		
@@ -214,24 +212,25 @@
 			switch(e.keyCode)
 			{
 				case 32:
-					jbox1.setActive();
-					jbox1.addWorldForce([0,10000,0,0], [0,0,0,0]);
+					jball1.setActive();
+					//jball1.addWorldForce([0,10000,0,0], [0,0,0,0]);
+					jball1._currState.linVelocity[1]=80;
 					break;
 				case 38:
-					jbox1.setActive();
-					jbox1._currState.linVelocity[2]=-20;
+					jball1.setActive();
+					jball1._currState.linVelocity[2]=-80;
 					break;
 				case 40:
-					jbox1.setActive();
-					jbox1._currState.linVelocity[2]=20;
+					jball1.setActive();
+					jball1._currState.linVelocity[2]=80;
 					break;
 				case 37:
-					jbox1.setActive();
-					jbox1._currState.linVelocity[0]=-20;
+					jball1.setActive();
+					jball1._currState.linVelocity[0]=-80;
 					break;
 				case 39:
-					jbox1.setActive();
-					jbox1._currState.linVelocity[0]=20;
+					jball1.setActive();
+					jball1._currState.linVelocity[0]=80;
 					break;
 			}
 		}
@@ -267,77 +266,89 @@
 		system=jigLib.PhysicsSystem.getInstance();
 		system.setGravity([0,-9.8,0,0]);
 		
+		// initial JigLib bodies matching the GLGE objects added in the XML above
 		var ground=new jigLib.JPlane(null,[0, 1, 0, 0]);
 		ground.set_friction(0);
 		system.addBody(ground);
 		
 		var roof=new jigLib.JPlane(null,[0, -1, 0, 0]);
 		roof.set_friction(0);
-		roof.set_y(100);
+		roof.set_y(500);
 		system.addBody(roof);
 	
 		var lWall=new jigLib.JPlane(null,[0,1,0]);
 		lWall.set_friction(0);
-		lWall.set_x(-100);
+		lWall.set_x(-500);
 		lWall.set_rotationZ(-88.85);
 		system.addBody(lWall);
 	
 		var rWall=new jigLib.JPlane(null,[0,1,0]);
 		rWall.set_friction(0);
-		rWall.set_x(100);
+		rWall.set_x(500);
 		rWall.set_rotationZ(-88.85);
 		system.addBody(rWall);
 	
 		var bWall=new jigLib.JPlane(null,[0,1,0]);
 		bWall.set_friction(0);
 		bWall.set_rotationX(88.85);
-		bWall.set_z(-100);
+		bWall.set_z(-500);
 		system.addBody(bWall);
 	
 		var fWall=new jigLib.JPlane(null,[0,-1,0]);
 		fWall.set_friction(0);
 		fWall.set_rotationX(-88.85);
-		fWall.set_z(20);
+		fWall.set_z(-20);
 		system.addBody(fWall);
 		
-		var jbox1=new jigLib.JBox(null,1,1,1);
-		jbox1.set_y(10);
-		jbox1.set_mass(20);
-		system.addBody(jbox1);
+		var jball1=new jigLib.JSphere(null,20);
+		jball1.set_y(100);
+		jball1.set_z(-200);
+		jball1.set_mass(20);
+		jball1.set_friction(0);
+		system.addBody(jball1);
 		
-		var jbox2=new jigLib.JBox(null,1,1,1);
-		jbox2.set_x(4);
-		jbox2.set_y(10);
-		system.addBody(jbox2);
+		var jball2=new jigLib.JSphere(null,20);
+		jball2.set_x(40);
+		jball2.set_y(100);
+		jball2.set_z(-200);
+		jball2.set_mass(20);
+		jball2.set_friction(0);
+		system.addBody(jball2);
+		/*
+		var jball3=new jigLib.JSphere(null,20);
+		jball3.set_x(80);
+		jball3.set_y(100);
+		jball3.set_z(-200);
+		jball3.set_mass(20);
+		jball3.set_friction(0);
+		system.addBody(jball3);
 		
-		var jbox3=new jigLib.JBox(null,1,1,1);
-		jbox3.set_x(8);
-		jbox3.set_y(10);
-		system.addBody(jbox3);
+		var jball4=new jigLib.JSphere(null,20);
+		jball4.set_x(120);
+		jball4.set_y(100);
+		jball4.set_z(-200);
+		jball4.set_mass(20);
+		jball4.set_friction(0);
+		system.addBody(jball4);
 		
-		var jbox4=new jigLib.JBox(null,1,1,1);
-		jbox4.set_x(12);
-		jbox4.set_y(10);
-		system.addBody(jbox4);
-		
-		var jbox5=new jigLib.JBox(null,1,1,1);
-		jbox5.set_x(16);
-		jbox5.set_y(10);
-		system.addBody(jbox5);
-		
-		var boxs=[jbox1,jbox2,jbox3,jbox4,jbox5];
+		var jball5=new jigLib.JSphere(null,20);
+		jball5.set_x(160);
+		jball5.set_y(100);
+		jball5.set_z(-200);
+		jball5.set_mass(20);
+		jball5.set_friction(0);
+		system.addBody(jball5);
+		*/
+		var balls=[jball1,jball2];//,jball3,jball4,jball5];
 		
 		// add the JigLibJS constraints
 		var pos1, pos2, b1, b2, chain=[];
-		for (i=1,l=boxs.length; i<l; i++)
+		for (i=1,l=balls.length; i<l; i++)
 		{
-			b1=boxs[i]; 
-			b2=boxs[i-1];
-			pos1 = Vector3DUtil.Y_AXIS.slice();
-			pos2 = Vector3DUtil.Y_AXIS.slice();
-			Vector3DUtil.scaleBy(pos1, -b2.get_boundingSphere());
-			Vector3DUtil.scaleBy(pos2, b1.get_boundingSphere());
-			chain[i] = new JConstraintPoint(b2, pos1, b1, pos2, 10, 0.1);
+			b1=balls[i-1]; 
+			b2=balls[i];
+			chain[i] = new JConstraintMaxDistance(b1, b1.get_position(), b2, b2.get_position(), 0.001);
+			//chain[i]._maxVelMag = 200;
 			system.addConstraint(chain[i]);
 		}
 		
@@ -347,11 +358,11 @@
 		links.push({glge:bWallObj,jig:bWall});
 		links.push({glge:lWallObj,jig:lWall});
 		links.push({glge:rWallObj,jig:rWall});
-		links.push({glge:box1,jig:jbox1});
-		links.push({glge:box2,jig:jbox2});
-		links.push({glge:box3,jig:jbox3});
-		links.push({glge:box4,jig:jbox4});
-		links.push({glge:box5,jig:jbox5});
+		links.push({glge:ball1,jig:jball1});
+		links.push({glge:ball2,jig:jball2});
+		/*links.push({glge:ball3,jig:jball3});
+		links.push({glge:ball4,jig:jball4});
+		links.push({glge:ball5,jig:jball5});*/
 		
 		var lasttime=(new Date()).getTime();
 		var renderCount;
@@ -381,8 +392,7 @@
 	
 	XMLdoc.parseScript("glge_document");
 
--->
-</script> 
+--></script> 
 
 </div>
 </body>
