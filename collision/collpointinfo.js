@@ -31,7 +31,7 @@
 	 * @property {number} denominator
 	 * @property {number} accumulatedNormalImpulse
 	 * @property {number} accumulatedNormalImpulseAux
-	 * @property {number} accumulatedFrictionImpulse
+	 * @property {array} accumulatedFrictionImpulse a 3D vector
 	 * @constructor
 	 **/
 	var CollPointInfo=function(){

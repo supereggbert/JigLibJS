@@ -1,8 +1,15 @@
 
 (function(jigLib){
 	/**
-	* @author katopz
-	*/
+	 * @author katopz
+	 * 
+	 * @class SpanData
+	 * @property {number} min
+	 * @property {number} max
+	 * @property {boolean} flag
+	 * @property {number} depth
+	 * @constructor
+	 **/
 	var SpanData=function(){};
 	SpanData.prototype.min=null;
 	SpanData.prototype.max=null;
