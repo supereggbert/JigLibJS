@@ -18,11 +18,6 @@ misrepresented as being the original software.
 distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
@@ -34,6 +29,21 @@ distribution.
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
 
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollDetectSphereBox handles collisions between spheres and boxes
+	 * @extends CollDetectFunctor
+	 * @requires CollDetectInfo
+	 * @requires CollPointInfo
+	 * @requires CollisionInfo
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires JMatrix3D
+	 * @requires JConfig
+	 * @requires MaterialProperties
+	 * @constructor
+	 **/
 	var CollDetectSphereBox=function(){
 		this.name = "SphereBox";
 		this.type0 = "SPHERE";
@@ -42,6 +52,13 @@ distribution.
 	jigLib.extend(CollDetectSphereBox,jigLib.CollDetectFunctor);
 	
 				
+	/**
+	 * @function collDetect detects a collision and updates the info parameter
+	 * @belongsTo CollDetectSphereBox
+	 * @param {CollDetectInfo} info
+	 * @param {array} collArray
+	 * @type void
+	 **/
 	CollDetectSphereBox.prototype.collDetect=function(info, collArr){
 		var tempBody;
 		if(info.body0.get_type()=="BOX") {

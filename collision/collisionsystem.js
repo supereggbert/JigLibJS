@@ -18,12 +18,7 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
- (function(jigLib){
+(function(jigLib){
 	var JSegment=jigLib.JSegment;
 	var RigidBody=jigLib.RigidBody;
 	var Vector3DUtil=jigLib.Vector3DUtil;
@@ -46,6 +41,26 @@
 	var CollDetectCapsuleTerrain=jigLib.CollDetectCapsuleTerrain;
 	var CollDetectInfo=jigLib.CollDetectInfo;
 	 
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollisionSystem
+	 * @requires CollDetectBoxBox
+	 * @requires CollDetectBoxPlane
+	 * @requires CollDetectBoxTerrain
+	 * @requires CollDetectCapsuleBox
+	 * @requires CollDetectCapsuleCapsule
+	 * @requires CollDetectCapsulePlane
+	 * @requires CollDetectCapsuleTerrain
+	 * @requires CollDetectSphereBox
+	 * @requires CollDetectSphereCapsule
+	 * @requires CollDetectCapsulePlane
+	 * @requires CollDetectCapsuleSphere
+	 * @requires CollDetectCapsuleTerrain
+	 * @property {object} detectionFunctors an associative collection of instances of the various collision detection classes
+	 * @property {array} collBody a collection of rigid bodies to be operated on by the collision system
+	 * @constructor
+	 **/
 	var CollisionSystem=function(){
 		this.collBody = [];
 		detectionFunctors = [];
@@ -79,22 +94,45 @@
 	};
 	CollisionSystem.prototype.detectionFunctors=null;
 	CollisionSystem.prototype.collBody=null;
-	 
+	
+	/**
+	 * @function addCollisionBody adds a rigid body to the colBody collection
+	 * @belongsTo CollisionSystem
+	 * @param {RigidBody} body
+	 * @type void
+	 **/
 	CollisionSystem.prototype.addCollisionBody=function(body){
 		if (!this.findBody(body))
 			this.collBody.push(body);
 	};
 
+	/**
+	 * @function removeCollisionBody removes a rigid body from the colBody collection
+	 * @belongsTo CollisionSystem
+	 * @param {RigidBody} body
+	 * @type void
+	 **/
 	CollisionSystem.prototype.removeCollisionBody=function(body){
 		if (this.findBody(body))
 			this.collBody.splice(this.collBody.indexOf(body), 1);
 	};
 
+	/**
+	 * @function removeAllCollisionBodies empties the colBody collection
+	 * @belongsTo CollisionSystem
+	 * @type void
+	 **/
 	CollisionSystem.prototype.removeAllCollisionBodies=function(){
 		this.collBody = [];
 	};
 
-	// Detects collisions between the body and all the registered collision bodies
+	/**
+	 * @function detectCollisions detects collisions between the body and all the registered collision bodies
+	 * @belongsTo CollisionSystem
+	 * @param {RigidBody} body
+	 * @param {array} collArr
+	 * @type void
+	 **/
 	CollisionSystem.prototype.detectCollisions=function(body, collArr){
 		if (!body.isActive)
 			return;
@@ -114,7 +152,13 @@
 		}
 	};
 	
-	// Detects collisions between the all bodies
+	/**
+	 * @function detectAllCollisions detects collisions between all bodies
+	 * @belongsTo CollisionSystem
+	 * @param {array} bodies
+	 * @param {array} collArr
+	 * @type void
+	 **/
 	CollisionSystem.prototype.detectAllCollisions=function(bodies, collArr){
 		var info;
 		var fu;
@@ -147,6 +191,14 @@
 		}
 	};
 
+	/**
+	 * @function segmentIntersect
+	 * @belongsTo CollisionSystem
+	 * @param {object} out
+	 * @param {JSegment} seg
+	 * @param {RigidBody} ownerBody
+	 * @type boolean
+	 **/
 	CollisionSystem.prototype.segmentIntersect=function(out, seg, ownerBody){
 		out.fracOut = JNumber3D.NUM_HUGE;
 		out.posOut = [0,0,0,0];
@@ -179,6 +231,13 @@
 		return true;
 	};
 
+	/**
+	 * @function segmentBounding
+	 * @belongsTo CollisionSystem
+	 * @param {JSegment} seg
+	 * @param {RigidBody} obj
+	 * @type boolean
+	 **/
 	CollisionSystem.prototype.segmentBounding=function(seg, obj){
 		var pos = seg.getPoint(0.5);
 		var r = Vector3DUtil.get_length(seg.delta) / 2;
@@ -196,6 +255,13 @@
 		}
 	};
 
+	/**
+	 * @function findBody determines if a given rigid body is registered with the collision system
+	 * @belongsTo CollisionSystem
+	 * @param {RigidBody} body
+	 * @returns true if the body is registered, false if not
+	 * @type boolean
+	 **/
 	CollisionSystem.prototype.findBody=function(body){
 		for(var i=0, cbl=this.collBody.length; i<cbl; i++){
 			var _collBody=this.collBody[i];
@@ -205,6 +271,13 @@
 		return false;
 	};
 
+	/**
+	 * @function checkCollidables
+	 * @belongsTo CollisionSystem
+	 * @param {RigidBody} body0
+	 * @param {RigidBody} body1
+	 * @type boolean
+	 **/
 	CollisionSystem.prototype.checkCollidables=function(body0, body1){
 		if (body0.get_nonCollidables().length == 0 && body1.get_nonCollidables().length == 0){
 			return true;

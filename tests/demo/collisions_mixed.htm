@@ -87,7 +87,7 @@ body {
 
 <div id="container"><canvas id="canvas" width="900" height="400"></canvas>
 
-<h2>Similar collisions</h2>
+<h2>Mixed collisions</h2>
 This test is designed to act as a simple benchmark for box->plane,
 box->box, sphere->plane, sphere-sphere, capsule->plane and capsule->capsule collisions.<br />
 Should be used to measure the performance impact of optimisations,
@@ -250,14 +250,12 @@ changes to the codebase and browser updates.<br />
 		var rad=5;
 		
 		// adds objects to the scene
-		function addObjects(shape1, shape2) {
-			var c=4;
-			var i=c;
-			var n=0;
+		function addObjects(shape1, shape2, count) {
+			var i=count;
 			do {
-				var ii=c;
+				var ii=count;
 				do {
-					var iii=c;
+					var iii=count;
 					do {
 						var shape = (n%2==0) ? shape1 : shape2;
 						var s=(shape=='spheres') ? rad : rad*1.2;
@@ -267,7 +265,6 @@ changes to the codebase and browser updates.<br />
 							case 'cubes': addCube(100-ii*s,180-i*s,iii*s); break;
 							case 'capsules': addCylinder(100-ii*s,180-i*s,iii*s); break;
 						}
-						n++;
 					} while(iii--);
 				} while(ii--);
 			} while(i--);
@@ -409,7 +406,9 @@ changes to the codebase and browser updates.<br />
 			document.getElementById('startBtn').disabled=true;
 			system.setSolverType(document.getElementById('solver').value);
 			clearObjects();
-			addObjects(document.getElementById('shape1').value, document.getElementById('shape2').value);
+			addObjects(	document.getElementById('shape1').value, 
+						document.getElementById('shape2').value,
+						document.getElementById('count').value);
 			lasttime=(new Date()).getTime();
 			renderCount=0;
 			renderT=setInterval(render,30);
@@ -441,6 +440,12 @@ second object type:
 <select name="shape2" id="shape2">
 	<option value="cubes">cubes</option>
 	<option value="capsules">capsules</option>
+</select> <br />
+object count:
+<select name="count" id="count">
+	<option value="1">8 (2x2x2)</option>
+	<option value="2">27 (3x3x3)</option>
+	<option value="3">64 (4x4x4)</option>
 </select> <br />
 solver: <select name="solver" id="solver">
 	<option value="FAST">fast</option>

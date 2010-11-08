@@ -1,1 +1,32 @@
-(function(a){var c=a.Vector3DUtil;var b={};b.fromNormalAndPoint=function(f,d){var e=c.create(f[0],f[1],f[2],0);e[3]=-(e[0]*d[0]+e[1]*d[1]+e[2]*d[2]);return f;};b.getIntersectionLine=function(f,e,i){var h=f[0]*e[0]+f[1]*e[1]+f[2]*e[2]-f[3];var g=f[0]*i[0]+f[1]*i[1]+f[2]*i[2]-f[3];var d=g/(g-h);return[i[0]+(e[0]-i[0])*d,i[1]+(e[1]-i[1])*d,i[2]+(e[2]-i[2])*d,0];};b.unproject=function(j,e,f,i,g){var h=(e*f)/e;var d=c.create(i/h,-g/h,e,0);return j.transformVector(d);};})(jigLib);
+(function(jigLib){
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	
+	/**
+	* @author katopz
+	*/
+	var JMath3D={};
+		
+	JMath3D.fromNormalAndPoint=function(normal, point){
+			var v = Vector3DUtil.create(normal[0], normal[1], normal[2], 0);
+			v[3] = -(v[0]*point[0] + v[1]*point[1] + v[2]*point[2]);
+			
+			return normal;
+	};
+		
+	JMath3D.getIntersectionLine=function(v, v0, v1){
+		var d0 = v[0] * v0[0] + v[1] * v0[1] + v[2] * v0[2] - v[3];
+		var d1 = v[0] * v1[0] + v[1] * v1[1] + v[2] * v1[2] - v[3];
+		var m = d1 / (d1 - d0);
+		return [v1[0] + (v0[0] - v1[0]) * m,
+				v1[1] + (v0[1] - v1[1]) * m,
+				v1[2] + (v0[2] - v1[2]) * m, 
+				0];
+	};
+
+	JMath3D.unproject=function(matrix3D, focus, zoom, mX, mY){
+		var persp = (focus * zoom) / focus;
+		var vector = Vector3DUtil.create(mX / persp, -mY / persp, focus, 0);
+		return matrix3D.transformVector(vector);
+	};
+	
+})(jigLib);

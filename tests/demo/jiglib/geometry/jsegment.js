@@ -1,1 +1,806 @@
-(function(b){var e=b.Vector3DUtil;var c=b.JNumber3D;var a=b.PhysicsState;var d=b.JRay;var f=function(h,g){this.origin=h;this.delta=g;};f.prototype.origin=null;f.prototype.delta=null;f.prototype.getPoint=function(g){return e.add(this.origin,c.getScaleVector(this.delta,g));};f.prototype.getEnd=function(){return e.add(this.origin,this.delta);};f.prototype.clone=function(){return new f(this.origin,this.delta);};f.prototype.segmentSegmentDistanceSq=function(k,l){k.t0=0;k.t1=0;var s=e.subtract(this.origin,l.origin);var p=e.get_lengthSquared(this.delta);var o=-e.dotProduct(this.delta,l.delta);var j=e.get_lengthSquared(l.delta);var i=e.dotProduct(s,this.delta);var n=e.get_lengthSquared(s);var u=Math.abs(p*j-o*o);var h;var t;var r;var m;var q;if(u>=c.NUM_TINY){h=-e.dotProduct(s,l.delta);t=o*h-j*i;r=o*i-p*h;if(t>=0){if(t<=u){if(r>=0){if(r<=u){var g=1/u;t*=g;r*=g;m=t*(p*t+o*r+2*i)+r*(o*t+j*r+2*h)+n;}else{r=1;q=o+i;if(q>=0){t=0;m=j+2*h+n;}else{if(-q>=p){t=1;m=p+j+n+2*(h+q);}else{t=-q/p;m=q*t+j+2*h+n;}}}}else{r=0;if(i>=0){t=0;m=n;}else{if(-i>=p){t=1;m=p+2*i+n;}else{t=-i/p;m=i*t+n;}}}}else{if(r>=0){if(r<=u){t=1;q=o+h;if(q>=0){r=0;m=p+2*i+n;}else{if(-q>=j){r=1;m=p+j+n+2*(i+q);}else{r=-q/j;m=q*r+p+2*i+n;}}}else{q=o+i;if(-q<=p){r=1;if(q>=0){t=0;m=j+2*h+n;}else{t=-q/p;m=q*t+j+2*h+n;}}else{t=1;q=o+h;if(q>=0){r=0;m=p+2*i+n;}else{if(-q>=j){r=1;m=p+j+n+2*(i+q);}else{r=-q/j;m=q*r+p+2*i+n;}}}}}else{if(-i<p){r=0;if(i>=0){t=0;m=n;}else{t=-i/p;m=i*t+n;}}else{t=1;q=o+h;if(q>=0){r=0;m=p+2*i+n;}else{if(-q>=j){r=1;m=p+j+n+2*(i+q);}else{r=-q/j;m=q*r+p+2*i+n;}}}}}}else{if(r>=0){if(r<=u){t=0;if(h>=0){r=0;m=n;}else{if(-h>=j){r=1;m=j+2*h+n;}else{r=-h/j;m=h*r+n;}}}else{q=o+i;if(q<0){r=1;if(-q>=p){t=1;m=p+j+n+2*(h+q);}else{t=-q/p;m=q*t+j+2*h+n;}}else{t=0;if(h>=0){r=0;m=n;}else{if(-h>=j){r=1;m=j+2*h+n;}else{r=-h/j;m=h*r+n;}}}}}else{if(i<0){r=0;if(-i>=p){t=1;m=p+2*i+n;}else{t=-i/p;m=i*t+n;}}else{t=0;if(h>=0){r=0;m=n;}else{if(-h>=j){r=1;m=j+2*h+n;}else{r=-h/j;m=h*r+n;}}}}}}else{if(o>0){if(i>=0){t=0;r=0;m=n;}else{if(-i<=p){t=-i/p;r=0;m=i*t+n;}else{h=-e.dotProduct(s,l.delta);t=1;q=p+i;if(-q>=o){r=1;m=p+j+n+2*(o+i+h);}else{r=-q/o;m=p+2*i+n+r*(j*r+2*(o+h));}}}}else{if(-i>=p){t=1;r=0;m=p+2*i+n;}else{if(i<=0){t=-i/p;r=0;m=i*t+n;}else{h=-e.dotProduct(s,l.delta);t=0;if(i>=-o){r=1;m=j+2*h+n;}else{r=-i/o;m=n+r*(2*h+j*r);}}}}}k.t0=t;k.t1=r;return Math.abs(m);};f.prototype.pointSegmentDistanceSq=function(h,i){h.t=0;var k=e.subtract(i,this.origin);var j=e.dotProduct(k,this.delta);if(j<=0){j=0;}else{var g=e.get_lengthSquared(this._delta);if(j>=g){j=1;k=e.subtract(k,this._delta);}else{j/=g;k=e.subtract(k,c.getScaleVector(this._delta,j));}}h.t=j;return e.get_lengthSquared(k);};f.prototype.segmentBoxDistanceSq=function(h,g,l){h.pfLParam=0;h.pfLParam0=0;h.pfLParam1=0;h.pfLParam2=0;var k={};var j=new d(this.origin,this.delta);var i=this.sqrDistanceLine(k,j,g,l);if(k.num>=0){if(k.num<=1){h.pfLParam=k.num;h.pfLParam0=k.num0;h.pfLParam1=k.num1;h.pfLParam2=k.num2;return Math.max(i,0);}else{i=this.sqrDistancePoint(h,e.add(this.origin,this.delta),g,l);h.pfLParam=1;return Math.max(i,0);}}else{i=this.sqrDistancePoint(h,this.origin,g,l);h.pfLParam=0;return Math.max(i,0);}};f.prototype.sqrDistanceLine=function(m,t,r,p){var j=p.getOrientationCols();m.num=0;m.num0=0;m.num1=0;m.num2=0;var s=e.subtract(t.origin,p.position);var g=e.create(e.dotProduct(s,j[0]),e.dotProduct(s,j[1]),e.dotProduct(s,j[2]),0);var l=e.create(e.dotProduct(t.dir,j[0]),e.dotProduct(t.dir,j[1]),e.dotProduct(t.dir,j[2]),0);var k=c.toArray(g);var q=c.toArray(l);var h=[1,1,1,0];for(var o=0;o<3;o++){if(q[o]<0){k[o]=-k[o];q[o]=-q[o];h[o]=true;}else{h[o]=false;}}c.copyFromArray(g,k);c.copyFromArray(l,q);var n={};n.rkPnt=g.slice(0);n.pfLParam=0;n.rfSqrDistance=0;if(l[0]>0){if(l[1]>0){if(l[2]>0){this.caseNoZeros(n,l,r);m.num=n.pfLParam;}else{this.case0(n,0,1,2,l,r);m.num=n.pfLParam;}}else{if(l[2]>0){this.case0(n,0,2,1,l,r);m.num=n.pfLParam;}else{this.case00(n,0,1,2,l,r);m.num=n.pfLParam;}}}else{if(l[1]>0){if(l[2]>0){this.case0(n,1,2,0,l,r);m.num=n.pfLParam;}else{this.case00(n,1,0,2,l,r);m.num=n.pfLParam;}}else{if(l[2]>0){this.case00(n,2,0,1,l,r);m.num=n.pfLParam;}else{this.case000(n,r);m.num=0;}}}k=c.toArray(n.rkPnt);for(o=0;o<3;o++){if(h[o]){k[o]=-k[o];}}c.copyFromArray(n.rkPnt,k);m.num0=n.rkPnt[0];m.num1=n.rkPnt[1];m.num2=n.rkPnt[2];return Math.max(n.rfSqrDistance,0);};f.prototype.sqrDistancePoint=function(i,h,l,j){var n=j.getOrientationCols();var o=e.subtract(h,j.position);var k=e.create(e.dotProduct(o,n[0]),e.dotProduct(o,n[1]),e.dotProduct(o,n[2]),0);var g=0;var p;var m=l.getHalfSideLengths();if(k[0]<-m[0]){p=k[0]+m[0];g+=(p*p);k[0]=-m[0];}else{if(k[0]>m[0]){p=k[0]-m[0];g+=(p*p);k[0]=m[0];}}if(k[1]<-m[1]){p=k[1]+m[1];g+=(p*p);k[1]=-m[1];}else{if(k[1]>m[1]){p=k[1]-m[1];g+=(p*p);k[1]=m[1];}}if(k[2]<-m[2]){p=k[2]+m[2];g+=(p*p);k[2]=-m[2];}else{if(k[2]>m[2]){p=k[2]-m[2];g+=(p*p);k[2]=m[2];}}i.pfLParam0=k[0];i.pfLParam1=k[1];i.pfLParam2=k[2];return Math.max(g,0);};f.prototype.face=function(x,u,t,s,k,g,i){var y=[0,0,0,0];var l;var p;var n;var h;var z;var r;var w=g.getHalfSideLengths();var v=c.toArray(w);var j=c.toArray(x.rkPnt);var m=c.toArray(k);var o=c.toArray(y);var q=c.toArray(i);o[t]=j[t]+v[t];o[s]=j[s]+v[s];c.copyFromArray(i,o);if(m[u]*o[t]>=m[t]*q[u]){if(m[u]*o[s]>=m[s]*q[u]){j[u]=v[u];p=1/m[u];j[t]-=(m[t]*q[u]*p);j[s]-=(m[s]*q[u]*p);x.pfLParam=-q[u]*p;c.copyFromArray(x.rkPnt,j);}else{l=m[u]*m[u]+m[s]*m[s];n=l*o[t]-m[t]*(m[u]*q[u]+m[s]*o[s]);if(n<=2*l*v[t]){z=n/l;l+=(m[t]*m[t]);n=o[t]-z;r=m[u]*q[u]+m[t]*n+m[s]*o[s];h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+n*n+o[s]*o[s]+r*h);x.pfLParam=h;j[u]=v[u];j[t]=z-v[t];j[s]=-v[s];c.copyFromArray(x.rkPnt,j);}else{l+=(m[t]*m[t]);r=m[u]*q[u]+m[t]*q[t]+m[s]*o[s];h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+q[t]*q[t]+o[s]*o[s]+r*h);x.pfLParam=h;j[u]=v[u];j[t]=v[t];j[s]=-v[s];c.copyFromArray(x.rkPnt,j);}}}else{if(m[u]*o[s]>=m[s]*q[u]){l=m[u]*m[u]+m[t]*m[t];n=l*o[s]-m[s]*(m[u]*q[u]+m[t]*o[t]);if(n<=2*l*v[s]){z=n/l;l+=(m[s]*m[s]);n=o[s]-z;r=m[u]*q[u]+m[t]*o[t]+m[s]*n;h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+o[t]*o[t]+n*n+r*h);x.pfLParam=h;j[u]=v[u];j[t]=-v[t];j[s]=z-v[s];c.copyFromArray(x.rkPnt,j);}else{l+=(m[s]*m[s]);r=m[u]*q[u]+m[t]*o[t]+m[s]*q[s];h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+o[t]*o[t]+q[s]*q[s]+r*h);x.pfLParam=h;j[u]=v[u];j[t]=-v[t];j[s]=v[s];c.copyFromArray(x.rkPnt,j);}}else{l=m[u]*m[u]+m[s]*m[s];n=l*o[t]-m[t]*(m[u]*q[u]+m[s]*o[s]);if(n>=0){if(n<=2*l*v[t]){z=n/l;l+=(m[t]*m[t]);n=o[t]-z;r=m[u]*q[u]+m[t]*n+m[s]*o[s];h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+n*n+o[s]*o[s]+r*h);x.pfLParam=h;j[u]=v[u];j[t]=z-v[t];j[s]=-v[s];c.copyFromArray(x.rkPnt,j);}else{l+=(m[t]*m[t]);r=m[u]*q[u]+m[t]*q[t]+m[s]*o[s];h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+q[t]*q[t]+o[s]*o[s]+r*h);x.pfLParam=h;j[u]=v[u];j[t]=v[t];j[s]=-v[s];c.copyFromArray(x.rkPnt,j);}return;}l=m[u]*m[u]+m[t]*m[t];n=l*o[s]-m[s]*(m[u]*q[u]+m[t]*o[t]);if(n>=0){if(n<=2*l*v[s]){z=n/l;l+=(m[s]*m[s]);n=o[s]-z;r=m[u]*q[u]+m[t]*o[t]+m[s]*n;h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+o[t]*o[t]+n*n+r*h);x.pfLParam=h;j[u]=v[u];j[t]=-v[t];j[s]=z-v[s];c.copyFromArray(x.rkPnt,j);}else{l+=(m[s]*m[s]);r=m[u]*q[u]+m[t]*o[t]+m[s]*q[s];h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+o[t]*o[t]+q[s]*q[s]+r*h);x.pfLParam=h;j[u]=v[u];j[t]=-v[t];j[s]=v[s];c.copyFromArray(x.rkPnt,j);}return;}l+=(m[s]*m[s]);r=m[u]*q[u]+m[t]*o[t]+m[s]*o[s];h=-r/l;x.rfSqrDistance+=(q[u]*q[u]+o[t]*o[t]+o[s]*o[s]+r*h);x.pfLParam=h;j[u]=v[u];j[t]=-v[t];j[s]=-v[s];c.copyFromArray(x.rkPnt,j);}}};f.prototype.caseNoZeros=function(j,l,p){var q=p.getHalfSideLengths();var m=e.create(j.rkPnt[0]-q[0],j.rkPnt[1]-q[1],j.rkPnt[2]-q[2],0);var h=l[0]*m[1];var k=l[1]*m[0];var o;var g;var n;var i;if(k>=h){o=l[2]*m[0];g=l[0]*m[2];if(o>=g){this.face(j,0,1,2,l,p,m);}else{this.face(j,2,0,1,l,p,m);}}else{n=l[2]*m[1];i=l[1]*m[2];if(n>=i){this.face(j,1,2,0,l,p,m);}else{this.face(j,2,0,1,l,p,m);}}};f.prototype.case0=function(y,v,u,t,j,g){var x=g.getHalfSideLengths();var w=c.toArray(x);var i=c.toArray(y.rkPnt);var n=c.toArray(j);var r=i[v]-w[v];var q=i[u]-w[u];var k=n[u]*r;var h=n[v]*q;var s;var o;var p;if(k>=h){i[v]=w[v];var l=i[u]+w[u];s=k-n[v]*l;if(s>=0){o=1/(n[v]*n[v]+n[u]*n[u]);y.rfSqrDistance+=(s*s*o);i[u]=-w[u];y.pfLParam=-(n[v]*r+n[u]*l)*o;}else{p=1/n[v];i[u]-=(k*p);y.pfLParam=-r*p;}c.copyFromArray(y.rkPnt,i);}else{i[u]=w[u];var m=i[v]+w[v];s=h-n[u]*m;if(s>=0){o=1/(n[v]*n[v]+n[u]*n[u]);y.rfSqrDistance+=(s*s*o);i[v]=-w[v];y.pfLParam=-(n[v]*m+n[u]*q)*o;}else{p=1/n[u];i[v]-=(h*p);y.pfLParam=-q*p;}c.copyFromArray(y.rkPnt,i);}if(i[t]<-w[t]){s=i[t]+w[t];y.rfSqrDistance+=(s*s);i[t]=-w[t];}else{if(i[t]>w[t]){s=i[t]-w[t];y.rfSqrDistance+=(s*s);i[t]=w[t];}}c.copyFromArray(y.rkPnt,i);};f.prototype.case00=function(k,j,i,h,l,n){var p=0;var o=n.getHalfSideLengths();var g=c.toArray(o);var m=c.toArray(k.rkPnt);var q=c.toArray(l);k.pfLParam=(g[j]-m[j])/q[j];m[j]=g[j];if(m[i]<-g[i]){p=m[i]+g[i];k.rfSqrDistance+=(p*p);m[i]=-g[i];}else{if(m[i]>g[i]){p=m[i]-g[i];k.rfSqrDistance+=(p*p);m[i]=g[i];}}if(m[h]<-g[h]){p=m[h]+g[h];k.rfSqrDistance+=(p*p);m[h]=-g[h];}else{if(m[h]>g[h]){p=m[h]-g[h];k.rfSqrDistance+=(p*p);m[h]=g[h];}}c.copyFromArray(k.rkPnt,m);};f.prototype.case000=function(h,g){var i=0;var j=g.getHalfSideLengths();if(h.rkPnt[0]<-j[0]){i=h.rkPnt[0]+j[0];h.rfSqrDistance+=(i*i);h.rkPnt[0]=-j[0];}else{if(h.rkPnt[0]>j[0]){i=h.rkPnt[0]-j[0];h.rfSqrDistance+=(i*i);h.rkPnt[0]=j[0];}}if(h.rkPnt[1]<-j[1]){i=h.rkPnt[1]+j[1];h.rfSqrDistance+=(i*i);h.rkPnt[1]=-j[1];}else{if(h.rkPnt[1]>j[1]){i=h.rkPnt[1]-j[1];h.rfSqrDistance+=(i*i);h.rkPnt[1]=j[1];}}if(h.rkPnt[2]<-j[2]){i=h.rkPnt[2]+j[2];h.rfSqrDistance+=(i*i);h.rkPnt[2]=-j[2];}else{if(h.rkPnt[2]>j[2]){i=h.rkPnt[2]-j[2];h.rfSqrDistance+=(i*i);h.rkPnt[2]=j[2];}}};b.JSegment=f;})(jigLib);
+/*
+   Copyright (c) 2007 Danny Chapman
+   http://www.rowlhouse.co.uk
+
+   This software is provided 'as-is', without any express or implied
+   warranty. In no event will the authors be held liable for any damages
+   arising from the use of this software.
+   Permission is granted to anyone to use this software for any purpose,
+   including commercial applications, and to alter it and redistribute it
+   freely, subject to the following restrictions:
+   1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+   2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+   3. This notice may not be removed or altered from any source
+   distribution.
+ */
+
+/**
+ * @author Muzer(muzerly@gmail.com)
+ * @link http://code.google.com/p/jiglibflash
+ */
+ 
+ (function(jigLib){
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JNumber3D=jigLib.JNumber3D;
+	var PhysicsState=jigLib.PhysicsState;
+	var JRay=jigLib.JRay;
+	 
+	 
+	var JSegment=function(_origin, _delta){
+		this.origin = _origin;
+		this.delta = _delta;
+	};
+	JSegment.prototype.origin=null;
+	JSegment.prototype.delta=null;
+	
+	JSegment.prototype.getPoint=function(t){
+		return Vector3DUtil.add(this.origin, JNumber3D.getScaleVector(this.delta, t));
+	};
+
+	JSegment.prototype.getEnd=function(){
+		return Vector3DUtil.add(this.origin, this.delta);
+	};
+
+	JSegment.prototype.clone=function(){
+		return new JSegment(this.origin, this.delta);
+	};
+	
+	JSegment.prototype.segmentSegmentDistanceSq=function(out, seg){
+		out.t0 = 0;
+		out.t1 = 0;
+
+		var kDiff = Vector3DUtil.subtract(this.origin, seg.origin);
+		var fA00 = Vector3DUtil.get_lengthSquared(this.delta);
+		var fA01 = -Vector3DUtil.dotProduct(this.delta, seg.delta);
+		var fA11 = Vector3DUtil.get_lengthSquared(seg.delta);
+		var fB0 = Vector3DUtil.dotProduct(kDiff, this.delta);
+		var fC = Vector3DUtil.get_lengthSquared(kDiff);
+		var fDet = Math.abs(fA00 * fA11 - fA01 * fA01);
+		var fB1;
+		var fS;
+		var fT;
+		var fSqrDist;
+		var fTmp;
+
+		if (fDet >= JNumber3D.NUM_TINY){
+			fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
+			fS = fA01 * fB1 - fA11 * fB0;
+			fT = fA01 * fB0 - fA00 * fB1;
+
+			if (fS >= 0){
+				if (fS <= fDet){
+					if (fT >= 0){
+						if (fT <= fDet){
+							var fInvDet = 1 / fDet;
+							fS *= fInvDet;
+							fT *= fInvDet;
+							fSqrDist = fS * (fA00 * fS + fA01 * fT + 2 * fB0) + fT * (fA01 * fS + fA11 * fT + 2 * fB1) + fC;
+						}else{
+							fT = 1;
+							fTmp = fA01 + fB0;
+							if (fTmp >= 0){
+								fS = 0;
+								fSqrDist = fA11 + 2 * fB1 + fC;
+							}else if (-fTmp >= fA00){
+								fS = 1;
+								fSqrDist = fA00 + fA11 + fC + 2 * (fB1 + fTmp);
+							}else{
+								fS = -fTmp / fA00;
+								fSqrDist = fTmp * fS + fA11 + 2 * fB1 + fC;
+							}
+						}
+					}else{
+						fT = 0;
+						if (fB0 >= 0){
+							fS = 0;
+							fSqrDist = fC;
+						}else if (-fB0 >= fA00){
+							fS = 1;
+							fSqrDist = fA00 + 2 * fB0 + fC;
+						}else{
+							fS = -fB0 / fA00;
+							fSqrDist = fB0 * fS + fC;
+						}
+					}
+				}else{
+					if (fT >= 0){
+						if (fT <= fDet){
+							fS = 1;
+							fTmp = fA01 + fB1;
+							if (fTmp >= 0){
+								fT = 0;
+								fSqrDist = fA00 + 2 * fB0 + fC;
+							}else if (-fTmp >= fA11){
+								fT = 1;
+								fSqrDist = fA00 + fA11 + fC + 2 * (fB0 + fTmp);
+							}else{
+								fT = -fTmp / fA11;
+								fSqrDist = fTmp * fT + fA00 + 2 * fB0 + fC;
+							}
+						}else{
+							fTmp = fA01 + fB0;
+							if (-fTmp <= fA00){
+								fT = 1;
+								if (fTmp >= 0){
+									fS = 0;
+									fSqrDist = fA11 + 2 * fB1 + fC;
+								}else{
+									fS = -fTmp / fA00;
+									fSqrDist = fTmp * fS + fA11 + 2 * fB1 + fC;
+								}
+							}else{
+								fS = 1;
+								fTmp = fA01 + fB1;
+								if (fTmp >= 0){
+									fT = 0;
+									fSqrDist = fA00 + 2 * fB0 + fC;
+								}else if (-fTmp >= fA11){
+									fT = 1;
+									fSqrDist = fA00 + fA11 + fC + 2 * (fB0 + fTmp);
+								}else{
+									fT = -fTmp / fA11;
+									fSqrDist = fTmp * fT + fA00 + 2 * fB0 + fC;
+								}
+							}
+						}
+					}else{
+						if (-fB0 < fA00){
+							fT = 0;
+							if (fB0 >= 0){
+								fS = 0;
+								fSqrDist = fC;
+							}else{
+								fS = -fB0 / fA00;
+								fSqrDist = fB0 * fS + fC;
+							}
+						}else{
+							fS = 1;
+							fTmp = fA01 + fB1;
+							if (fTmp >= 0){
+								fT = 0;
+								fSqrDist = fA00 + 2 * fB0 + fC;
+							}else if (-fTmp >= fA11){
+								fT = 1;
+								fSqrDist = fA00 + fA11 + fC + 2 * (fB0 + fTmp);
+							}else{
+								fT = -fTmp / fA11;
+								fSqrDist = fTmp * fT + fA00 + 2 * fB0 + fC;
+							}
+						}
+					}
+				}
+			}else{
+				if (fT >= 0){
+					if (fT <= fDet){
+						fS = 0;
+						if (fB1 >= 0){
+							fT = 0;
+							fSqrDist = fC;
+						}else if (-fB1 >= fA11){
+							fT = 1;
+							fSqrDist = fA11 + 2 * fB1 + fC;
+						}else{
+							fT = -fB1 / fA11;
+							fSqrDist = fB1 * fT + fC;
+						}
+					}else{
+						fTmp = fA01 + fB0;
+						if (fTmp < 0){
+							fT = 1;
+							if (-fTmp >= fA00){
+								fS = 1;
+								fSqrDist = fA00 + fA11 + fC + 2 * (fB1 + fTmp);
+							}else{
+								fS = -fTmp / fA00;
+								fSqrDist = fTmp * fS + fA11 + 2 * fB1 + fC;
+							}
+						}else{
+							fS = 0;
+							if (fB1 >= 0){
+								fT = 0;
+								fSqrDist = fC;
+							}else if (-fB1 >= fA11){
+								fT = 1;
+								fSqrDist = fA11 + 2 * fB1 + fC;
+							}else{
+								fT = -fB1 / fA11;
+								fSqrDist = fB1 * fT + fC;
+							}
+						}
+					}
+				}else{
+					if (fB0 < 0){
+						fT = 0;
+						if (-fB0 >= fA00){
+							fS = 1;
+							fSqrDist = fA00 + 2 * fB0 + fC;
+						}else{
+							fS = -fB0 / fA00;
+							fSqrDist = fB0 * fS + fC;
+						}
+					}else{
+						fS = 0;
+						if (fB1 >= 0){
+							fT = 0;
+							fSqrDist = fC;
+						}else if (-fB1 >= fA11){
+							fT = 1;
+							fSqrDist = fA11 + 2 * fB1 + fC;
+						}else{
+							fT = -fB1 / fA11;
+							fSqrDist = fB1 * fT + fC;
+						}
+					}
+				}
+			}
+		}else{
+			if (fA01 > 0){
+				if (fB0 >= 0){
+					fS = 0;
+					fT = 0;
+					fSqrDist = fC;
+				}else if (-fB0 <= fA00){
+					fS = -fB0 / fA00;
+					fT = 0;
+					fSqrDist = fB0 * fS + fC;
+				}else{
+					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
+					fS = 1;
+					fTmp = fA00 + fB0;
+					if (-fTmp >= fA01){
+						fT = 1;
+						fSqrDist = fA00 + fA11 + fC + 2 * (fA01 + fB0 + fB1);
+					}else{
+						fT = -fTmp / fA01;
+						fSqrDist = fA00 + 2 * fB0 + fC + fT * (fA11 * fT + 2 * (fA01 + fB1));
+					}
+				}
+			}else{
+				if (-fB0 >= fA00){
+					fS = 1;
+					fT = 0;
+					fSqrDist = fA00 + 2 * fB0 + fC;
+				}else if (fB0 <= 0) {
+					fS = -fB0 / fA00;
+					fT = 0;
+					fSqrDist = fB0 * fS + fC;
+				}else{
+					fB1 = -Vector3DUtil.dotProduct(kDiff, seg.delta);
+					fS = 0;
+					if (fB0 >= -fA01){
+						fT = 1;
+						fSqrDist = fA11 + 2 * fB1 + fC;
+					}else{
+						fT = -fB0 / fA01;
+						fSqrDist = fC + fT * (2 * fB1 + fA11 * fT);
+					}
+				}
+			}
+		}
+
+		out.t0 = fS;
+		out.t1 = fT;
+		return Math.abs(fSqrDist);
+	};
+
+	JSegment.prototype.pointSegmentDistanceSq=function(out, pt){
+		out.t = 0;
+
+		var kDiff = Vector3DUtil.subtract(pt,  this.origin);
+		var fT = Vector3DUtil.dotProduct(kDiff, this.delta);
+
+		if (fT <= 0){
+			fT = 0;
+		}else{
+			var fSqrLen = Vector3DUtil.get_lengthSquared(this._delta);
+			if (fT >= fSqrLen){
+				fT = 1;
+				kDiff = Vector3DUtil.subtract(kDiff, this._delta);
+			}else{
+				fT /= fSqrLen;
+				kDiff = Vector3DUtil.subtract(kDiff, JNumber3D.getScaleVector(this._delta, fT));
+			}
+		}
+
+		out.t = fT;
+		return Vector3DUtil.get_lengthSquared(kDiff);
+	};
+
+	JSegment.prototype.segmentBoxDistanceSq=function(out, rkBox, boxState){
+		out.pfLParam = 0;
+		out.pfLParam0 = 0;
+		out.pfLParam1 = 0;
+		out.pfLParam2 = 0;
+
+		var obj = {};
+		var kRay = new JRay(this.origin, this.delta);
+		var fSqrDistance = this.sqrDistanceLine(obj, kRay, rkBox, boxState);
+		if (obj.num >= 0){
+			if (obj.num <= 1){
+				out.pfLParam = obj.num;
+				out.pfLParam0 = obj.num0;
+				out.pfLParam1 = obj.num1;
+				out.pfLParam2 = obj.num2;
+				return Math.max(fSqrDistance, 0);
+			}else{
+				fSqrDistance = this.sqrDistancePoint(out, Vector3DUtil.add(this.origin, this.delta), rkBox, boxState);
+				out.pfLParam = 1;
+				return Math.max(fSqrDistance, 0);
+			}
+		}else{
+			fSqrDistance = this.sqrDistancePoint(out, this.origin, rkBox, boxState);
+			out.pfLParam = 0;
+			return Math.max(fSqrDistance, 0);
+		}
+	};
+
+	JSegment.prototype.sqrDistanceLine=function(out, rkLine, rkBox, boxState){
+		var orientationCols = boxState.getOrientationCols();
+		out.num = 0;
+		out.num0 = 0;
+		out.num1 = 0;
+		out.num2 = 0;
+
+		var kDiff = Vector3DUtil.subtract(rkLine.origin, boxState.position);
+		var kPnt = Vector3DUtil.create( Vector3DUtil.dotProduct(kDiff, orientationCols[0]),
+										Vector3DUtil.dotProduct(kDiff, orientationCols[1]),
+										Vector3DUtil.dotProduct(kDiff, orientationCols[2]), 
+										0);
+
+		var kDir = Vector3DUtil.create( Vector3DUtil.dotProduct(rkLine.dir, orientationCols[0]),
+										Vector3DUtil.dotProduct(rkLine.dir, orientationCols[1]),
+										Vector3DUtil.dotProduct(rkLine.dir, orientationCols[2]), 
+							            0);
+						
+		var kPntArr = JNumber3D.toArray(kPnt);
+		var kDirArr = JNumber3D.toArray(kDir);
+						
+		var bReflect = [1,1,1,0];
+		for (var i = 0; i < 3; i++){
+			if (kDirArr[i] < 0){
+				kPntArr[i] = -kPntArr[i];
+				kDirArr[i] = -kDirArr[i];
+				bReflect[i] = true;
+			}else{
+				bReflect[i] = false;
+			}
+		}
+
+		JNumber3D.copyFromArray(kPnt, kPntArr);
+		JNumber3D.copyFromArray(kDir, kDirArr);
+						
+		var obj = {};
+		obj.rkPnt = kPnt.slice(0);
+		obj.pfLParam = 0;
+		obj.rfSqrDistance = 0;
+
+		if (kDir[0] > 0){
+			if (kDir[1] > 0){
+				if (kDir[2] > 0){
+					this.caseNoZeros(obj, kDir, rkBox);
+					out.num = obj.pfLParam;
+				}else{
+					this.case0(obj, 0, 1, 2, kDir, rkBox);
+					out.num = obj.pfLParam;
+				}
+			}else{
+				if (kDir[2] > 0){
+					this.case0(obj, 0, 2, 1, kDir, rkBox);
+					out.num = obj.pfLParam;
+				}else{
+					this.case00(obj, 0, 1, 2, kDir, rkBox);
+					out.num = obj.pfLParam;
+				}
+			}
+		}else{
+			if (kDir[1] > 0){
+				if (kDir[2] > 0){
+					this.case0(obj, 1, 2, 0, kDir, rkBox);
+					out.num = obj.pfLParam;
+				}else{
+					this.case00(obj, 1, 0, 2, kDir, rkBox);
+					out.num = obj.pfLParam;
+				}
+			}else{
+				if (kDir[2] > 0){
+					this.case00(obj, 2, 0, 1, kDir, rkBox);
+					out.num = obj.pfLParam;
+				}else{
+					this.case000(obj, rkBox);
+					out.num = 0;
+				}
+			}
+		}
+
+		kPntArr = JNumber3D.toArray(obj.rkPnt);
+		for (i = 0; i < 3; i++){
+			if (bReflect[i]) kPntArr[i] = -kPntArr[i];
+		}
+		JNumber3D.copyFromArray(obj.rkPnt, kPntArr);
+
+		out.num0 = obj.rkPnt[0];
+		out.num1 = obj.rkPnt[1];
+		out.num2 = obj.rkPnt[2];
+
+		return Math.max(obj.rfSqrDistance, 0);
+	};
+	
+
+	JSegment.prototype.sqrDistancePoint=function(out, rkPoint, rkBox, boxState){
+		var orientationVector = boxState.getOrientationCols();
+		var kDiff = Vector3DUtil.subtract(rkPoint, boxState.position);
+		var kClosest = Vector3DUtil.create( Vector3DUtil.dotProduct(kDiff, orientationVector[0]),
+							                Vector3DUtil.dotProduct(kDiff, orientationVector[1]),
+							                Vector3DUtil.dotProduct(kDiff, orientationVector[2]), 
+							                0);
+
+		var fSqrDistance = 0;
+		var fDelta;
+		var boxHalfSide = rkBox.getHalfSideLengths();
+
+		if (kClosest[0] < -boxHalfSide[0]){
+			fDelta = kClosest[0] + boxHalfSide[0];
+			fSqrDistance += (fDelta * fDelta);
+			kClosest[0] = -boxHalfSide[0];
+		}else if (kClosest[0] > boxHalfSide[0]){
+			fDelta = kClosest[0] - boxHalfSide[0];
+			fSqrDistance += (fDelta * fDelta);
+			kClosest[0] = boxHalfSide[0];
+		}
+
+		if (kClosest[1] < -boxHalfSide[1]){
+			fDelta = kClosest[1] + boxHalfSide[1];
+			fSqrDistance += (fDelta * fDelta);
+			kClosest[1] = -boxHalfSide[1];
+		}else if (kClosest[1] > boxHalfSide[1]){
+			fDelta = kClosest[1] - boxHalfSide[1];
+			fSqrDistance += (fDelta * fDelta);
+			kClosest[1] = boxHalfSide[1];
+		}
+
+		if (kClosest[2] < -boxHalfSide[2]){
+			fDelta = kClosest[2] + boxHalfSide[2];
+			fSqrDistance += (fDelta * fDelta);
+			kClosest[2] = -boxHalfSide[2];
+		}else if (kClosest[2] > boxHalfSide[2]){
+			fDelta = kClosest[2] - boxHalfSide[2];
+			fSqrDistance += (fDelta * fDelta);
+			kClosest[2] = boxHalfSide[2];
+		}
+
+		out.pfLParam0 = kClosest[0];
+		out.pfLParam1 = kClosest[1];
+		out.pfLParam2 = kClosest[2];
+
+		return Math.max(fSqrDistance, 0);
+	};
+
+	JSegment.prototype.face=function(out, i0, i1, i2, rkDir, rkBox, rkPmE){
+		var kPpE = [0,0,0,0];
+		var fLSqr;
+		var fInv;
+		var fTmp;
+		var fParam;
+		var fT;
+		var fDelta;
+
+		var boxHalfSide = rkBox.getHalfSideLengths();
+		var boxHalfArr = JNumber3D.toArray(boxHalfSide);
+		var rkPntArr = JNumber3D.toArray(out.rkPnt);
+		var rkDirArr = JNumber3D.toArray(rkDir);
+		var kPpEArr = JNumber3D.toArray(kPpE);
+		var rkPmEArr = JNumber3D.toArray(rkPmE);
+
+		kPpEArr[i1] = rkPntArr[i1] + boxHalfArr[i1];
+		kPpEArr[i2] = rkPntArr[i2] + boxHalfArr[i2];
+		JNumber3D.copyFromArray(rkPmE, kPpEArr);
+
+		if (rkDirArr[i0] * kPpEArr[i1] >= rkDirArr[i1] * rkPmEArr[i0]){
+			if (rkDirArr[i0] * kPpEArr[i2] >= rkDirArr[i2] * rkPmEArr[i0]){
+				rkPntArr[i0] = boxHalfArr[i0];
+				fInv = 1 / rkDirArr[i0];
+				rkPntArr[i1] -= (rkDirArr[i1] * rkPmEArr[i0] * fInv);
+				rkPntArr[i2] -= (rkDirArr[i2] * rkPmEArr[i0] * fInv);
+				out.pfLParam = -rkPmEArr[i0] * fInv;
+				JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+			}else{
+				fLSqr = rkDirArr[i0] * rkDirArr[i0] + rkDirArr[i2] * rkDirArr[i2];
+				fTmp = fLSqr * kPpEArr[i1] - rkDirArr[i1] * (rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i2] * kPpEArr[i2]);
+				if (fTmp <= 2 * fLSqr * boxHalfArr[i1]){
+					fT = fTmp / fLSqr;
+					fLSqr += (rkDirArr[i1] * rkDirArr[i1]);
+					fTmp = kPpEArr[i1] - fT;
+					fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * fTmp + rkDirArr[i2] * kPpEArr[i2];
+					fParam = -fDelta / fLSqr;
+					out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + fTmp * fTmp + kPpEArr[i2] * kPpEArr[i2] + fDelta * fParam);
+
+					out.pfLParam = fParam;
+					rkPntArr[i0] = boxHalfArr[i0];
+					rkPntArr[i1] = fT - boxHalfArr[i1];
+					rkPntArr[i2] = -boxHalfArr[i2];
+					JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+				}else{
+					fLSqr += (rkDirArr[i1] * rkDirArr[i1]);
+					fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * rkPmEArr[i1] + rkDirArr[i2] * kPpEArr[i2];
+					fParam = -fDelta / fLSqr;
+					out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + rkPmEArr[i1] * rkPmEArr[i1] + kPpEArr[i2] * kPpEArr[i2] + fDelta * fParam);
+
+					out.pfLParam = fParam;
+					rkPntArr[i0] = boxHalfArr[i0];
+					rkPntArr[i1] = boxHalfArr[i1];
+					rkPntArr[i2] = -boxHalfArr[i2];
+					JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+				}
+			}
+		}else{
+			if (rkDirArr[i0] * kPpEArr[i2] >= rkDirArr[i2] * rkPmEArr[i0])
+			{
+				fLSqr = rkDirArr[i0] * rkDirArr[i0] + rkDirArr[i1] * rkDirArr[i1];
+				fTmp = fLSqr * kPpEArr[i2] - rkDirArr[i2] * (rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * kPpEArr[i1]);
+				if (fTmp <= 2 * fLSqr * boxHalfArr[i2]){
+					fT = fTmp / fLSqr;
+					fLSqr += (rkDirArr[i2] * rkDirArr[i2]);
+					fTmp = kPpEArr[i2] - fT;
+					fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * kPpEArr[i1] + rkDirArr[i2] * fTmp;
+					fParam = -fDelta / fLSqr;
+					out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + kPpEArr[i1] * kPpEArr[i1] + fTmp * fTmp + fDelta * fParam);
+
+					out.pfLParam = fParam;
+					rkPntArr[i0] = boxHalfArr[i0];
+					rkPntArr[i1] = -boxHalfArr[i1];
+					rkPntArr[i2] = fT - boxHalfArr[i2];
+					JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+				}else{
+					fLSqr += (rkDirArr[i2] * rkDirArr[i2]);
+					fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * kPpEArr[i1] + rkDirArr[i2] * rkPmEArr[i2];
+					fParam = -fDelta / fLSqr;
+					out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + kPpEArr[i1] * kPpEArr[i1] + rkPmEArr[i2] * rkPmEArr[i2] + fDelta * fParam);
+
+					out.pfLParam = fParam;
+					rkPntArr[i0] = boxHalfArr[i0];
+					rkPntArr[i1] = -boxHalfArr[i1];
+					rkPntArr[i2] = boxHalfArr[i2];
+					JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+				}
+			}else{
+				fLSqr = rkDirArr[i0] * rkDirArr[i0] + rkDirArr[i2] * rkDirArr[i2];
+				fTmp = fLSqr * kPpEArr[i1] - rkDirArr[i1] * (rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i2] * kPpEArr[i2]);
+				if (fTmp >= 0){
+					if (fTmp <= 2 * fLSqr * boxHalfArr[i1]){
+						fT = fTmp / fLSqr;
+						fLSqr += (rkDirArr[i1] * rkDirArr[i1]);
+						fTmp = kPpEArr[i1] - fT;
+						fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * fTmp + rkDirArr[i2] * kPpEArr[i2];
+						fParam = -fDelta / fLSqr;
+						out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + fTmp * fTmp + kPpEArr[i2] * kPpEArr[i2] + fDelta * fParam);
+
+						out.pfLParam = fParam;
+						rkPntArr[i0] = boxHalfArr[i0];
+						rkPntArr[i1] = fT - boxHalfArr[i1];
+						rkPntArr[i2] = -boxHalfArr[i2];
+						JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+					}else{
+						fLSqr += (rkDirArr[i1] * rkDirArr[i1]);
+						fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * rkPmEArr[i1] + rkDirArr[i2] * kPpEArr[i2];
+						fParam = -fDelta / fLSqr;
+						out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + rkPmEArr[i1] * rkPmEArr[i1] + kPpEArr[i2] * kPpEArr[i2] + fDelta * fParam);
+
+						out.pfLParam = fParam;
+						rkPntArr[i0] = boxHalfArr[i0];
+						rkPntArr[i1] = boxHalfArr[i1];
+						rkPntArr[i2] = -boxHalfArr[i2];
+						JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+					}
+					return;
+				}
+
+				fLSqr = rkDirArr[i0] * rkDirArr[i0] + rkDirArr[i1] * rkDirArr[i1];
+				fTmp = fLSqr * kPpEArr[i2] - rkDirArr[i2] * (rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * kPpEArr[i1]);
+				if (fTmp >= 0){
+					if (fTmp <= 2 * fLSqr * boxHalfArr[i2]){
+						fT = fTmp / fLSqr;
+						fLSqr += (rkDirArr[i2] * rkDirArr[i2]);
+						fTmp = kPpEArr[i2] - fT;
+						fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * kPpEArr[i1] + rkDirArr[i2] * fTmp;
+						fParam = -fDelta / fLSqr;
+						out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + kPpEArr[i1] * kPpEArr[i1] + fTmp * fTmp + fDelta * fParam);
+
+						out.pfLParam = fParam;
+						rkPntArr[i0] = boxHalfArr[i0];
+						rkPntArr[i1] = -boxHalfArr[i1];
+						rkPntArr[i2] = fT - boxHalfArr[i2];
+						JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+					}else{
+						fLSqr += (rkDirArr[i2] * rkDirArr[i2]);
+						fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * kPpEArr[i1] + rkDirArr[i2] * rkPmEArr[i2];
+						fParam = -fDelta / fLSqr;
+						out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + kPpEArr[i1] * kPpEArr[i1] + rkPmEArr[i2] * rkPmEArr[i2] + fDelta * fParam);
+
+						out.pfLParam = fParam;
+						rkPntArr[i0] = boxHalfArr[i0];
+						rkPntArr[i1] = -boxHalfArr[i1];
+						rkPntArr[i2] = boxHalfArr[i2];
+						JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+					}
+					return;
+				}
+
+				fLSqr += (rkDirArr[i2] * rkDirArr[i2]);
+				fDelta = rkDirArr[i0] * rkPmEArr[i0] + rkDirArr[i1] * kPpEArr[i1] + rkDirArr[i2] * kPpEArr[i2];
+				fParam = -fDelta / fLSqr;
+				out.rfSqrDistance += (rkPmEArr[i0] * rkPmEArr[i0] + kPpEArr[i1] * kPpEArr[i1] + kPpEArr[i2] * kPpEArr[i2] + fDelta * fParam);
+
+				out.pfLParam = fParam;
+				rkPntArr[i0] = boxHalfArr[i0];
+				rkPntArr[i1] = -boxHalfArr[i1];
+				rkPntArr[i2] = -boxHalfArr[i2];
+				JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+			}
+		}
+	};
+	
+	JSegment.prototype.caseNoZeros=function(out, rkDir, rkBox){
+		var boxHalfSide = rkBox.getHalfSideLengths();
+		var kPmE = Vector3DUtil.create(out.rkPnt[0] - boxHalfSide[0], out.rkPnt[1] - boxHalfSide[1], out.rkPnt[2] - boxHalfSide[2], 0);
+
+		var fProdDxPy = rkDir[0] * kPmE[1];
+		var fProdDyPx = rkDir[1] * kPmE[0];
+		var fProdDzPx;
+		var fProdDxPz;
+		var fProdDzPy;
+		var fProdDyPz;
+
+		if (fProdDyPx >= fProdDxPy){
+			fProdDzPx = rkDir[2] * kPmE[0];
+			fProdDxPz = rkDir[0] * kPmE[2];
+			if (fProdDzPx >= fProdDxPz)
+				this.face(out, 0, 1, 2, rkDir, rkBox, kPmE);
+			else
+				this.face(out, 2, 0, 1, rkDir, rkBox, kPmE);
+		}else{
+			fProdDzPy = rkDir[2] * kPmE[1];
+			fProdDyPz = rkDir[1] * kPmE[2];
+			if (fProdDzPy >= fProdDyPz)
+				this.face(out, 1, 2, 0, rkDir, rkBox, kPmE);
+			else
+				this.face(out, 2, 0, 1, rkDir, rkBox, kPmE);
+		}
+	};
+
+	JSegment.prototype.case0=function(out, i0, i1, i2, rkDir, rkBox){
+		var boxHalfSide = rkBox.getHalfSideLengths();
+		var boxHalfArr = JNumber3D.toArray(boxHalfSide);
+		var rkPntArr = JNumber3D.toArray(out.rkPnt);
+		var rkDirArr = JNumber3D.toArray(rkDir);
+		var fPmE0 = rkPntArr[i0] - boxHalfArr[i0];
+		var fPmE1 = rkPntArr[i1] - boxHalfArr[i1];
+		var fProd0 = rkDirArr[i1] * fPmE0;
+		var fProd1 = rkDirArr[i0] * fPmE1;
+		var fDelta;
+		var fInvLSqr;
+		var fInv;
+
+		if (fProd0 >= fProd1){
+			rkPntArr[i0] = boxHalfArr[i0];
+
+			var fPpE1 = rkPntArr[i1] + boxHalfArr[i1];
+			fDelta = fProd0 - rkDirArr[i0] * fPpE1;
+			if (fDelta >= 0){
+				fInvLSqr = 1 / (rkDirArr[i0] * rkDirArr[i0] + rkDirArr[i1] * rkDirArr[i1]);
+				out.rfSqrDistance += (fDelta * fDelta * fInvLSqr);
+
+				rkPntArr[i1] = -boxHalfArr[i1];
+				out.pfLParam = -(rkDirArr[i0] * fPmE0 + rkDirArr[i1] * fPpE1) * fInvLSqr;
+			}else{
+				fInv = 1 / rkDirArr[i0];
+				rkPntArr[i1] -= (fProd0 * fInv);
+				out.pfLParam = -fPmE0 * fInv;
+			}
+			JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+		}else{
+			rkPntArr[i1] = boxHalfArr[i1];
+
+			var fPpE0 = rkPntArr[i0] + boxHalfArr[i0];
+			fDelta = fProd1 - rkDirArr[i1] * fPpE0;
+			if (fDelta >= 0){
+				fInvLSqr = 1 / (rkDirArr[i0] * rkDirArr[i0] + rkDirArr[i1] * rkDirArr[i1]);
+				out.rfSqrDistance += (fDelta * fDelta * fInvLSqr);
+
+				rkPntArr[i0] = -boxHalfArr[i0];
+				out.pfLParam = -(rkDirArr[i0] * fPpE0 + rkDirArr[i1] * fPmE1) * fInvLSqr;
+			}else{
+				fInv = 1 / rkDirArr[i1];
+				rkPntArr[i0] -= (fProd1 * fInv);
+				out.pfLParam = -fPmE1 * fInv;
+			}
+			JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+		}
+
+		if (rkPntArr[i2] < -boxHalfArr[i2]){
+			fDelta = rkPntArr[i2] + boxHalfArr[i2];
+			out.rfSqrDistance += (fDelta * fDelta);
+			rkPntArr[i2] = -boxHalfArr[i2];
+		}else if (rkPntArr[i2] > boxHalfArr[i2]){
+			fDelta = rkPntArr[i2] - boxHalfArr[i2];
+			out.rfSqrDistance += (fDelta * fDelta);
+			rkPntArr[i2] = boxHalfArr[i2];
+		}
+		JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+	};
+
+	JSegment.prototype.case00=function(out, i0, i1, i2, rkDir, rkBox){
+		var fDelta = 0;
+		var boxHalfSide = rkBox.getHalfSideLengths();
+		var boxHalfArr = JNumber3D.toArray(boxHalfSide);
+		var rkPntArr = JNumber3D.toArray(out.rkPnt);
+		var rkDirArr = JNumber3D.toArray(rkDir);
+		out.pfLParam = (boxHalfArr[i0] - rkPntArr[i0]) / rkDirArr[i0];
+
+		rkPntArr[i0] = boxHalfArr[i0];
+
+		if (rkPntArr[i1] < -boxHalfArr[i1]){
+			fDelta = rkPntArr[i1] + boxHalfArr[i1];
+			out.rfSqrDistance += (fDelta * fDelta);
+			rkPntArr[i1] = -boxHalfArr[i1];
+		}else if (rkPntArr[i1] > boxHalfArr[i1]) {
+			fDelta = rkPntArr[i1] - boxHalfArr[i1];
+			out.rfSqrDistance += (fDelta * fDelta);
+			rkPntArr[i1] = boxHalfArr[i1];
+		}
+
+		if (rkPntArr[i2] < -boxHalfArr[i2]){
+			fDelta = rkPntArr[i2] + boxHalfArr[i2];
+			out.rfSqrDistance += (fDelta * fDelta);
+			rkPntArr[i2] = -boxHalfArr[i2];
+		}else if (rkPntArr[i2] > boxHalfArr[i2]){
+			fDelta = rkPntArr[i2] - boxHalfArr[i2];
+			out.rfSqrDistance += (fDelta * fDelta);
+			rkPntArr[i2] = boxHalfArr[i2];
+		}
+
+		JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
+	};
+
+	JSegment.prototype.case000=function(out, rkBox){
+		var fDelta = 0;
+		var boxHalfSide = rkBox.getHalfSideLengths();
+
+		if (out.rkPnt[0] < -boxHalfSide[0]){
+			fDelta = out.rkPnt[0] + boxHalfSide[0];
+			out.rfSqrDistance += (fDelta * fDelta);
+			out.rkPnt[0] = -boxHalfSide[0];
+		}else if (out.rkPnt[0] > boxHalfSide[0]){
+			fDelta = out.rkPnt[0] - boxHalfSide[0];
+			out.rfSqrDistance += (fDelta * fDelta);
+			out.rkPnt[0] = boxHalfSide[0];
+		}
+
+		if (out.rkPnt[1] < -boxHalfSide[1]){
+			fDelta = out.rkPnt[1] + boxHalfSide[1];
+			out.rfSqrDistance += (fDelta * fDelta);
+			out.rkPnt[1] = -boxHalfSide[1];
+		}else if (out.rkPnt[1] > boxHalfSide[1]){
+			fDelta = out.rkPnt[1] - boxHalfSide[1];
+			out.rfSqrDistance += (fDelta * fDelta);
+			out.rkPnt[1] = boxHalfSide[1];
+		}
+
+		if (out.rkPnt[2] < -boxHalfSide[2]){
+			fDelta = out.rkPnt[2] + boxHalfSide[2];
+			out.rfSqrDistance += (fDelta * fDelta);
+			out.rkPnt[2] = -boxHalfSide[2];
+		}else if (out.rkPnt[2] > boxHalfSide[2]){
+			fDelta = out.rkPnt[2] - boxHalfSide[2];
+			out.rfSqrDistance += (fDelta * fDelta);
+			out.rkPnt[2] = boxHalfSide[2];
+		}
+	};
+	
+	
+	jigLib.JSegment=JSegment;
+	
+ })(jigLib);

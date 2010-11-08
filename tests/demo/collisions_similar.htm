@@ -237,14 +237,13 @@
 			var rad=5;
 			
 			// adds objects to the scene
-			function addObjects(shape) {
-				var c=(shape=='spheres') ? 4 : 3;
+			function addObjects(shape, count) {
 				var s=(shape=='spheres') ? rad : rad*1.2;
-				var i=c;
+				var i=count;
 				do {
-					var ii=c;
+					var ii=count;
 					do {
-						var iii=c;
+						var iii=count;
 						do {
 							switch(shape) 
 							{
@@ -393,7 +392,7 @@
 				document.getElementById('startBtn').disabled=true;
 				system.setSolverType(document.getElementById('solver').value);
 				clearObjects();
-				addObjects(document.getElementById('shape').value);
+				addObjects(document.getElementById('shape').value, document.getElementById('count').value);
 				lasttime=(new Date()).getTime();
 				renderCount=0;
 				renderT=setInterval(render,30);
@@ -419,6 +418,12 @@
 		<option value="spheres">spheres</option>
 		<option value="cubes">cubes</option>
 		<option value="capsules">capsules</option>
+	</select> <br />
+	object count:
+	<select name="count" id="count">
+		<option value="1">8 (2x2x2)</option>
+		<option value="2">27 (3x3x3)</option>
+		<option value="3">64 (4x4x4)</option>
 	</select> <br />
 	solver: <select name="solver" id="solver">
 		<option value="FAST">fast</option>

@@ -18,11 +18,6 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
@@ -33,6 +28,19 @@
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollDetectCapsuleTerrain handles collisions between capsules and terrain
+	 * @extends CollDetectFunctor
+	 * @requires CollDetectInfo
+	 * @requires CollPointInfo
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires CollisionInfo
+	 * @requires MaterialProperties
+	 * @constructor
+	 **/
 	var CollDetectCapsuleTerrain=function(){
 		this.name = "BoxTerrain";
 		this.type0 = "CAPSULE";
@@ -40,6 +48,13 @@
 	};
 	jigLib.extend(CollDetectCapsuleTerrain,jigLib.CollDetectFunctor);
 
+	/**
+	 * @function collDetect detects a collision and updates the info parameter
+	 * @belongsTo CollDetectCapsuleTerrain
+	 * @param {CollDetectInfo} info
+	 * @param {array} collArray
+	 * @type void
+	 **/
 	CollDetectCapsuleTerrain.prototype.collDetect=function(info, collArr){
 		var tempBody;
 		if (info.body0.type == "TERRAIN"){

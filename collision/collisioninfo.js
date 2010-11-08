@@ -18,14 +18,20 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
  (function(jigLib){
 	var MaterialProperties=jigLib.MaterialProperties;
-	 
+	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollisionInfo stores information about a collision
+	 * @requires MaterialProperties
+	 * @property {MaterialProperties} mat
+	 * @property {CollDetectInfo} objInfo
+	 * @property {array} pointInfo a collection of points expressed as 3D vectors
+	 * @property {boolean} satisfied whether the collision has been satisfied
+	 * @constructor
+	 **/
 	var CollisionInfo=function(){
 		this.mat=new MaterialProperties();
 		this.pointInfo=[];

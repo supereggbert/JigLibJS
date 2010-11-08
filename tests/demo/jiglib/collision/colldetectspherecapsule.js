@@ -1,1 +1,115 @@
-(function(c){var i=c.Vector3DUtil;var d=c.JMatrix3D;var a=c.JNumber3D;var g=c.JConstraint;var e=c.JConfig;var f=c.JSphere;var k=c.JSegment;var b=c.MaterialProperties;var m=c.RigidBody;var h=c.CollPointInfo;var j=c.CollisionInfo;var l=function(){this.name="SphereCapsule";this.type0="SPHERE";this.type1="CAPSULE";};c.extend(l,c.CollDetectFunctor);l.prototype.collDetect=function(D,B){var w;if(D.body0.get_type()=="CAPSULE"){w=D.body0;D.body0=D.body1;D.body1=w;}var p=D.body0;var v=D.body1;if(!p.hitTestObject3D(v)){return;}if(e.aabbDetection&&!p.get_boundingBox().overlapTest(v.get_boundingBox())){return;}var o=new k(v.getBottomPos(v.get_oldState()),a.getScaleVector(v.get_oldState().getOrientationCols()[1],i.get_length(v)+2*v.get_radius()));var x=new k(v.getBottomPos(v.get_currentState()),a.getScaleVector(v.get_currentState().getOrientationCols()[1],i.get_length(v)+2*v.get_radius()));var n=p.get_radius()+v.get_radius();var G={};var F=o.pointSegmentDistanceSq(G,p.get_oldState().position);var s={};var q=x.pointSegmentDistanceSq(s,p.get_currentState().position);if(Math.min(F,q)<Math.pow(n+e.collToll,2)){var u=o.getPoint(G.t);var E=i.subtract(p.get_oldState().position,u);var y=Math.sqrt(F);var H=n-y;if(y>a.NUM_TINY){E=a.getDivideVector(E,y);}else{E=i.Y_AXIS;d.multiplyVector(d.getRotationMatrix(0,0,1,360*Math.random()),E);}var t=i.add(u,a.getScaleVector(E,v.get_radius()-0.5*H));var A=[];var r=new h();r.r0=i.subtract(t,p.get_oldState().position);r.r1=i.subtract(t,v.get_oldState().position);r.initialPenetration=H;A.push(r);var z=new j();z.objInfo=D;z.dirToBody=E;z.pointInfo=A;var C=new b();C.set_restitution(Math.sqrt(p.get_material().get_restitution()*v.get_material().get_restitution()));C.set_friction(Math.sqrt(p.get_material().get_friction()*v.get_material().get_friction()));z.mat=C;B.push(z);D.body0.collisions.push(z);D.body1.collisions.push(z);}};c.CollDetectSphereCapsule=l;})(jigLib);
+/*
+   Copyright (c) 2007 Danny Chapman
+   http://www.rowlhouse.co.uk
+
+   This software is provided 'as-is', without any express or implied
+   warranty. In no event will the authors be held liable for any damages
+   arising from the use of this software.
+   Permission is granted to anyone to use this software for any purpose,
+   including commercial applications, and to alter it and redistribute it
+   freely, subject to the following restrictions:
+   1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+   2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+   3. This notice may not be removed or altered from any source
+   distribution.
+ */
+
+/**
+ * @author Muzer(muzerly@gmail.com)
+ * @link http://code.google.com/p/jiglibflash
+ */
+ 
+(function(jigLib){
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JMatrix3D=jigLib.JMatrix3D;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JSphere=jigLib.JSphere;
+	var JSegment=jigLib.JSegment;
+	var MaterialProperties=jigLib.MaterialProperties;
+	var RigidBody=jigLib.RigidBody;
+	var CollPointInfo=jigLib.CollPointInfo;
+	var CollisionInfo=jigLib.CollisionInfo;
+	
+	var CollDetectSphereCapsule=function(){
+		this.name = "SphereCapsule";
+		this.type0 = "SPHERE";
+		this.type1 = "CAPSULE";
+	};
+	jigLib.extend(CollDetectSphereCapsule,jigLib.CollDetectFunctor);
+	
+	CollDetectSphereCapsule.prototype.collDetect=function(info, collArr){
+		var tempBody;
+		if (info.body0.get_type() == "CAPSULE"){
+			tempBody = info.body0;
+			info.body0 = info.body1;
+			info.body1 = tempBody;
+		}
+
+		var sphere = info.body0;
+		var capsule= info.body1;
+
+		if (!sphere.hitTestObject3D(capsule)){
+			return;
+		}
+						
+		if (JConfig.aabbDetection && !sphere.get_boundingBox().overlapTest(capsule.get_boundingBox())) {
+			return;
+		}
+
+		var oldSeg = new JSegment(capsule.getBottomPos(capsule.get_oldState()), JNumber3D.getScaleVector(capsule.get_oldState().getOrientationCols()[1], Vector3DUtil.get_length(capsule) + 2 * capsule.get_radius()));
+		var newSeg = new JSegment(capsule.getBottomPos(capsule.get_currentState()), JNumber3D.getScaleVector(capsule.get_currentState().getOrientationCols()[1], Vector3DUtil.get_length(capsule) + 2 * capsule.get_radius()));
+		var radSum = sphere.get_radius() + capsule.get_radius();
+
+		var oldObj = {};
+		var oldDistSq = oldSeg.pointSegmentDistanceSq(oldObj, sphere.get_oldState().position);
+		var newObj = {};
+		var newDistSq = newSeg.pointSegmentDistanceSq(newObj, sphere.get_currentState().position);
+
+		if (Math.min(oldDistSq, newDistSq) < Math.pow(radSum + JConfig.collToll, 2)){
+			var segPos = oldSeg.getPoint(oldObj.t);
+			var delta = Vector3DUtil.subtract(sphere.get_oldState().position, segPos);
+
+			var dist = Math.sqrt(oldDistSq);
+			var depth = radSum - dist;
+
+			if (dist > JNumber3D.NUM_TINY){
+				delta = JNumber3D.getDivideVector(delta, dist);
+			}else{
+				delta = Vector3DUtil.Y_AXIS;
+				JMatrix3D.multiplyVector(JMatrix3D.getRotationMatrix(0, 0, 1, 360 * Math.random()), delta);
+			}
+
+			var worldPos = Vector3DUtil.add(segPos, JNumber3D.getScaleVector(delta, capsule.get_radius() - 0.5 * depth));
+
+			var collPts = [];
+			var cpInfo = new CollPointInfo();
+			cpInfo.r0 = Vector3DUtil.subtract(worldPos, sphere.get_oldState().position);
+			cpInfo.r1 = Vector3DUtil.subtract(worldPos, capsule.get_oldState().position);
+			cpInfo.initialPenetration = depth;
+			collPts.push(cpInfo);
+
+			var collInfo = new CollisionInfo();
+			collInfo.objInfo = info;
+			collInfo.dirToBody = delta;
+			collInfo.pointInfo = collPts;
+
+			var mat = new MaterialProperties();
+			mat.set_restitution(Math.sqrt(sphere.get_material().get_restitution() * capsule.get_material().get_restitution()));
+			mat.set_friction(Math.sqrt(sphere.get_material().get_friction() * capsule.get_material().get_friction()));
+			collInfo.mat = mat;
+			collArr.push(collInfo);
+
+			info.body0.collisions.push(collInfo);
+			info.body1.collisions.push(collInfo);
+		}
+	};
+	
+	jigLib.CollDetectSphereCapsule=CollDetectSphereCapsule;
+	
+})(jigLib);

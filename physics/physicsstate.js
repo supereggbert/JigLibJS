@@ -8,7 +8,7 @@
 	
 	/**
 	 * @author katopz
-	 *				 Devin Reimer (blog.almostlogical.com)
+	 * Devin Reimer (blog.almostlogical.com)
 	 */
 	var PhysicsState=function(){
 		this.position = [0,0,0,0];

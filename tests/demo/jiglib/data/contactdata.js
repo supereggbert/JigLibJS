@@ -1,1 +1,11 @@
-(function(a){var b=function(){};b.prototype.pair=null;b.prototype.impulse=null;a.ContactData=b;})(jigLib);
+(function(jigLib){
+	/**
+		 * @author katopz
+		 */
+	var ContactData=function(){};
+	ContactData.prototype.pair=null;
+	ContactData.prototype.impulse=null;
+	
+	jigLib.ContactData=ContactData;
+})(jigLib);
+

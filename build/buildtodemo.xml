@@ -14,8 +14,26 @@
 				<exclude name="build/**" />
 				<exclude name="tests/**" />
 				<include name="**/*.js" />
-				<!--include name="**/*.css" / -->
 			</fileset>
 		</yuicompress>
+		<concat destfile="${basedir}/tests/demo/jiglib/jiglib.all.min.js">
+			<filelist dir="${basedir}/tests/demo/jiglib" files="jiglib.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/cof" files="jconfig.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/maths" files="glmatrix.js,vector3dutil.js,matrix3d.js,jnumber3d.js,jmatrix3d.js,jmaths3d.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/data" includes="*.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/plugins" includes="*.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/geometry" files="jaabox.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/physics" includes="*.js" excludes="hingejoint.js,physicssystem.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/physics/effect" files="jeffect.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/physics/effect" includes="*.js" excludes="jeffect.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/geometry" includes="*.js" excludes="jaabox.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/collision" files="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/collision" includes="*.js" excludes="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js,collisionsystem.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/collision" files="collisionsystem.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/physics/constraint" includes="*.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/physics" files="hingejoint.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/physics" files="physicssystem.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/vehicles" includes="*.js" />
+		</concat>
 	</target>
 </project>

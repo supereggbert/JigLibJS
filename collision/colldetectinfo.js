@@ -18,14 +18,16 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
  (function(jigLib){
+	 /**
+	  * @author Muzer(muzerly@gmail.com)
+	  * 
+	  * @class CollDetectInfo stores 2 rigid bodies and is used by collision detection classes
+	  * @property {RigidBody} body0
+	  * @property {RigidBody} body1
+	  * @constructor
+	  */
 	 var CollDetectInfo=function(){
-		 
 	 };
 	 CollDetectInfo.prototype.body0=null;
 	 CollDetectInfo.prototype.body1=null;

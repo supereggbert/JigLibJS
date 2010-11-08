@@ -18,11 +18,6 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
@@ -37,6 +32,19 @@
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollDetectCapsuleBox handles collisions between capsules and boxes
+	 * @extends CollDetectFunctor
+	 * @requires CollDetectInfo
+	 * @requires CollPointInfo
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires JSegment
+	 * @requires MaterialProperties
+	 * @constructor
+	 **/
 	var CollDetectCapsuleBox=function(){
 		this.name = "CapsuleBox";
 		this.type0 = "CAPSULE";
@@ -44,6 +52,13 @@
 	};
 	jigLib.extend(CollDetectCapsuleBox,jigLib.CollDetectFunctor);
 
+	/**
+	 * @function collDetect detects a collision and updates the info parameter
+	 * @belongsTo CollDetectCapsuleBox
+	 * @param {CollDetectInfo} info
+	 * @param {array} collArray
+	 * @type void
+	 **/
 	CollDetectCapsuleBox.prototype.collDetect=function(info, collArr){
 		var tempBody;
 		if (info.body0.get_type() == "BOX"){

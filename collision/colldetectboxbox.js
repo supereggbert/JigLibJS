@@ -18,10 +18,6 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
@@ -37,18 +33,41 @@
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollDetectBoxBox handles collisions between boxes
+	 * @extends CollDetectFunctor
+	 * @property {number} combinationDist the combination distance
+	 * @requires CollDetectInfo
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires JBox
+	 * @requires PhysicsState
+	 * @constructor
+	 **/
 	var CollDetectBoxBox=function(){
 		this.name = "BoxBox";
 		this.type0 = "BOX";
 		this.type1 = "BOX";
 	};
-	
 	jigLib.extend(CollDetectBoxBox,jigLib.CollDetectFunctor);
 	
-	CollDetectBoxBox.prototype.MAX_SUPPORT_VERTS = 10;
 	CollDetectBoxBox.prototype.combinationDist=null;
 	
-	//Returns true if disjoint.  Returns false if intersecting
+	// I can't find any other reference to the MAX_SUPPORT_VERTS property anywhere!
+	// CollDetectBoxBox.prototype.MAX_SUPPORT_VERTS = 10;
+	
+	/**
+	 * @function disjoint tests for disjoint or intersection
+	 * @belongsTo CollDetectBoxBox
+	 * @param {SpanData} out the SpanData object to apply test results to
+	 * @param {array} axis the axis expressed as a 3D vector
+	 * @param {JBox} box0 the first box to use for testing
+	 * @param {JBox} box1 the second box to use for testing
+	 * @returns true if disjoint, false if intersecting
+	 * @type boolean
+	 **/
 	CollDetectBoxBox.prototype.disjoint=function(out, axis, box0, box1){
 		var obj0 = box0.getSpan(axis);
 		var obj1 = box1.getSpan(axis);
@@ -75,6 +94,15 @@
 	};
 	
 	
+	/**
+	 * @function addPoint conditionally adds one 3D vector to a collection of other 3D vectors
+	 * @belongsTo CollDetectBoxBox
+	 * @param {array} contactPoints a collection of points (3D vectors)
+	 * @param {array} pt the point to add expressed as a 3D vector
+	 * @param {number} combinationDistanceSq the maximum length squared allowed between pt and any of contactPoints
+	 * @returns true if pt was added to contactPoints, false if combinationDistanceSq was ever exceeded
+	 * @type boolean
+	 **/
 	CollDetectBoxBox.prototype.addPoint=function(contactPoints, pt, combinationDistanceSq){
 		for(var i=0,cpsl=contactPoints.length;i<cpsl;i++){
 			var contactPoint=contactPoints[i];
@@ -88,6 +116,14 @@
 	};
 
 				
+	/**
+	 * @function getSupportPoint
+	 * @belongsTo CollDetectBoxBox
+	 * @param {JBox} box
+	 * @param {array} axis the axis expressed as a 3D vector
+	 * @returns the point expressed as a 3D Vector
+	 * @type {array}
+	 **/
 	CollDetectBoxBox.prototype.getSupportPoint=function(box, axis) {
 		var orientationCol = box.get_currentState().getOrientationCols();
 		var _as = Vector3DUtil.dotProduct(axis,orientationCol[0]);
@@ -118,6 +154,16 @@
 		return p;
 	};
 
+	/**
+	 * @function getAABox2EdgeIntersectionPoints
+	 * @belongsTo CollDetectBoxBox
+	 * @param {array} contactPoint a 3D vector
+	 * @param {array} origBoxSides a 3D vector
+	 * @param {PhysicsState} origBoxState
+	 * @param {array} edgePt0 a 3D vector
+	 * @param {array} edgePt1 a 3D vector
+	 * @type {number}
+	 **/
 	CollDetectBoxBox.prototype.getAABox2EdgeIntersectionPoints=function(contactPoint, origBoxSides, origBoxState, edgePt0, edgePt1){
 		var jDir;
 		var kDir;
@@ -127,7 +173,7 @@
 		var num=0;
 		var pt;
 		var edgeDir = Vector3DUtil.subtract(edgePt1, edgePt0);
-				 Vector3DUtil.normalize(edgeDir);
+		Vector3DUtil.normalize(edgeDir);
 		var ptArr=[];
 		var faceOffsets=[];
 		var edgePt0Arr = edgePt0;
@@ -170,6 +216,15 @@
 		return num;
 	};
 				
+	/**
+	 * @function getBox2BoxEdgesIntersectionPoints
+	 * @belongsTo CollDetectBoxBox
+	 * @param {array} contactPoint a 3D vector
+	 * @param {JBox} box0
+	 * @param {JBox} box1
+	 * @param {PhysicsState} newState
+	 * @type {number}
+	 **/
 	CollDetectBoxBox.prototype.getBox2BoxEdgesIntersectionPoints=function(contactPoint, box0, box1, newState){
 		var num = 0;
 		var seg;
@@ -192,13 +247,30 @@
 		return num;
 	};
 
-		CollDetectBoxBox.prototype.getBoxBoxIntersectionPoints=function(contactPoint, box0, box1, newState){
+	/**
+	 * @function getBoxBoxIntersectionPoints
+	 * @belongsTo CollDetectBoxBox
+	 * @param {array} contactPoint a 3D vector
+	 * @param {JBox} box0
+	 * @param {JBox} box1
+	 * @param {PhysicsState} newState
+	 * @type {number}
+	 **/
+	CollDetectBoxBox.prototype.getBoxBoxIntersectionPoints=function(contactPoint, box0, box1, newState){
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box0, box1, newState);
 		this.getBox2BoxEdgesIntersectionPoints(contactPoint, box1, box0, newState);
 		return Vector3DUtil.get_length(contactPoint);
 	};
-				
-		CollDetectBoxBox.prototype.collDetect=function(info, collArr){
+	
+	/**
+	 * @function collDetect detects a collision and updates the info parameter
+	 * @belongsTo CollDetectBoxBox
+	 * @param {CollDetectInfo} info
+	 * @param {array} collArray
+	 * @param {PhysicsState} newState
+	 * @type {void}
+	 **/
+	CollDetectBoxBox.prototype.collDetect=function(info, collArr){
 		var box0 = info.body0;
 		var box1 = info.body1;
 

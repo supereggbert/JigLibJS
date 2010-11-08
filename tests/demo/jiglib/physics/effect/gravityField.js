@@ -1,1 +1,66 @@
-(function(a){var c=a.Vector3DUtil;var b=function(e,f,d,g){this.Super();this.location=e;this.radius=f;this.force=d;if(g){this.parent=g;}};a.extend(b,a.JEffect);b.prototype.location=null;b.prototype.radius=null;b.prototype.force=null;b.prototype.parent=null;b.prototype.Apply=function(){var f=a.PhysicsSystem.getInstance();var d=f.get_bodies();var e=d.length-1;var k,j,g,h;if(this.parent){this.location=this.parent.get_position();}this._affectedBodies=[];do{k=d[e];if(!k.get_movable()||(this.parent&&k==this.parent)){continue;}j=c.distance(k.get_position(),this.location);if(j<this.radius){h=c.subtract(k.get_position(),this.location);g=(1-(j/this.radius))*this.force;c.scaleBy(h,g);c.negate(h);f.activateObject(k);k.applyWorldImpulse(h,this.location);}}while(e--);};a.GravityField=b;})(jigLib);
+(function(jigLib){
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	/**
+	 * @author Jim Sangwine
+	 * 
+	 * This effect has a radius within which it will either attract or repel bodies depending on the defined force 
+	 * (positive values attract, negative repel) and their distance (the closer the object, the stronger the effect).
+	 * 
+	 * This effect will be applied continuously as long as this.enabled == true
+	 * 
+	 * This effect can either be placed at an arbitrary location in the scene, or it can be attached to a parent object.
+	 * 
+	 * @param {Array}	location	vector array in the format [x,y,z]
+	 * @param {Number}	radius		radius of effect - at [radius] distance, gravity effect will be 0
+	 * @param {Number}	force		the force of gravity at 0 distance (impulse will be force/distance)
+	 * @param {Object}	parent		optional - a RigidBody that the gravitational field will follow - excluded from effect 
+	 **/
+	var GravityField=function(_location, _radius, _force, _parent) {
+		this.Super();
+		this.location=_location;
+		this.radius=_radius;
+		this.force=_force;
+		if (_parent) this.parent=_parent;
+	};
+	jigLib.extend(GravityField,jigLib.JEffect);
+
+	GravityField.prototype.location = null;
+	GravityField.prototype.radius = null;
+	GravityField.prototype.force = null;
+	GravityField.prototype.parent = null;
+	
+	/**
+	 * Applies the effect to the relevant bodies.
+	 * Typically called by PhysicsSystem.handleAllEffects. 
+	 * 
+	 * @returns
+	 */
+	GravityField.prototype.Apply = function() {
+		var system=jigLib.PhysicsSystem.getInstance();
+		var bodies=system.get_bodies();
+		var i=bodies.length-1;
+		var curBody, distance, force, forceV;
+		
+		if (this.parent)
+			this.location = this.parent.get_position();
+		
+		this._affectedBodies=[];
+		do {
+			curBody=bodies[i];
+			if (!curBody.get_movable() || (this.parent && curBody == this.parent)) continue;
+
+			distance=Vector3DUtil.distance(curBody.get_position(), this.location);
+			if (distance < this.radius)
+			{
+				forceV=Vector3DUtil.subtract(curBody.get_position(), this.location);
+				force=(1-(distance / this.radius)) * this.force;
+				Vector3DUtil.scaleBy(forceV, force);
+				Vector3DUtil.negate(forceV);
+				system.activateObject(curBody);
+				curBody.applyWorldImpulse(forceV, this.location);
+			}
+		} while(i--);
+	};
+	
+	jigLib.GravityField=GravityField;
+})(jigLib);

@@ -18,12 +18,7 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
- (function(jigLib){
+(function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	var JConstraint=jigLib.JConstraint;
@@ -33,8 +28,19 @@
 	var RigidBody=jigLib.RigidBody;
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
-
 	 
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollDetectSpherePlane handles collisions between spheres and planes
+	 * @extends CollDetectFunctor
+	 * @requires CollDetectInfo
+	 * @requires CollisionInfo
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires MaterialProperties
+	 * @constructor
+	 **/
 	var CollDetectSpherePlane=function(){
 		this.name = "SpherePlane";
 		this.type0 = "SPHERE";
@@ -42,6 +48,13 @@
 	};
 	jigLib.extend(CollDetectSpherePlane,jigLib.CollDetectFunctor);
 	
+	/**
+	 * @function collDetect detects a collision and updates the info parameter
+	 * @belongsTo CollDetectSpherePlane
+	 * @param {CollDetectInfo} info
+	 * @param {array} collArray
+	 * @type void
+	 **/
 	CollDetectSpherePlane.prototype.collDetect=function(info, collArr){
 		var tempBody;
 		if (info.body0.get_type() == "PLANE"){

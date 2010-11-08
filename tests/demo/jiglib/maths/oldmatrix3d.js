@@ -1,1 +1,197 @@
-(function(a){var c=a.Vector3DUtil;var b=function(d){if(d){this.rawData=d;}else{this.rawData=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];}};b.prototype.rawData=null;b.prototype.get_determinant=function(){var d=this.rawData;return d[12]*d[9]*d[6]*d[3]-d[8]*d[13]*d[6]*d[3]-d[12]*d[5]*d[10]*d[3]+d[4]*d[13]*d[10]*d[3]+d[8]*d[5]*d[14]*d[3]-d[4]*d[9]*d[14]*d[3]-d[12]*d[9]*d[2]*d[7]+d[8]*d[13]*d[2]*d[7]+d[12]*d[1]*d[10]*d[7]-d[0]*d[13]*d[10]*d[7]-d[8]*d[1]*d[14]*d[7]+d[0]*d[9]*d[14]*d[7]+d[12]*d[5]*d[2]*d[11]-d[4]*d[13]*d[2]*d[11]-d[12]*d[1]*d[6]*d[11]+d[0]*d[13]*d[6]*d[11]+d[4]*d[1]*d[14]*d[11]-d[0]*d[5]*d[14]*d[11]-d[8]*d[5]*d[2]*d[15]+d[4]*d[9]*d[2]*d[15]+d[8]*d[1]*d[6]*d[15]-d[0]*d[9]*d[6]*d[15]-d[4]*d[1]*d[10]*d[15]+d[0]*d[5]*d[10]*d[15];};b.prototype.prepend=function(d){var f=this.rawData;var e=d.rawData;this.rawData=[e[0]*f[0]+e[4]*f[1]+e[8]*f[2]+e[12]*f[3],e[1]*f[0]+e[5]*f[1]+e[9]*f[2]+e[13]*f[3],e[2]*f[0]+e[6]*f[1]+e[10]*f[2]+e[14]*f[3],e[3]*f[0]+e[7]*f[1]+e[11]*f[2]+e[15]*f[3],e[0]*f[4]+e[4]*f[5]+e[8]*f[6]+e[12]*f[7],e[1]*f[4]+e[5]*f[5]+e[9]*f[6]+e[13]*f[7],e[2]*f[4]+e[6]*f[5]+e[10]*f[6]+e[14]*f[7],e[3]*f[4]+e[7]*f[5]+e[11]*f[6]+e[15]*f[7],e[0]*f[8]+e[4]*f[9]+e[8]*f[10]+e[12]*f[11],e[1]*f[8]+e[5]*f[9]+e[9]*f[10]+e[13]*f[11],e[2]*f[8]+e[6]*f[9]+e[10]*f[10]+e[14]*f[11],e[3]*f[8]+e[7]*f[9]+e[11]*f[10]+e[15]*f[11],e[0]*f[12]+e[4]*f[13]+e[8]*f[14]+e[12]*f[15],e[1]*f[12]+e[5]*f[13]+e[9]*f[14]+e[13]*f[15],e[2]*f[12]+e[6]*f[13]+e[10]*f[14]+e[14]*f[15],e[3]*f[12]+e[7]*f[13]+e[11]*f[14]+e[15]*f[15]];return;};b.prototype.append=function(d){var f=d.rawData;var e=this.rawData;this.rawData=[e[0]*f[0]+e[4]*f[1]+e[8]*f[2]+e[12]*f[3],e[1]*f[0]+e[5]*f[1]+e[9]*f[2]+e[13]*f[3],e[2]*f[0]+e[6]*f[1]+e[10]*f[2]+e[14]*f[3],e[3]*f[0]+e[7]*f[1]+e[11]*f[2]+e[15]*f[3],e[0]*f[4]+e[4]*f[5]+e[8]*f[6]+e[12]*f[7],e[1]*f[4]+e[5]*f[5]+e[9]*f[6]+e[13]*f[7],e[2]*f[4]+e[6]*f[5]+e[10]*f[6]+e[14]*f[7],e[3]*f[4]+e[7]*f[5]+e[11]*f[6]+e[15]*f[7],e[0]*f[8]+e[4]*f[9]+e[8]*f[10]+e[12]*f[11],e[1]*f[8]+e[5]*f[9]+e[9]*f[10]+e[13]*f[11],e[2]*f[8]+e[6]*f[9]+e[10]*f[10]+e[14]*f[11],e[3]*f[8]+e[7]*f[9]+e[11]*f[10]+e[15]*f[11],e[0]*f[12]+e[4]*f[13]+e[8]*f[14]+e[12]*f[15],e[1]*f[12]+e[5]*f[13]+e[9]*f[14]+e[13]*f[15],e[2]*f[12]+e[6]*f[13]+e[10]*f[14]+e[14]*f[15],e[3]*f[12]+e[7]*f[13]+e[11]*f[14]+e[15]*f[15]];return;};b.prototype.angleAxis=function(r,i){var t,o,u,s,n,e,f,p,j;r=r/(3.14159*2);var m=i[0];var l=i[1];var k=i[2];var h=Math.cos(r);var g=1-h;var d=Math.sin(r);f=m*d;p=l*d;j=k*d;t=m*m;o=l*l;u=k*k;s=m*l;n=l*k;e=k*m;var q=[(g*t)+h,(g*s)-j,(g*e)+p,0,(g*s)+j,(g*o)+h,(g*n)-f,0,(g*e)-p,(g*n)+f,(g*u)+h,0,0,0,0,1];return new b(q);};b.prototype.translateMatrix=function(d){return new b([1,0,0,d[0],0,1,0,d[1],0,0,1,d[2],0,0,0,1]);};b.prototype.scaleMatrix=function(d){return new b([d[0],0,0,0,0,d[1],0,0,0,0,d[2],0,0,0,0,1]);};b.prototype.appendRotation=function(f,e,d){if(d){this.append(this.translateMatrix(c.negate(d.slice(0))));}this.append(this.angleAxis(f,e));if(d){this.append(this.translateMatrix(d));}};b.prototype.prependRotation=function(f,e,d){if(d){this.prepend(this.translateMatrix(c.negate(d.slice(0))));}this.prepend(this.angleAxis(f,e));if(d){this.prepend(this.translateMatrix(d));}};b.prototype.appendScale=function(d,f,e){this.append(this.scaleMatrix([d,f,e]));};b.prototype.prependScale=function(d,f,e){this.prepend(this.scaleMatrix([d,f,e]));};b.prototype.appendTranslation=function(d,f,e){this.append(this.translateMatrix([d,f,e]));};b.prototype.prependTranslation=function(d,f,e){this.prepend(this.translateMatrix([d,f,e]));};b.prototype.clone=function(){var e=this.rawData;return new b([e[0],e[1],e[2],e[3],e[4],e[5],e[6],e[7],e[8],e[9],e[10],e[11],e[12],e[13],e[14],e[15]]);};b.prototype.identity=function(){this.rawData=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];return;};b.prototype.transpose=function(){var d=this.rawData;data=[d[0],d[4],d[8],d[12],d[1],d[5],d[9],d[13],d[2],d[6],d[10],d[14],d[3],d[7],d[11],d[15]];this.rawData=data;};b.prototype.invert=function(){var d=this.clone();d.transpose();d=d.rawData;var e=this.get_determinant();this.rawData=[(d[9]*d[14]*d[7]-d[13]*d[10]*d[7]+d[13]*d[6]*d[11]-d[5]*d[14]*d[11]-d[9]*d[6]*d[15]+d[5]*d[10]*d[15])/e,(d[12]*d[10]*d[7]-d[8]*d[14]*d[7]-d[12]*d[6]*d[11]+d[4]*d[14]*d[11]+d[8]*d[6]*d[15]-d[4]*d[10]*d[15])/e,(d[8]*d[13]*d[7]-d[12]*d[9]*d[7]+d[12]*d[5]*d[11]-d[4]*d[13]*d[11]-d[8]*d[5]*d[15]+d[4]*d[9]*d[15])/e,(d[12]*d[9]*d[6]-d[8]*d[13]*d[6]-d[12]*d[5]*d[10]+d[4]*d[13]*d[10]+d[8]*d[5]*d[14]-d[4]*d[9]*d[14])/e,(d[13]*d[10]*d[3]-d[9]*d[14]*d[3]-d[13]*d[2]*d[11]+d[1]*d[14]*d[11]+d[9]*d[2]*d[15]-d[1]*d[10]*d[15])/e,(d[8]*d[14]*d[3]-d[12]*d[10]*d[3]+d[12]*d[2]*d[11]-d[0]*d[14]*d[11]-d[8]*d[2]*d[15]+d[0]*d[10]*d[15])/e,(d[12]*d[9]*d[3]-d[8]*d[13]*d[3]-d[12]*d[1]*d[11]+d[0]*d[13]*d[11]+d[8]*d[1]*d[15]-d[0]*d[9]*d[15])/e,(d[8]*d[13]*d[2]-d[12]*d[9]*d[2]+d[12]*d[1]*d[10]-d[0]*d[13]*d[10]-d[8]*d[1]*d[14]+d[0]*d[9]*d[14])/e,(d[5]*d[14]*d[3]-d[13]*d[6]*d[3]+d[13]*d[2]*d[7]-d[1]*d[14]*d[7]-d[5]*d[2]*d[15]+d[1]*d[6]*d[15])/e,(d[12]*d[6]*d[3]-d[4]*d[14]*d[3]-d[12]*d[2]*d[7]+d[0]*d[14]*d[7]+d[4]*d[2]*d[15]-d[0]*d[6]*d[15])/e,(d[4]*d[13]*d[3]-d[12]*d[5]*d[3]+d[12]*d[1]*d[7]-d[0]*d[13]*d[7]-d[4]*d[1]*d[15]+d[0]*d[5]*d[15])/e,(d[12]*d[5]*d[2]-d[4]*d[13]*d[2]-d[12]*d[1]*d[6]+d[0]*d[13]*d[6]+d[4]*d[1]*d[14]-d[0]*d[5]*d[14])/e,(d[9]*d[6]*d[3]-d[5]*d[10]*d[3]-d[9]*d[2]*d[7]+d[1]*d[10]*d[7]+d[5]*d[2]*d[11]-d[1]*d[6]*d[11])/e,(d[4]*d[10]*d[3]-d[8]*d[6]*d[3]+d[8]*d[2]*d[7]-d[0]*d[10]*d[7]-d[4]*d[2]*d[11]+d[0]*d[6]*d[11])/e,(d[8]*d[5]*d[3]-d[4]*d[9]*d[3]-d[8]*d[1]*d[7]+d[0]*d[9]*d[7]+d[4]*d[1]*d[11]-d[0]*d[5]*d[11])/e,(d[4]*d[9]*d[2]-d[8]*d[5]*d[2]+d[8]*d[1]*d[6]-d[0]*d[9]*d[6]-d[4]*d[1]*d[10]+d[0]*d[5]*d[10])/e];return;};a.Matrix3D2=b;})(jigLib);
+(function(jigLib){
+	var Vector3DUtil=jigLib.Vector3DUtil;
+
+	/**
+	 * @author Paul Brunt
+	 */
+	var Matrix3D2=function(v){
+		if(v) this.rawData=v;
+			else this.rawData=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
+	};
+	Matrix3D2.prototype.rawData=null;
+
+	Matrix3D2.prototype.get_determinant=function() {
+		var m=this.rawData;
+		return m[12] * m[9] * m[6] * m[3] - m[8] * m[13] * m[6] * m[3] - m[12] * m[5] * m[10] * m[3] + m[4] * m[13] * m[10] * m[3] + m[8] * m[5] * m[14] * m[3] - m[4] * m[9] * m[14] * m[3] - m[12] * m[9] * m[2] * m[7] + m[8] * m[13] * m[2] * m[7] + m[12] * m[1] * m[10] * m[7] - m[0] * m[13] * m[10] * m[7] - m[8] * m[1] * m[14] * m[7] + m[0] * m[9] * m[14] * m[7] + m[12] * m[5] * m[2] * m[11] - m[4] * m[13] * m[2] * m[11] - m[12] * m[1] * m[6] * m[11] + m[0] * m[13] * m[6] * m[11] + m[4] * m[1] * m[14] * m[11] - m[0] * m[5] * m[14] * m[11] - m[8] * m[5] * m[2] * m[15] + m[4] * m[9] * m[2] * m[15] + m[8] * m[1] * m[6] * m[15] - m[0] * m[9] * m[6] * m[15] - m[4] * m[1] * m[10] * m[15] + m[0] * m[5] * m[10] * m[15];
+	};
+
+	Matrix3D2.prototype.prepend=function(m){
+		var mat1=this.rawData;
+		var mat2=m.rawData;
+		this.rawData=[
+			mat2[0] * mat1[0]+mat2[4] * mat1[1]+mat2[8] * mat1[2]+mat2[12] * mat1[3],
+			mat2[1] * mat1[0]+mat2[5] * mat1[1]+mat2[9] * mat1[2]+mat2[13] * mat1[3],
+			mat2[2] * mat1[0]+mat2[6] * mat1[1]+mat2[10] * mat1[2]+mat2[14] * mat1[3],
+			mat2[3] * mat1[0]+mat2[7] * mat1[1]+mat2[11] * mat1[2]+mat2[15] * mat1[3],
+
+			mat2[0] * mat1[4]+mat2[4] * mat1[5]+mat2[8] * mat1[6]+mat2[12] * mat1[7],
+			mat2[1] * mat1[4]+mat2[5] * mat1[5]+mat2[9] * mat1[6]+mat2[13] * mat1[7],
+			mat2[2] * mat1[4]+mat2[6] * mat1[5]+mat2[10] * mat1[6]+mat2[14] * mat1[7],
+			mat2[3] * mat1[4]+mat2[7] * mat1[5]+mat2[11] * mat1[6]+mat2[15] * mat1[7],
+
+			mat2[0] * mat1[8]+mat2[4] * mat1[9]+mat2[8] * mat1[10]+mat2[12] * mat1[11],
+			mat2[1] * mat1[8]+mat2[5] * mat1[9]+mat2[9] * mat1[10]+mat2[13] * mat1[11],
+			mat2[2] * mat1[8]+mat2[6] * mat1[9]+mat2[10] * mat1[10]+mat2[14] * mat1[11],
+			mat2[3] * mat1[8]+mat2[7] * mat1[9]+mat2[11] * mat1[10]+mat2[15] * mat1[11],
+
+			mat2[0] * mat1[12]+mat2[4] * mat1[13]+mat2[8] * mat1[14]+mat2[12] * mat1[15],
+			mat2[1] * mat1[12]+mat2[5] * mat1[13]+mat2[9] * mat1[14]+mat2[13] * mat1[15],
+			mat2[2] * mat1[12]+mat2[6] * mat1[13]+mat2[10] * mat1[14]+mat2[14] * mat1[15],
+			mat2[3] * mat1[12]+mat2[7] * mat1[13]+mat2[11] * mat1[14]+mat2[15] * mat1[15]];
+		return;
+	};
+
+	Matrix3D2.prototype.append=function(m){
+		var mat1=m.rawData;
+		var mat2=this.rawData;
+		this.rawData=[
+			mat2[0] * mat1[0]+mat2[4] * mat1[1]+mat2[8] * mat1[2]+mat2[12] * mat1[3],
+			mat2[1] * mat1[0]+mat2[5] * mat1[1]+mat2[9] * mat1[2]+mat2[13] * mat1[3],
+			mat2[2] * mat1[0]+mat2[6] * mat1[1]+mat2[10] * mat1[2]+mat2[14] * mat1[3],
+			mat2[3] * mat1[0]+mat2[7] * mat1[1]+mat2[11] * mat1[2]+mat2[15] * mat1[3],
+
+			mat2[0] * mat1[4]+mat2[4] * mat1[5]+mat2[8] * mat1[6]+mat2[12] * mat1[7],
+			mat2[1] * mat1[4]+mat2[5] * mat1[5]+mat2[9] * mat1[6]+mat2[13] * mat1[7],
+			mat2[2] * mat1[4]+mat2[6] * mat1[5]+mat2[10] * mat1[6]+mat2[14] * mat1[7],
+			mat2[3] * mat1[4]+mat2[7] * mat1[5]+mat2[11] * mat1[6]+mat2[15] * mat1[7],
+
+			mat2[0] * mat1[8]+mat2[4] * mat1[9]+mat2[8] * mat1[10]+mat2[12] * mat1[11],
+			mat2[1] * mat1[8]+mat2[5] * mat1[9]+mat2[9] * mat1[10]+mat2[13] * mat1[11],
+			mat2[2] * mat1[8]+mat2[6] * mat1[9]+mat2[10] * mat1[10]+mat2[14] * mat1[11],
+			mat2[3] * mat1[8]+mat2[7] * mat1[9]+mat2[11] * mat1[10]+mat2[15] * mat1[11],
+
+			mat2[0] * mat1[12]+mat2[4] * mat1[13]+mat2[8] * mat1[14]+mat2[12] * mat1[15],
+			mat2[1] * mat1[12]+mat2[5] * mat1[13]+mat2[9] * mat1[14]+mat2[13] * mat1[15],
+			mat2[2] * mat1[12]+mat2[6] * mat1[13]+mat2[10] * mat1[14]+mat2[14] * mat1[15],
+			mat2[3] * mat1[12]+mat2[7] * mat1[13]+mat2[11] * mat1[14]+mat2[15] * mat1[15]];
+		return;
+	};
+
+	Matrix3D2.prototype.angleAxis=function(angle, axis) {
+		var xmx,ymy,zmz,xmy,ymz,zmx,xms,yms,zms;
+
+		//convert from degress to radians
+		angle=angle/(3.14159*2);
+
+		var x = axis[0];
+		var y = axis[1];
+		var z = axis[2];
+
+		var cos = Math.cos(angle);
+		var cosi = 1.0 - cos;
+		var sin = Math.sin(angle);
+
+		xms = x * sin;yms = y * sin;zms = z * sin;
+		xmx = x * x;ymy = y * y;zmz = z * z;
+		xmy = x * y;ymz = y * z;zmx = z * x;
+
+		var matrix=[(cosi * xmx) + cos,(cosi * xmy) - zms,(cosi * zmx) + yms,0,
+					(cosi * xmy) + zms,(cosi * ymy) + cos,(cosi * ymz) - xms,0,
+					(cosi * zmx) - yms,(cosi * ymz) + xms,(cosi * zmz) + cos,0,
+					0,0,0,1];
+
+		return new Matrix3D2(matrix);
+	};
+
+	Matrix3D2.prototype.translateMatrix=function(v){
+		return new Matrix3D2([
+			1,0,0,v[0],
+			0,1,0,v[1],
+			0,0,1,v[2],
+			0,0,0,1
+			]);
+	};
+
+	Matrix3D2.prototype.scaleMatrix=function(v){
+		return new Matrix3D2([
+			v[0],0,0,0,
+			0,v[1],0,0,
+			0,0,v[2],0,
+			0,0,0,1
+			]);
+	};
+
+	Matrix3D2.prototype.appendRotation=function(angle,axis,pivot){
+		if(pivot){
+			this.append(this.translateMatrix(Vector3DUtil.negate(pivot.slice(0))));
+		}
+		this.append(this.angleAxis(angle,axis));
+		if(pivot){
+			this.append(this.translateMatrix(pivot));
+		}
+	};
+
+	Matrix3D2.prototype.prependRotation=function(angle,axis,pivot){
+		if(pivot){
+			this.prepend(this.translateMatrix(Vector3DUtil.negate(pivot.slice(0))));
+		}
+		this.prepend(this.angleAxis(angle,axis));
+		if(pivot){
+			this.prepend(this.translateMatrix(pivot));
+		}
+	};
+
+	Matrix3D2.prototype.appendScale=function(x,y,z){
+		this.append(this.scaleMatrix([x,y,z]));
+	};
+
+	Matrix3D2.prototype.prependScale=function(x,y,z){
+		this.prepend(this.scaleMatrix([x,y,z]));
+	};
+
+	Matrix3D2.prototype.appendTranslation=function(x,y,z){
+		this.append(this.translateMatrix([x,y,z]));
+	};
+
+	Matrix3D2.prototype.prependTranslation=function(x,y,z){
+		this.prepend(this.translateMatrix([x,y,z]));
+	};
+
+	Matrix3D2.prototype.clone=function(){
+		var d=this.rawData;
+		return new Matrix3D2([d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],d[8],d[9],d[10],d[11],d[12],d[13],d[14],d[15]]);
+	};
+
+	Matrix3D2.prototype.identity=function(){
+		this.rawData=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
+		return;
+	};
+
+	Matrix3D2.prototype.transpose=function(){
+		var m=this.rawData;
+		data=[m[0],m[4],m[8],m[12],
+			  m[1],m[5],m[9],m[13],
+			  m[2],m[6],m[10],m[14],
+			  m[3],m[7],m[11],m[15]];
+		this.rawData=data;
+	};
+
+	Matrix3D2.prototype.invert=function(){
+		var m=this.clone();
+		m.transpose();
+		m=m.rawData;
+		//cache the inverse, no point in a calc everytime
+		var det=this.get_determinant();
+		this.rawData=[
+			(m[9] * m[14] * m[7] - m[13] * m[10] * m[7] + m[13] * m[6] * m[11] - m[5] * m[14] * m[11] - m[9] * m[6] * m[15] + m[5] * m[10] * m[15])/det,
+			(m[12] * m[10] * m[7] - m[8] * m[14] * m[7] - m[12] * m[6] * m[11] + m[4] * m[14] * m[11] + m[8] * m[6] * m[15] - m[4] * m[10] * m[15])/det,
+			(m[8] * m[13] * m[7] - m[12] * m[9] * m[7] + m[12] * m[5] * m[11] - m[4] * m[13] * m[11] - m[8] * m[5] * m[15] + m[4] * m[9] * m[15])/det,
+			(m[12] * m[9] * m[6] - m[8] * m[13] * m[6] - m[12] * m[5] * m[10] + m[4] * m[13] * m[10] + m[8] * m[5] * m[14] - m[4] * m[9] * m[14])/det,
+			(m[13] * m[10] * m[3] - m[9] * m[14] * m[3] - m[13] * m[2] * m[11] + m[1] * m[14] * m[11] + m[9] * m[2] * m[15] - m[1] * m[10] * m[15])/det,
+			(m[8] * m[14] * m[3] - m[12] * m[10] * m[3] + m[12] * m[2] * m[11] - m[0] * m[14] * m[11] - m[8] * m[2] * m[15] + m[0] * m[10] * m[15])/det,
+			(m[12] * m[9] * m[3] - m[8] * m[13] * m[3] - m[12] * m[1] * m[11] + m[0] * m[13] * m[11] + m[8] * m[1] * m[15] - m[0] * m[9] * m[15])/det,
+			(m[8] * m[13] * m[2] - m[12] * m[9] * m[2] + m[12] * m[1] * m[10] - m[0] * m[13] * m[10] - m[8] * m[1] * m[14] + m[0] * m[9] * m[14])/det,
+			(m[5] * m[14] * m[3] - m[13] * m[6] * m[3] + m[13] * m[2] * m[7] - m[1] * m[14] * m[7] - m[5] * m[2] * m[15] + m[1] * m[6] * m[15])/det,
+			(m[12] * m[6] * m[3] - m[4] * m[14] * m[3] - m[12] * m[2] * m[7] + m[0] * m[14] * m[7] + m[4] * m[2] * m[15] - m[0] * m[6] * m[15])/det,
+			(m[4] * m[13] * m[3] - m[12] * m[5] * m[3] + m[12] * m[1] * m[7] - m[0] * m[13] * m[7] - m[4] * m[1] * m[15] + m[0] * m[5] * m[15])/det,
+			(m[12] * m[5] * m[2] - m[4] * m[13] * m[2] - m[12] * m[1] * m[6] + m[0] * m[13] * m[6] + m[4] * m[1] * m[14] - m[0] * m[5] * m[14])/det,
+			(m[9] * m[6] * m[3] - m[5] * m[10] * m[3] - m[9] * m[2] * m[7] + m[1] * m[10] * m[7] + m[5] * m[2] * m[11] - m[1] * m[6] * m[11])/det,
+			(m[4] * m[10] * m[3] - m[8] * m[6] * m[3] + m[8] * m[2] * m[7] - m[0] * m[10] * m[7] - m[4] * m[2] * m[11] + m[0] * m[6] * m[11])/det,
+			(m[8] * m[5] * m[3] - m[4] * m[9] * m[3] - m[8] * m[1] * m[7] + m[0] * m[9] * m[7] + m[4] * m[1] * m[11] - m[0] * m[5] * m[11])/det,
+			(m[4] * m[9] * m[2] - m[8] * m[5] * m[2] + m[8] * m[1] * m[6] - m[0] * m[9] * m[6] - m[4] * m[1] * m[10] + m[0] * m[5] * m[10])/det];
+		return;
+	};
+
+	jigLib.Matrix3D2=Matrix3D2;
+
+})(jigLib);

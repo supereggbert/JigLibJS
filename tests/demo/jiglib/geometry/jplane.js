@@ -1,1 +1,105 @@
-(function(d){var h=d.Vector3DUtil;var e=d.JMatrix3D;var a=d.JNumber3D;var f=d.JConfig;var g=d.ISkin3D;var b=d.PhysicsState;var i=d.RigidBody;var c=function(j,k){this.Super(j);if(k==undefined){this._initNormal=[0,0,-1,0];this._normal=this._initNormal.slice(0);}else{this._initNormal=k.slice(0);this._normal=this._initNormal.slice(0);}this._distance=0;this._type="PLANE";this._movable=false;};d.extend(c,d.RigidBody);c.prototype._initNormal=null;c.prototype._normal=null;c.prototype._distance=null;c.prototype.get_normal=function(){return this._normal;};c.prototype.get_distance=function(){return this._distance;};c.prototype.pointPlaneDistance=function(j){return h.dotProduct(this._normal,j)-this._distance;};c.prototype.segmentIntersect=function(m,j,o){m.fracOut=0;m.posOut=[0,0,0,0];m.normalOut=[0,0,0,0];var l=0;var n;var k=h.dotProduct(this._normal,j.delta);if(Math.abs(k)>a.NUM_TINY){n=-1*(h.dotProduct(this._normal,j.origin)-this._distance)/k;if(n<0||n>1){return false;}else{l=n;m.fracOut=l;m.posOut=j.getPoint(l);m.normalOut=this._normal.slice(0);h.normalize(m.normalOut);return true;}}else{return false;}};c.prototype.updateState=function(){this.Super.prototype.updateState.call(this);this._normal=this._initNormal.slice(0);e.multiplyVector(this._currState._orientation,this._normal);this._distance=h.dotProduct(this._currState.position,this._normal);};d.JPlane=c;})(jigLib);
+/*
+   Copyright (c) 2007 Danny Chapman
+   http://www.rowlhouse.co.uk
+
+   This software is provided 'as-is', without any express or implied
+   warranty. In no event will the authors be held liable for any damages
+   arising from the use of this software.
+   Permission is granted to anyone to use this software for any purpose,
+   including commercial applications, and to alter it and redistribute it
+   freely, subject to the following restrictions:
+   1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+   2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+   3. This notice may not be removed or altered from any source
+   distribution.
+ */
+
+/**
+ * @author Muzer(muzerly@gmail.com)
+ * @link http://code.google.com/p/jiglibflash
+ */
+
+(function(jigLib){
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JMatrix3D=jigLib.JMatrix3D;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConfig=jigLib.JConfig;
+	var ISkin3D=jigLib.ISkin3D;
+	var PhysicsState=jigLib.PhysicsState;
+	var RigidBody=jigLib.RigidBody;
+	
+	var JPlane=function(skin, initNormal){
+		this.Super(skin);
+		if (initNormal == undefined) {
+			this._initNormal = [0, 0, -1, 0];
+			this._normal = this._initNormal.slice(0);
+		}else{
+			this._initNormal = initNormal.slice(0);
+			this._normal = this._initNormal.slice(0);
+		}
+						
+		this._distance = 0;
+		this._type = "PLANE";
+		this._movable=false;
+	};
+	jigLib.extend(JPlane,jigLib.RigidBody);
+	
+	JPlane.prototype._initNormal=null;
+	JPlane.prototype._normal=null;
+	JPlane.prototype._distance=null;
+
+	JPlane.prototype.get_normal=function(){
+		return this._normal;
+	};
+
+	JPlane.prototype.get_distance=function(){
+		return this._distance;
+	};
+
+	JPlane.prototype.pointPlaneDistance=function(pt){
+		return Vector3DUtil.dotProduct(this._normal, pt) - this._distance;
+	};
+
+	JPlane.prototype.segmentIntersect=function(out, seg, state){
+		out.fracOut = 0;
+		out.posOut = [0,0,0,0];
+		out.normalOut = [0,0,0,0];
+
+		var frac = 0;
+
+		var t;
+
+		var denom = Vector3DUtil.dotProduct(this._normal, seg.delta);
+		if (Math.abs(denom) > JNumber3D.NUM_TINY){
+			t = -1 * (Vector3DUtil.dotProduct(this._normal, seg.origin) - this._distance) / denom;
+
+			if (t < 0 || t > 1){
+				return false;
+			}else{
+				frac = t;
+				out.fracOut = frac;
+				out.posOut = seg.getPoint(frac);
+				out.normalOut = this._normal.slice(0);
+				Vector3DUtil.normalize(out.normalOut);
+				return true;
+			}
+		}else{
+			return false;
+		}
+	};
+
+	JPlane.prototype.updateState=function(){
+		this.Super.prototype.updateState.call(this);
+		this._normal = this._initNormal.slice(0);
+		JMatrix3D.multiplyVector(this._currState._orientation, this._normal);
+		//_normal = _currState.orientation.transformVector(new Vector3D(0, 0, -1));
+		this._distance = Vector3DUtil.dotProduct(this._currState.position, this._normal);
+	};
+
+	jigLib.JPlane=JPlane;
+
+})(jigLib);

@@ -18,26 +18,37 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- (function(jigLib){
+(function(jigLib){
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollPointInfo
+	 * @property {number} initialPenetration
+	 * @property {array} r0 a 3D vector
+	 * @property {array} r1 a 3D vector
+	 * @property {array} position a 3D vector
+	 * @property {number} minSeparationVel
+	 * @property {number} denominator
+	 * @property {number} accumulatedNormalImpulse
+	 * @property {number} accumulatedNormalImpulseAux
+	 * @property {number} accumulatedFrictionImpulse
+	 * @constructor
+	 **/
 	var CollPointInfo=function(){
 		this.accumulatedFrictionImpulse=[0,0,0,0];
 	};
 	
 	CollPointInfo.prototype.initialPenetration=null;
-		CollPointInfo.prototype.r0;
-		CollPointInfo.prototype.r1;
-		CollPointInfo.prototype.position;
+	CollPointInfo.prototype.r0;
+	CollPointInfo.prototype.r1;
+	CollPointInfo.prototype.position;
 
-		CollPointInfo.prototype.minSeparationVel = 0;
-		CollPointInfo.prototype.denominator = 0;
+	CollPointInfo.prototype.minSeparationVel = 0;
+	CollPointInfo.prototype.denominator = 0;
 
-		CollPointInfo.prototype.accumulatedNormalImpulse = 0;
-		CollPointInfo.prototype.accumulatedNormalImpulseAux = 0;
-		CollPointInfo.prototype.accumulatedFrictionImpulse = null;
+	CollPointInfo.prototype.accumulatedNormalImpulse = 0;
+	CollPointInfo.prototype.accumulatedNormalImpulseAux = 0;
+	CollPointInfo.prototype.accumulatedFrictionImpulse = null;
 	
 	jigLib.CollPointInfo=CollPointInfo;
 })(jigLib);

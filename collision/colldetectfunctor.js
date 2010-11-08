@@ -18,19 +18,30 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
-	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class CollDetectFunctor base class for collision detection classes
+	 * @property {string} name the inheriting class's collision type e.g. BoxPlane
+	 * @property {string} type0 the first geometry type in the collisions supported by the inheritng class e.g. Box
+	 * @property {string} type1 the second geometry type in the collisions supported by the inheritng class e.g. Plane
+	 * @constructor
+	 **/
 	var CollDetectFunctor=function(){
 	};
+	
 	CollDetectFunctor.prototype.name=null;
 	CollDetectFunctor.prototype.type0=null;
 	CollDetectFunctor.prototype.type1=null;
 	
+	/**
+	 * @function collDetect detects a collision and updates the info parameter - must be implemented by the inheriting class
+	 * @belongsTo CollDetectFunctor
+	 * @param {CollDetectInfo} info
+	 * @param {array} collArray
+	 * @type void
+	 **/
 	CollDetectFunctor.prototype.collDetect=function(info,collArr){
 	};
 	

@@ -1,1 +1,87 @@
-(function(d){var j=d.Vector3DUtil;var e=d.JMatrix3D;var a=d.JNumber3D;var h=d.JConstraint;var f=d.JConfig;var g=d.JSphere;var b=d.MaterialProperties;var i=d.CollPointInfo;var k=d.CollisionInfo;var c=function(){this.name="SphereSphere";this.type0="SPHERE";this.type1="SPHERE";};d.extend(c,d.CollDetectFunctor);c.prototype.collDetect=function(r,x){var m=r.body0;var A=r.body1;var n=j.subtract(m.get_oldState().position,A.get_oldState().position);var p=j.subtract(m.get_currentState().position,A.get_currentState().position);var z=j.get_lengthSquared(n);var o=j.get_lengthSquared(p);var l=m.get_radius()+A.get_radius();if(Math.min(z,o)<Math.pow(l+f.collToll,2)){var w=Math.sqrt(z);var u=l-w;if(w>a.NUM_TINY){n=a.getDivideVector(n,w);}else{n=j.Y_AXIS;e.multiplyVector(e.getRotationMatrix(0,0,1,360*Math.random()),n);}var t=j.add(A.get_oldState().position,a.getScaleVector(n,A.get_radius()-0.5*u));var s=[];var q=new i();q.r0=j.subtract(t,m.get_oldState().position);q.r1=j.subtract(t,A.get_oldState().position);q.initialPenetration=u;s.push(q);var v=new k();v.objInfo=r;v.dirToBody=n;v.pointInfo=s;var y=new b();y.set_restitution(Math.sqrt(m.get_material().get_restitution()*A.get_material().get_restitution()));y.set_friction(Math.sqrt(m.get_material().get_friction()*A.get_material().get_friction()));v.mat=y;x.push(v);r.body0.collisions.push(v);r.body1.collisions.push(v);}};d.CollDetectSphereSphere=c;})(jigLib);
+/*
+   Copyright (c) 2007 Danny Chapman
+   http://www.rowlhouse.co.uk
+
+   This software is provided 'as-is', without any express or implied
+   warranty. In no event will the authors be held liable for any damages
+   arising from the use of this software.
+   Permission is granted to anyone to use this software for any purpose,
+   including commercial applications, and to alter it and redistribute it
+   freely, subject to the following restrictions:
+   1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+   2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+   3. This notice may not be removed or altered from any source
+   distribution.
+ */
+
+/**
+ * @author Muzer(muzerly@gmail.com)
+ * @link http://code.google.com/p/jiglibflash
+ */
+(function(jigLib){
+	var Vector3DUtil=jigLib.Vector3DUtil;
+	var JMatrix3D=jigLib.JMatrix3D;
+	var JNumber3D=jigLib.JNumber3D;
+	var JConstraint=jigLib.JConstraint;
+	var JConfig=jigLib.JConfig;
+	var JSphere=jigLib.JSphere;	var MaterialProperties=jigLib.MaterialProperties;	var CollPointInfo=jigLib.CollPointInfo;	var CollisionInfo=jigLib.CollisionInfo;
+	 
+	var CollDetectSphereSphere=function(){
+		this.name = "SphereSphere";
+		this.type0 = "SPHERE";
+		this.type1 = "SPHERE";
+	};
+	jigLib.extend(CollDetectSphereSphere,jigLib.CollDetectFunctor);
+	
+	CollDetectSphereSphere.prototype.collDetect=function(info, collArr){
+		var sphere0 = info.body0;
+		var sphere1 = info.body1;
+		var oldDelta = Vector3DUtil.subtract(sphere0.get_oldState().position, sphere1.get_oldState().position);
+		var newDelta = Vector3DUtil.subtract(sphere0.get_currentState().position, sphere1.get_currentState().position);
+
+		var oldDistSq = Vector3DUtil.get_lengthSquared(oldDelta);
+		var newDistSq = Vector3DUtil.get_lengthSquared(newDelta);
+		var radSum = sphere0.get_radius() + sphere1.get_radius();
+
+		if (Math.min(oldDistSq, newDistSq) < Math.pow(radSum + JConfig.collToll, 2)){
+			var oldDist = Math.sqrt(oldDistSq);
+			var depth = radSum - oldDist;
+			if (oldDist > JNumber3D.NUM_TINY){
+				oldDelta = JNumber3D.getDivideVector(oldDelta, oldDist);
+			}else{
+				oldDelta = Vector3DUtil.Y_AXIS;
+				JMatrix3D.multiplyVector(JMatrix3D.getRotationMatrix(0, 0, 1, 360 * Math.random()), oldDelta);
+			}
+
+			var worldPos = Vector3DUtil.add(sphere1.get_oldState().position, JNumber3D.getScaleVector(oldDelta, sphere1.get_radius() - 0.5 * depth));
+
+			var collPts = [];
+			var cpInfo = new CollPointInfo();
+			cpInfo.r0 = Vector3DUtil.subtract(worldPos, sphere0.get_oldState().position);
+			cpInfo.r1 = Vector3DUtil.subtract(worldPos, sphere1.get_oldState().position);
+			cpInfo.initialPenetration = depth;
+			collPts.push(cpInfo);
+
+			var collInfo = new CollisionInfo();
+			collInfo.objInfo = info;
+			collInfo.dirToBody = oldDelta;
+			collInfo.pointInfo = collPts;
+
+			var mat = new MaterialProperties();
+			mat.set_restitution(Math.sqrt(sphere0.get_material().get_restitution() * sphere1.get_material().get_restitution()));
+			mat.set_friction(Math.sqrt(sphere0.get_material().get_friction() * sphere1.get_material().get_friction()));
+			collInfo.mat = mat;
+			collArr.push(collInfo);
+
+			info.body0.collisions.push(collInfo);
+			info.body1.collisions.push(collInfo);
+		}
+	};
+	
+	jigLib.CollDetectSphereSphere=CollDetectSphereSphere;
+	
+})(jigLib);
