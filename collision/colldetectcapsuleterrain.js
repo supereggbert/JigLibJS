@@ -31,6 +31,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectCapsuleTerrain
 	 * @class CollDetectCapsuleTerrain handles collisions between capsules and terrain
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -50,7 +51,6 @@
 
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectCapsuleTerrain
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

@@ -26,6 +26,7 @@ distribution.
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JAABox
 	 * @class JAABox an axis aligned box
 	 * @requires Vector3DUtil
 	 * @requires JNumber3D
@@ -45,7 +46,6 @@ distribution.
 	
 	/**
 	 * @function get_minPos getter for _minPos
-	 * @belongsTo JAABox
 	 * @type array
 	 **/
 	JAABox.prototype.get_minPos=function(){
@@ -54,7 +54,6 @@ distribution.
 	
 	/**
 	 * @function set_minPos setter for _minPos
-	 * @belongsTo JAABox
 	 * @param {array} pos a 3D vector 
 	 * @type void
 	 **/
@@ -64,7 +63,6 @@ distribution.
 				
 	/**
 	 * @function get_minPos getter for _maxPos
-	 * @belongsTo JAABox
 	 * @type array
 	 **/
 	JAABox.prototype.get_maxPos=function(){
@@ -73,7 +71,6 @@ distribution.
 	
 	/**
 	 * @function set_minPos setter for _maxPos
-	 * @belongsTo JAABox
 	 * @param {array} pos a 3D vector 
 	 * @type void
 	 **/
@@ -83,7 +80,6 @@ distribution.
 	
 	/**
 	 * @function get_sideLengths determines the side lengths of the JAABox
-	 * @belongsTo JAABox
 	 * @returns the side lengths expressed as 3D vector
 	 * @type array
 	 **/
@@ -95,7 +91,6 @@ distribution.
 
 	/**
 	 * @function get_centrePos determines the center point of the JAABox
-	 * @belongsTo JAABox
 	 * @returns the center point expressed as 3D vector
 	 * @type array
 	 **/
@@ -106,7 +101,6 @@ distribution.
 				
 	/**
 	 * @function move moves the JAABox by delta
-	 * @belongsTo JAABox
 	 * @param {array} delta a 3D vector
 	 * @type void
 	 **/
@@ -117,7 +111,6 @@ distribution.
 
 	/**
 	 * @function clear resets the JAABox
-	 * @belongsTo JAABox
 	 * @type void
 	 **/
 	JAABox.prototype.clear=function(){
@@ -127,7 +120,6 @@ distribution.
 
 	/**
 	 * @function clone clones the JAABox 
-	 * @belongsTo JAABox
 	 * @returns a copy of this JAABox
 	 * @type JAABox
 	 **/
@@ -137,7 +129,6 @@ distribution.
 
 	/**
 	 * @function addPoint  
-	 * @belongsTo JAABox
 	 * @param {array} pos a 3D vector
 	 * @type void
 	 **/
@@ -154,7 +145,6 @@ distribution.
 
 	/**
 	 * @function addBox  
-	 * @belongsTo JAABox
 	 * @param {JBox} box 
 	 * @type void
 	 **/
@@ -172,7 +162,6 @@ distribution.
 
 	/**
 	 * @function addSphere
-	 * @belongsTo JAABox
 	 * @param {JSphere} sphere 
 	 * @type void
 	 **/
@@ -200,7 +189,6 @@ distribution.
 				
 	/**
 	 * @function addCapsule  
-	 * @belongsTo JAABox
 	 * @param {JCapsule} capsule 
 	 * @type void
 	 **/
@@ -249,7 +237,6 @@ distribution.
 				
 	/**
 	 * @function addSegment
-	 * @belongsTo JAABox
 	 * @param {JSegment} seg 
 	 * @type void
 	 **/
@@ -260,7 +247,6 @@ distribution.
 
 	/**
 	 * @function overlapTest tests for an overlap between 2 boxes  
-	 * @belongsTo JAABox
 	 * @param {JAABox} box 
 	 * @type boolean
 	 **/
@@ -277,7 +263,6 @@ distribution.
 
 	/**
 	 * @function isPointInside tests if a given point lies inside this JAABox  
-	 * @belongsTo JAABox
 	 * @param {array} pos a 3D vector
 	 * @type boolean
 	 **/
@@ -294,7 +279,6 @@ distribution.
 
 	/**
 	 * @function toString  
-	 * @belongsTo JAABox
 	 * @type string
 	 **/
 	JAABox.prototype.toString=function(){

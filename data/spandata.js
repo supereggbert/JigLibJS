@@ -3,6 +3,7 @@
 	/**
 	 * @author katopz
 	 * 
+	 * @name SpanData
 	 * @class SpanData
 	 * @property {number} min
 	 * @property {number} max

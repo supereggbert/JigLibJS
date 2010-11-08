@@ -33,6 +33,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectCapsulePlane
 	 * @class CollDetectCapsulePlane handles collisions between capsules and planes
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -50,7 +51,6 @@
 	
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectCapsulePlane
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

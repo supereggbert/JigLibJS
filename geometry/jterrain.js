@@ -6,6 +6,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JTerrain
 	 * @class JTerrain
 	 * @extends RigidBody
 	 * @requires Vector3DUtil
@@ -27,7 +28,6 @@
 	
 	/**
 	 * @function get_terrainMesh gets the mesh
-	 * @belongsTo JTerrain
 	 * @type object
 	 **/
 	JTerrain.prototype.get_terrainMesh=function(){
@@ -36,7 +36,6 @@
 				
 	/**
 	 * @function getHeightByIndex
-	 * @belongsTo JTerrain
 	 * @type number
 	 **/
 	JTerrain.prototype.getHeightByIndex=function(i, j){
@@ -47,7 +46,6 @@
 	
 	/**
 	 * @function getHeightAndNormalByPoint
-	 * @belongsTo JTerrain
 	 * @param {array} point
 	 * @type object
 	 **/
@@ -101,7 +99,6 @@
 				
 	/**
 	 * @function getHeightByPoint
-	 * @belongsTo JTerrain
 	 * @param {array} point
 	 * @type number
 	 **/
@@ -111,7 +108,6 @@
 				
 	/**
 	 * @function getNormalByPoint
-	 * @belongsTo JTerrain
 	 * @param {array} point
 	 * @type array
 	 **/
@@ -121,7 +117,6 @@
 				
 	/**
 	 * @function getSurfacePosByPoint
-	 * @belongsTo JTerrain
 	 * @param {array} point
 	 * @type array
 	 **/
@@ -132,7 +127,6 @@
 	   
 	/**
 	 * @function segmentIntersect
-	 * @belongsTo JTerrain
 	 * @param {object} out
 	 * @param {JSegment} seg
 	 * @param {PhysicsState} state
@@ -171,7 +165,6 @@
 				
 	/**
 	 * @function limiteInt
-	 * @belongsTo JTerrain
 	 * @param {number} num
 	 * @param {number} min
 	 * @param {number} max

@@ -25,6 +25,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JRay
 	 * @class JRay
 	 * @extends RigidBody
 	 * @requires Vector3DUtil
@@ -44,7 +45,6 @@
 	
 	/**
 	 * @function getOrigin gets the origin
-	 * @belongsTo JRay
 	 * @param {number} t
 	 * @type array
 	 **/

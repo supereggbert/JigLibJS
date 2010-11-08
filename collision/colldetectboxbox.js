@@ -36,6 +36,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectBoxBox
 	 * @class CollDetectBoxBox handles collisions between boxes
 	 * @extends CollDetectFunctor
 	 * @property {number} combinationDist the combination distance
@@ -60,7 +61,6 @@
 	
 	/**
 	 * @function disjoint tests for disjoint or intersection
-	 * @belongsTo CollDetectBoxBox
 	 * @param {SpanData} out the SpanData object to apply test results to
 	 * @param {array} axis the axis expressed as a 3D vector
 	 * @param {JBox} box0 the first box to use for testing
@@ -96,7 +96,6 @@
 	
 	/**
 	 * @function addPoint conditionally adds one 3D vector to a collection of other 3D vectors
-	 * @belongsTo CollDetectBoxBox
 	 * @param {array} contactPoints a collection of points (3D vectors)
 	 * @param {array} pt the point to add expressed as a 3D vector
 	 * @param {number} combinationDistanceSq the maximum length squared allowed between pt and any of contactPoints
@@ -118,7 +117,6 @@
 				
 	/**
 	 * @function getSupportPoint
-	 * @belongsTo CollDetectBoxBox
 	 * @param {JBox} box
 	 * @param {array} axis the axis expressed as a 3D vector
 	 * @returns the point expressed as a 3D Vector
@@ -156,7 +154,6 @@
 
 	/**
 	 * @function getAABox2EdgeIntersectionPoints
-	 * @belongsTo CollDetectBoxBox
 	 * @param {array} contactPoint a 3D vector
 	 * @param {array} origBoxSides a 3D vector
 	 * @param {PhysicsState} origBoxState
@@ -218,7 +215,6 @@
 				
 	/**
 	 * @function getBox2BoxEdgesIntersectionPoints
-	 * @belongsTo CollDetectBoxBox
 	 * @param {array} contactPoint a 3D vector
 	 * @param {JBox} box0
 	 * @param {JBox} box1
@@ -249,7 +245,6 @@
 
 	/**
 	 * @function getBoxBoxIntersectionPoints
-	 * @belongsTo CollDetectBoxBox
 	 * @param {array} contactPoint a 3D vector
 	 * @param {JBox} box0
 	 * @param {JBox} box1
@@ -264,7 +259,6 @@
 	
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectBoxBox
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @param {PhysicsState} newState

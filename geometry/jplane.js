@@ -27,6 +27,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JPlane
 	 * @class JPlane
 	 * @extends RigidBody
 	 * @requires Vector3DUtil
@@ -61,7 +62,6 @@
 
 	/**
 	 * @function get_normal gets the normal
-	 * @belongsTo JPlane
 	 * @type array
 	 **/
 	JPlane.prototype.get_normal=function(){
@@ -70,7 +70,6 @@
 
 	/**
 	 * @function get_normal gets the distance
-	 * @belongsTo JPlane
 	 * @type number
 	 **/
 	JPlane.prototype.get_distance=function(){
@@ -79,7 +78,6 @@
 
 	/**
 	 * @function pointPlaneDistance gets the distance from a given point
-	 * @belongsTo JPlane
 	 * @param {array} pt the point expressed as a 3D vector
 	 * @type array
 	 **/
@@ -89,7 +87,6 @@
 
 	/**
 	 * @function segmentIntersect tests for intersection with a JSegment
-	 * @belongsTo JPlane
 	 * @param {object} out
 	 * @param {JSegment} seg
 	 * @param {PhysicsState} state
@@ -125,7 +122,6 @@
 
 	/**
 	 * @function updateState updates the current PhysicsState
-	 * @belongsTo JPlane
 	 * @type void
 	 **/
 	JPlane.prototype.updateState=function(){

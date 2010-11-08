@@ -31,6 +31,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectBoxTerrain
 	 * @class CollDetectBoxTerrain handles collisions between boxes and terrain
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -48,7 +49,6 @@
 	
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectBoxTerrain
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

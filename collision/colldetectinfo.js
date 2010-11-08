@@ -22,6 +22,7 @@
 	 /**
 	  * @author Muzer(muzerly@gmail.com)
 	  * 
+	  * @name CollDetectInfo
 	  * @class CollDetectInfo stores 2 rigid bodies and is used by collision detection classes
 	  * @property {RigidBody} body0
 	  * @property {RigidBody} body1

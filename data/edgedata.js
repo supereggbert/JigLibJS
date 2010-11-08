@@ -3,6 +3,7 @@
 	/**
 	 * @author katopz
 	 * 
+	 * @name EdgeData
 	 * @class EdgeData describes an edge in terms of the numbers of it's connecting vertices - used by JBox 
 	 * @property {number} ind0 the number of the vertex at the start of the edge
 	 * @property {number} ind1 the number of the vertex at the end of the edge

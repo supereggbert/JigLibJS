@@ -22,6 +22,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectFunctor
 	 * @class CollDetectFunctor base class for collision detection classes
 	 * @property {string} name the inheriting class's collision type e.g. BoxPlane
 	 * @property {string} type0 the first geometry type in the collisions supported by the inheritng class e.g. Box
@@ -37,7 +38,6 @@
 	
 	/**
 	 * @function collDetect detects a collision and updates the info parameter - must be implemented by the inheriting class
-	 * @belongsTo CollDetectFunctor
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

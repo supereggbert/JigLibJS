@@ -30,7 +30,8 @@
 	
 	/**
 	 * @author Muzer(muzerly@gmail.com)
-	 * 
+	 *
+	 * @name CollDetectSphereTerrain
 	 * @class CollDetectSphereTerrain handles collisions between spheres and terrain
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -50,7 +51,6 @@
 	
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectSphereTerrain
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

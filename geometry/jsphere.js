@@ -26,6 +26,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JSphere
 	 * @class JSphere
 	 * @extends RigidBody
 	 * @requires Vector3DUtil
@@ -51,7 +52,6 @@
 
 	/**
 	 * @function set_radius gets the radius
-	 * @belongsTo JSphere
 	 * @param {number} r the new radius
 	 * @type void
 	 **/
@@ -65,7 +65,6 @@
 
 	/**
 	 * @function get_radius returns the radius
-	 * @belongsTo JSphere
 	 * @type void
 	 **/
 	JSphere.prototype.get_radius=function(){
@@ -74,7 +73,6 @@
 
 	/**
 	 * @function segmentIntersect
-	 * @belongsTo JSphere
 	 * @param {object} out 
 	 * @param {JSegment} seg
 	 * @param {PhysicsState} state
@@ -121,7 +119,6 @@
 
 	/**
 	 * @function getInertiaProperties
-	 * @belongsTo JSphere
 	 * @param {number} m
 	 * @type JMatrix3D
 	 **/
@@ -132,7 +129,6 @@
 				
 	/**
 	 * @function updateBoundingBox updates the bounding box
-	 * @belongsTo JSphere
 	 * @type void
 	 **/
 	JSphere.prototype.updateBoundingBox=function(){

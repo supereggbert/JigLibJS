@@ -44,6 +44,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollisionSystem
 	 * @class CollisionSystem
 	 * @requires JSegment
 	 * @requires RigidBody
@@ -102,7 +103,6 @@
 	
 	/**
 	 * @function addCollisionBody adds a rigid body to the colBody collection
-	 * @belongsTo CollisionSystem
 	 * @param {RigidBody} body
 	 * @type void
 	 **/
@@ -113,7 +113,6 @@
 
 	/**
 	 * @function removeCollisionBody removes a rigid body from the colBody collection
-	 * @belongsTo CollisionSystem
 	 * @param {RigidBody} body
 	 * @type void
 	 **/
@@ -124,7 +123,6 @@
 
 	/**
 	 * @function removeAllCollisionBodies empties the colBody collection
-	 * @belongsTo CollisionSystem
 	 * @type void
 	 **/
 	CollisionSystem.prototype.removeAllCollisionBodies=function(){
@@ -133,7 +131,6 @@
 
 	/**
 	 * @function detectCollisions detects collisions between the body and all the registered collision bodies
-	 * @belongsTo CollisionSystem
 	 * @param {RigidBody} body
 	 * @param {array} collArr
 	 * @type void
@@ -159,7 +156,6 @@
 	
 	/**
 	 * @function detectAllCollisions detects collisions between all bodies
-	 * @belongsTo CollisionSystem
 	 * @param {array} bodies
 	 * @param {array} collArr
 	 * @type void
@@ -198,7 +194,6 @@
 
 	/**
 	 * @function segmentIntersect
-	 * @belongsTo CollisionSystem
 	 * @param {object} out
 	 * @param {JSegment} seg
 	 * @param {RigidBody} ownerBody
@@ -238,7 +233,6 @@
 
 	/**
 	 * @function segmentBounding
-	 * @belongsTo CollisionSystem
 	 * @param {JSegment} seg
 	 * @param {RigidBody} obj
 	 * @type boolean
@@ -262,7 +256,6 @@
 
 	/**
 	 * @function findBody determines if a given rigid body is registered with the collision system
-	 * @belongsTo CollisionSystem
 	 * @param {RigidBody} body
 	 * @returns true if the body is registered, false if not
 	 * @type boolean
@@ -278,7 +271,6 @@
 
 	/**
 	 * @function checkCollidables
-	 * @belongsTo CollisionSystem
 	 * @param {RigidBody} body0
 	 * @param {RigidBody} body1
 	 * @type boolean

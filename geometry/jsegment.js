@@ -26,6 +26,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JSegment
 	 * @class JSegment
 	 * @extends RigidBody
 	 * @requires Vector3DUtil
@@ -46,7 +47,6 @@
 	
 	/**
 	 * @function getPoint gets the point of the segment expressed as a 3D vector
-	 * @belongsTo JSegment
 	 * @param {number} t
 	 * @type array
 	 **/
@@ -56,7 +56,6 @@
 
 	/**
 	 * @function getEnd gets the end of the segment expressed as a 3D vector
-	 * @belongsTo JSegment
 	 * @type array
 	 **/
 	JSegment.prototype.getEnd=function(){
@@ -65,7 +64,6 @@
 
 	/**
 	 * @function clone returns a copy
-	 * @belongsTo JSegment
 	 * @type JSegment
 	 **/
 	JSegment.prototype.clone=function(){
@@ -74,7 +72,6 @@
 	
 	/**
 	 * @function segmentSegmentDistanceSq
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {JSegment} seg
 	 * @type number
@@ -319,7 +316,6 @@
 
 	/**
 	 * @function pointSegmentDistanceSq
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {array} pt
 	 * @type number
@@ -349,7 +345,6 @@
 
 	/**
 	 * @function segmentBoxDistanceSq
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {JBox} rkBox
 	 * @param {PhysicsState} boxState
@@ -385,7 +380,6 @@
 
 	/**
 	 * @function sqrDistanceLine
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {JRay} rkLine
 	 * @param {JBox} rkBox
@@ -485,7 +479,6 @@
 	
 	/**
 	 * @function sqrDistancePoint
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {array} rkPoint
 	 * @param {JBox} rkBox
@@ -543,7 +536,6 @@
 
 	/**
 	 * @function face
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {number} i0
 	 * @param {number} i1
@@ -719,7 +711,6 @@
 	
 	/**
 	 * @function caseNoZeros
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {array} rkDir
 	 * @param {JBox} rkBox
@@ -755,7 +746,6 @@
 
 	/**
 	 * @function case0
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {number} i0
 	 * @param {number} i1
@@ -827,7 +817,6 @@
 
 	/**
 	 * @function case00
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {number} i0
 	 * @param {number} i1
@@ -871,7 +860,6 @@
 
 	/**
 	 * @function case000
-	 * @belongsTo JSegment
 	 * @param {object} out
 	 * @param {JBox} rkBox
 	 * @type void

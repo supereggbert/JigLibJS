@@ -10,6 +10,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JBox
 	 * @class JBox a box rigid body
 	 * @extends RigidBody
 	 * @requires Vector3DUtil
@@ -58,7 +59,6 @@
 	
 	/**
 	 * @function initPoints determines the point (vertex) locations for this JBox
-	 * @belongsTo JBox
 	 * @type void
 	 **/
 	JBox.prototype.initPoints=function(){
@@ -76,7 +76,6 @@
 
 	/**
 	 * @function set_sideLengths sets the side lengths for this JBox
-	 * @belongsTo JBox
 	 * @param {array} size 3D vector specifying the side lengths i.e. [width, height, depth, 0]
 	 * @type void
 	 **/
@@ -91,7 +90,6 @@
 
 	/**
 	 * @function get_sideLengths returns the side lengths for this JBox as a 3D vector
-	 * @belongsTo JBox
 	 * @type array
 	 **/
 	JBox.prototype.get_sideLengths=function(){
@@ -100,7 +98,6 @@
 
 	/**
 	 * @function get_edges returns an array of EdgeData objects representing the edges of this JBox
-	 * @belongsTo JBox
 	 * @type array
 	 **/
 	JBox.prototype.get_edges=function(){
@@ -109,7 +106,6 @@
 
 	/**
 	 * @function getVolume returns the volume of this JBox
-	 * @belongsTo JBox
 	 * @type number
 	 **/
 	JBox.prototype.getVolume=function(){
@@ -118,7 +114,6 @@
 
 	/**
 	 * @function getSurfaceArea returns the surface area of this JBox
-	 * @belongsTo JBox
 	 * @type number
 	 **/
 	JBox.prototype.getSurfaceArea=function(){
@@ -127,7 +122,6 @@
 
 	/**
 	 * @function getHalfSideLengths returns the half-side lengths of this JBox expressed as a 3D vector
-	 * @belongsTo JBox
 	 * @type array
 	 **/
 	JBox.prototype.getHalfSideLengths=function(){
@@ -136,7 +130,6 @@
 
 	/**
 	 * @function getSpan returns the minimum and maximum extents of the box along the axis, relative to the center of the box.
-	 * @belongsTo JBox
 	 * @param {array} axis the axis expressed as a 3D vector
 	 * @type SpanData
 	 **/
@@ -156,7 +149,6 @@
 
 	/**
 	 * @function getCornerPoints returns the corner points of this JBox
-	 * @belongsTo JBox
 	 * @param {PhysicsState} state
 	 * @type array
 	 **/
@@ -180,7 +172,6 @@
 				
 	/**
 	 * @function getCornerPointsInBoxSpace returns the corner points of this JBox in another box space
-	 * @belongsTo JBox
 	 * @param {PhysicsState} thisState
 	 * @param {PhysicsState} boxState
 	 * @type array
@@ -207,7 +198,6 @@
 				
 	/**
 	 * @function getSqDistanceToPoint
-	 * @belongsTo JBox
 	 * @param {PhysicsState} state
 	 * @param {array} closestBoxPoint
 	 * @param {array} point
@@ -257,7 +247,6 @@
 
 	/**
 	 * @function getDistanceToPoint returns the distance from the point to the box, (negative if the point is inside the box), and optionally the closest point on the box
-	 * @belongsTo JBox
 	 * @param {PhysicsState} state
 	 * @param {array} closestBoxPoint
 	 * @param {array} point
@@ -269,7 +258,6 @@
 
 	/**
 	 * @function pointIntersect 
-	 * @belongsTo JBox
 	 * @param {array} pos
 	 * @type boolean
 	 **/
@@ -290,7 +278,6 @@
 
 	/**
 	 * @function getSupportVertices 
-	 * @belongsTo JBox
 	 * @param {array} axis
 	 * @type array
 	 **/
@@ -348,7 +335,6 @@
 
 	/**
 	 * @function segmentIntersect 
-	 * @belongsTo JBox
 	 * @param {object} out
 	 * @param {JSegment} seg
 	 * @param {PhysicsState} state
@@ -431,7 +417,6 @@
 
 	/**
 	 * @function getInertiaProperties 
-	 * @belongsTo JBox
 	 * @param {number} m
 	 * @type JMatrix3D
 	 **/
@@ -444,7 +429,6 @@
 				
 	/**
 	 * @function updateBoundingBox updates the bounding box for this JBox 
-	 * @belongsTo JBox
 	 * @type void
 	 **/
 	JBox.prototype.updateBoundingBox=function(){

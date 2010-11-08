@@ -32,6 +32,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectSpherePlane
 	 * @class CollDetectSpherePlane handles collisions between spheres and planes
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -50,7 +51,6 @@
 	
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectSpherePlane
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

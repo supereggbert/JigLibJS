@@ -29,6 +29,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectSphereSphere
 	 * @class CollDetectSphereSphere handles collisions between spheres 
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -49,7 +50,6 @@
 	
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectSphereCapsule
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

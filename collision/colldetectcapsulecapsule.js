@@ -34,6 +34,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectCapsuleCapsule
 	 * @class CollDetectCapsuleCapsule handles collisions between capsules
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -54,7 +55,6 @@
 
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectCapsuleCapsule
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

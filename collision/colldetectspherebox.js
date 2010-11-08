@@ -29,6 +29,7 @@ distribution.
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollDetectSphereBox
 	 * @class CollDetectSphereBox handles collisions between spheres and boxes
 	 * @extends CollDetectFunctor
 	 * @requires CollDetectInfo
@@ -50,7 +51,6 @@ distribution.
 				
 	/**
 	 * @function collDetect detects a collision and updates the info parameter
-	 * @belongsTo CollDetectSphereBox
 	 * @param {CollDetectInfo} info
 	 * @param {array} collArray
 	 * @type void

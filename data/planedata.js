@@ -3,6 +3,7 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	
 	/**
+	 * @name ContactData
 	 * @class ContactData stores information about a contact between 2 objects
 	 * @requires Vector3DUtil
 	 * @property {array} position the position of the plane expressed as a 3D vector
@@ -24,7 +25,6 @@
 	
 	/**
 	 * @function pointPlaneDistance determines the distance between a given point and the plane
-	 * @belongsTo PlaneData
 	 * @param {array} pt a 3D vector
 	 * @type number
 	 **/

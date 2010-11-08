@@ -24,6 +24,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollisionInfo
 	 * @class CollisionInfo stores information about a collision
 	 * @requires MaterialProperties
 	 * @property {MaterialProperties} mat

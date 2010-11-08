@@ -28,6 +28,7 @@ distribution.
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name JCapsule
 	 * @class JCapsule
 	 * @extends RigidBody
 	 * @requires Vector3DUtil
@@ -57,7 +58,6 @@ distribution.
 	
 	/**
 	 * @function set_radius sets the radius
-	 * @belongsTo JCapsule
 	 * @param {number} r the new radius
 	 * @type void
 	 **/
@@ -71,7 +71,6 @@ distribution.
 	
 	/**
 	 * @function get_radius gets the radius
-	 * @belongsTo JCapsule
 	 * @type number
 	 **/
 	JCapsule.prototype.get_radius=function(){
@@ -80,7 +79,6 @@ distribution.
 				 
 	/**
 	 * @function set_length sets the length
-	 * @belongsTo JCapsule
 	 * @param {number} l the new length
 	 * @type void
 	 **/
@@ -94,7 +92,6 @@ distribution.
 	
 	/**
 	 * @function get_length gets the length
-	 * @belongsTo JCapsule
 	 * @type number
 	 **/
 	JCapsule.prototype.get_length=function(){
@@ -103,7 +100,6 @@ distribution.
 	
 	/**
 	 * @function getBottomPos gets the bottom position expressed as a 3D vector
-	 * @belongsTo JCapsule
 	 * @param {PhysicsState} state
 	 * @type array
 	 **/
@@ -115,7 +111,6 @@ distribution.
 				 
 	/**
 	 * @function getEndPos gets the end position expressed as a 3D vector
-	 * @belongsTo JCapsule
 	 * @param {PhysicsState} state
 	 * @type array
 	 **/
@@ -127,7 +122,6 @@ distribution.
 				 
 	/**
 	 * @function segmentIntersect tests a segment for intersection
-	 * @belongsTo JCapsule
 	 * @param {object} out
 	 * @param {JSegment} seg
 	 * @param {PhysicsState} state
@@ -190,7 +184,6 @@ distribution.
 
 	/**
 	 * @function getInertiaProperties
-	 * @belongsTo JCapsule
 	 * @param {number} m
 	 * @type JMatrix3D
 	 **/
@@ -217,7 +210,6 @@ distribution.
 				
 	/**
 	 * @function updateBoundingBox updates the bounding box for this JCapsule
-	 * @belongsTo JCapsule
 	 * @type void
 	 **/
 	JCapsule.prototype.updateBoundingBox=function(){
@@ -227,7 +219,6 @@ distribution.
 				
 	/**
 	 * @function getBoundingSphere gets the bounding sphere for any JCapsule based on it's radius and length
-	 * @belongsTo JCapsule
 	 * @param {number} r the radius
 	 * @param {number} l the length
 	 * @type number
@@ -238,7 +229,6 @@ distribution.
 				
 	/**
 	 * @function getVolume gets the vollume for this JCapsule
-	 * @belongsTo JCapsule
 	 * @type number
 	 **/
 	JCapsule.prototype.getVolume=function(){

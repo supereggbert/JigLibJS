@@ -22,6 +22,7 @@
 	/**
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
+	 * @name CollPointInfo
 	 * @class CollPointInfo
 	 * @property {number} initialPenetration
 	 * @property {array} r0 a 3D vector
