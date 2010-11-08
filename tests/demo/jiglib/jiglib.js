@@ -1,8 +1,1 @@
-jigLib={};
-	
-jigLib.extend=function(dest,source){
-	for(proto in source.prototype){
-		dest.prototype[proto]=source.prototype[proto];
-	}
-	dest.prototype.Super=source;
-};
+jigLib={};jigLib.extend=function(a,b){for(proto in b.prototype){a.prototype[proto]=b.prototype[proto];}a.prototype.Super=b;};

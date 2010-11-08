@@ -45,6 +45,11 @@
 	 * @author Muzer(muzerly@gmail.com)
 	 * 
 	 * @class CollisionSystem
+	 * @requires JSegment
+	 * @requires RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires JConstraint
 	 * @requires CollDetectBoxBox
 	 * @requires CollDetectBoxPlane
 	 * @requires CollDetectBoxTerrain

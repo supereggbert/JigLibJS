@@ -1,19 +1,20 @@
-
-
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
-	var ISkin3D=jigLib.ISkin3D;
-	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
-	var ITerrain=jigLib.ITerrain;
 	
 	/**
-	* ...
-	* @author Muzer
-	*/
-	
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class JTerrain
+	 * @extends RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @property {object} _terrain the terrain mesh
+	 * @constructor
+	 * @param {object} tr the terrain mesh
+	 * TODO: in JigLibFlash the terrain mesh is of type ITerrain - this needs re-implementing somehow?!?
+	 **/
 	var JTerrain=function(tr){
 		this.Super(null);
 		this._terrain = tr;
@@ -21,18 +22,35 @@
 		this._type = "TERRAIN";
 	};
 	jigLib.extend(JTerrain,jigLib.RigidBody);
+	
 	JTerrain.prototype._terrain=null;
 	
+	/**
+	 * @function get_terrainMesh gets the mesh
+	 * @belongsTo JTerrain
+	 * @type object
+	 **/
 	JTerrain.prototype.get_terrainMesh=function(){
 		return this._terrain;
 	};
 				
+	/**
+	 * @function getHeightByIndex
+	 * @belongsTo JTerrain
+	 * @type number
+	 **/
 	JTerrain.prototype.getHeightByIndex=function(i, j){
 		i = this.limiteInt(i, 0, _terrain.sw);
 		j = this.limiteInt(j, 0, _terrain.sh);
 		return _terrain.heights[i][j];
 	};
 	
+	/**
+	 * @function getHeightAndNormalByPoint
+	 * @belongsTo JTerrain
+	 * @param {array} point
+	 * @type object
+	 **/
 	JTerrain.prototype.getHeightAndNormalByPoint=function(point){
 		var w = this.limiteInt(point[0], this._terrain.minW, this._terrain.maxW);
 		var h = this.limiteInt(point[2], this._terrain.minH, this._terrain.maxH);
@@ -81,19 +99,45 @@
 		return obj;
 	};
 				
+	/**
+	 * @function getHeightByPoint
+	 * @belongsTo JTerrain
+	 * @param {array} point
+	 * @type number
+	 **/
 	JTerrain.prototype.getHeightByPoint=function(point){
 		return this.getHeightAndNormalByPoint(point).height;
 	};
 				
+	/**
+	 * @function getNormalByPoint
+	 * @belongsTo JTerrain
+	 * @param {array} point
+	 * @type array
+	 **/
 	JTerrain.prototype.getNormalByPoint=function(point){
 		return this.getHeightAndNormalByPoint(point).normal;
 	};
 				
+	/**
+	 * @function getSurfacePosByPoint
+	 * @belongsTo JTerrain
+	 * @param {array} point
+	 * @type array
+	 **/
 	JTerrain.prototype.getSurfacePosByPoint=function(point){
 		return [point[0], this.getHeightAndNormalByPoint(point).height, point[2], 0];
 	};
 	
 	   
+	/**
+	 * @function segmentIntersect
+	 * @belongsTo JTerrain
+	 * @param {object} out
+	 * @param {JSegment} seg
+	 * @param {PhysicsState} state
+	 * @type array
+	 **/
 	JTerrain.prototype.segmentIntersect=function(out, seg, state){
 		out.fracOut = 0;
 		out.posOut = [0,0,0,0];
@@ -125,6 +169,14 @@
 		return true;
 	};
 				
+	/**
+	 * @function limiteInt
+	 * @belongsTo JTerrain
+	 * @param {number} num
+	 * @param {number} min
+	 * @param {number} max
+	 * @type array
+	 **/
 	JTerrain.prototype.limiteInt=function(num,min,max){
 		var n = num;
 		if (n < min){

@@ -437,7 +437,7 @@
 		var ga = jigLib.PhysicsSystem.getInstance().get_gravityAxis();
 		
 		if (ga != -1){
-			var arr = JNumber3D.toArray(this._currLinVelocityAux);
+			var arr = this._currLinVelocityAux.slice(0);
 			arr[(ga + 1) % 3] *= 0.1;
 			arr[(ga + 2) % 3] *= 0.1;
 			JNumber3D.copyFromArray(this._currLinVelocityAux, arr);

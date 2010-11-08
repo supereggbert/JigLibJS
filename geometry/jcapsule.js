@@ -18,20 +18,29 @@ misrepresented as being the original software.
 distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
-	var ISkin3D=jigLib.ISkin3D;
-	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 	var JSegment=jigLib.JSegment;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class JCapsule
+	 * @extends RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @requires JSegment
+	 * @property {number} _length the length of this JCapsule
+	 * @property {number} _radius the radius of this JCapsule
+	 * @constructor
+	 * @param {ISkin3D} skin
+	 * @param {number} r the radius
+	 * @param {number} l the length
+	 **/
 	var JCapsule=function(skin, r, l) {
 		this.Super(skin);
 		this._type = "CAPSULE";
@@ -46,6 +55,12 @@ distribution.
 	JCapsule.prototype._length=null;
 	JCapsule.prototype._radius=null;
 	
+	/**
+	 * @function set_radius sets the radius
+	 * @belongsTo JCapsule
+	 * @param {number} r the new radius
+	 * @type void
+	 **/
 	JCapsule.prototype.set_radius=function(r){
 		this._radius = r;
 		this._boundingSphere = getBoundingSphere(this._radius, this._length);
@@ -54,10 +69,21 @@ distribution.
 		this.setActive();
 	};
 	
+	/**
+	 * @function get_radius gets the radius
+	 * @belongsTo JCapsule
+	 * @type number
+	 **/
 	JCapsule.prototype.get_radius=function(){
 		return this._radius;
 	};
 				 
+	/**
+	 * @function set_length sets the length
+	 * @belongsTo JCapsule
+	 * @param {number} l the new length
+	 * @type void
+	 **/
 	JCapsule.prototype.set_length=function(l){
 		this._length = l;
 		this._boundingSphere = getBoundingSphere(this._radius, this._length);
@@ -66,22 +92,47 @@ distribution.
 		this.setActive();
 	};
 	
+	/**
+	 * @function get_length gets the length
+	 * @belongsTo JCapsule
+	 * @type number
+	 **/
 	JCapsule.prototype.get_length=function(){
 		return this._length;
 	};
 	
+	/**
+	 * @function getBottomPos gets the bottom position expressed as a 3D vector
+	 * @belongsTo JCapsule
+	 * @param {PhysicsState} state
+	 * @type array
+	 **/
 	JCapsule.prototype.getBottomPos=function(state){
 		var temp = state.getOrientationCols()[1];
 		//Vector3DUtil.normalize(temp);
 		return Vector3DUtil.add(state.position, JNumber3D.getScaleVector(temp, -this._length / 2 - this._radius));
 	};
 				 
+	/**
+	 * @function getEndPos gets the end position expressed as a 3D vector
+	 * @belongsTo JCapsule
+	 * @param {PhysicsState} state
+	 * @type array
+	 **/
 	JCapsule.prototype.getEndPos=function(state){
 		var temp = state.getOrientationCols()[1];
 		//Vector3DUtil.normalize(temp);
 		return Vector3DUtil.add(state.position, JNumber3D.getScaleVector(temp, this._length / 2 + this._radius));
 	};
 				 
+	/**
+	 * @function segmentIntersect tests a segment for intersection
+	 * @belongsTo JCapsule
+	 * @param {object} out
+	 * @param {JSegment} seg
+	 * @param {PhysicsState} state
+	 * @type boolean
+	 **/
 	JCapsule.prototype.segmentIntersect=function(out, seg, state){
 		out.fracOut = 0;
 		out.posOut = [0,0,0,0];
@@ -137,6 +188,12 @@ distribution.
 		return true;
 	};
 
+	/**
+	 * @function getInertiaProperties
+	 * @belongsTo JCapsule
+	 * @param {number} m
+	 * @type JMatrix3D
+	 **/
 	JCapsule.prototype.getInertiaProperties=function(m){
 		var cylinderMass = m * Math.PI * this._radius * this._radius * this._length / this.getVolume();
 		var Ixx = 0.25 * cylinderMass * this._radius * this._radius + (1 / 12) * cylinderMass * this._length * this._length;
@@ -158,15 +215,32 @@ distribution.
 		return JMatrix3D.getScaleMatrix(Ixx, Iyy, Izz);
 	};
 				
+	/**
+	 * @function updateBoundingBox updates the bounding box for this JCapsule
+	 * @belongsTo JCapsule
+	 * @type void
+	 **/
 	JCapsule.prototype.updateBoundingBox=function(){
 		this._boundingBox.clear();
 		this._boundingBox.addCapsule(this);
 	};
 				
+	/**
+	 * @function getBoundingSphere gets the bounding sphere for any JCapsule based on it's radius and length
+	 * @belongsTo JCapsule
+	 * @param {number} r the radius
+	 * @param {number} l the length
+	 * @type number
+	 **/
 	JCapsule.prototype.getBoundingSphere=function(r, l){
 		return Math.sqrt(Math.pow(l / 2, 2) + r * r) + r;
 	};
 				
+	/**
+	 * @function getVolume gets the vollume for this JCapsule
+	 * @belongsTo JCapsule
+	 * @type number
+	 **/
 	JCapsule.prototype.getVolume=function(){
 		return (4 / 3) * Math.PI * this._radius * this._radius * this._radius + this._length * Math.PI * this._radius * this._radius;
 	};

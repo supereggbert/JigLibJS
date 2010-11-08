@@ -3,17 +3,30 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
-	var ISkin3D=jigLib.ISkin3D;
-	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 	var EdgeData=jigLib.EdgeData;
 	var SpanData=jigLib.SpanData;
 
 	/**
 	 * @author Muzer(muzerly@gmail.com)
-	 * @link http://code.google.com/p/jiglibflash
-	 */
-	
+	 * 
+	 * @class JBox a box rigid body
+	 * @extends RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @requires EdgeData
+	 * @requires SpanData
+	 * @property {array} _sideLengths the side lengths of this JBox expressed as a 3D vector
+	 * @property {array} _points a collection of 3D vectors representing the points (vertices) of this JBox
+	 * @property {array} _edges a collection of EdgeData objects representing the edges of this JBox
+	 * @property {array} _faces a collection of 3D vectors representing the faces of this JBox
+	 * @constructor
+	 * @param {ISkin3D} skin
+	 * @param {number} width
+	 * @param {number} depth
+	 * @param {number} height
+	 **/
 	var JBox=function(skin, width, depth, height){
 		//	calling "this.Super" causes recursion in inheritance chains longer than 1
 		//this.Super(skin);
@@ -24,7 +37,7 @@
 					new EdgeData( 6, 7 ), new EdgeData( 4, 6 ), new EdgeData( 7, 1 ),
 					new EdgeData( 5, 3 ), new EdgeData( 4, 2 ), new EdgeData( 6, 0 )];
 		
-		this._face=[[6, 7, 1, 0], [5, 4, 2, 3],
+		this._faces=[[6, 7, 1, 0], [5, 4, 2, 3],
 					[3, 1, 7, 5], [4, 6, 0, 2],
 					[1, 3, 2, 0], [7, 6, 4, 5]];
 
@@ -32,18 +45,23 @@
 
 		this._sideLengths = Vector3DUtil.create(width, height, depth, 0);
 		this._boundingSphere = 0.5 * Vector3DUtil.get_length(this._sideLengths);
-		this.initPoint();
+		this.initPoints();
 		this.set_mass(1);
 		this.updateBoundingBox();
 	};
-	
 	jigLib.extend(JBox,jigLib.RigidBody);
+	
 	JBox.prototype._sideLengths=null;
 	JBox.prototype._points=null;
 	JBox.prototype._edges=null; 
-	JBox.prototype._face=null; 
-
-	JBox.prototype.initPoint=function(){
+	JBox.prototype._faces=null; 
+	
+	/**
+	 * @function initPoints determines the point (vertex) locations for this JBox
+	 * @belongsTo JBox
+	 * @type void
+	 **/
+	JBox.prototype.initPoints=function(){
 		var halfSide = this.getHalfSideLengths();
 		this._points = [];
 		this._points[0] = Vector3DUtil.create(halfSide[0], -halfSide[1], halfSide[2], 0);
@@ -56,38 +74,72 @@
 		this._points[7] = Vector3DUtil.create(halfSide[0], halfSide[1], -halfSide[2], 0);
 	};
 
+	/**
+	 * @function set_sideLengths sets the side lengths for this JBox
+	 * @belongsTo JBox
+	 * @param {array} size 3D vector specifying the side lengths i.e. [width, height, depth, 0]
+	 * @type void
+	 **/
 	JBox.prototype.set_sideLengths=function(size){
 		this._sideLengths = size.slice(0);
-		this._boundingSphere = 0.5 * this._sideLengths.length;
-		this.initPoint();
+		this._boundingSphere = 0.5 * Vector3DUtil.get_length(this._sideLengths);
+		this.initPoints();
 		this.setInertia(this.getInertiaProperties(this.get_mass()));
 		this.setActive();
 		this.updateBoundingBox();
 	};
 
-	//Returns the full side lengths
+	/**
+	 * @function get_sideLengths returns the side lengths for this JBox as a 3D vector
+	 * @belongsTo JBox
+	 * @type array
+	 **/
 	JBox.prototype.get_sideLengths=function(){
 		return this._sideLengths;
 	};
 
+	/**
+	 * @function get_edges returns an array of EdgeData objects representing the edges of this JBox
+	 * @belongsTo JBox
+	 * @type array
+	 **/
 	JBox.prototype.get_edges=function(){
 		return this._edges;
 	};
 
+	/**
+	 * @function getVolume returns the volume of this JBox
+	 * @belongsTo JBox
+	 * @type number
+	 **/
 	JBox.prototype.getVolume=function(){
 		return (this._sideLengths[0] * this._sideLengths[1] * this._sideLengths[2]);
 	};
 
+	/**
+	 * @function getSurfaceArea returns the surface area of this JBox
+	 * @belongsTo JBox
+	 * @type number
+	 **/
 	JBox.prototype.getSurfaceArea=function(){
 		return 2 * (this._sideLengths[0] * this._sideLengths[1] + this._sideLengths[0] * this._sideLengths[2] + this._sideLengths[1] * this._sideLengths[2]);
 	};
 
-	// Returns the half-side lengths
+	/**
+	 * @function getHalfSideLengths returns the half-side lengths of this JBox expressed as a 3D vector
+	 * @belongsTo JBox
+	 * @type array
+	 **/
 	JBox.prototype.getHalfSideLengths=function(){
 		return JNumber3D.getScaleVector(this._sideLengths, 0.5);
 	};
 
-	// Gets the minimum and maximum extents of the box along the axis, relative to the centre of the box.
+	/**
+	 * @function getSpan returns the minimum and maximum extents of the box along the axis, relative to the center of the box.
+	 * @belongsTo JBox
+	 * @param {array} axis the axis expressed as a 3D vector
+	 * @type SpanData
+	 **/
 	JBox.prototype.getSpan=function(axis){
 		var cols= this.get_currentState().getOrientationCols();
 		var obj = new SpanData();
@@ -102,7 +154,12 @@
 		return obj;
 	};
 
-	// Gets the corner points
+	/**
+	 * @function getCornerPoints returns the corner points of this JBox
+	 * @belongsTo JBox
+	 * @param {PhysicsState} state
+	 * @type array
+	 **/
 	JBox.prototype.getCornerPoints=function(state){
 		var vertex;
 		var arr = [];
@@ -121,20 +178,25 @@
 		return arr;
 	};
 				
-	// Gets the corner points in another box space
-         JBox.prototype.getCornerPointsInBoxSpace=function(thisState, boxState){
-                        
+	/**
+	 * @function getCornerPointsInBoxSpace returns the corner points of this JBox in another box space
+	 * @belongsTo JBox
+	 * @param {PhysicsState} thisState
+	 * @param {PhysicsState} boxState
+	 * @type array
+	 **/
+	JBox.prototype.getCornerPointsInBoxSpace=function(thisState, boxState){
 		var max = JMatrix3D.getTransposeMatrix(boxState.get_orientation());
 		var pos = Vector3DUtil.subtract(thisState.position,boxState.position);
 		JMatrix3D.multiplyVector(max, pos);
-                        
+						
 		var orient = JMatrix3D.getAppendMatrix3D(thisState.get_orientation(), max);
-                        
+						
 		var arr = [];
-                        
+						
 		var transform = JMatrix3D.getTranslationMatrix(pos[0], pos[1], pos[2]);
 		transform = JMatrix3D.getAppendMatrix3D(orient, transform);
-                        
+		
 		for(var i=0;i<this._points.length;i++){
 			_point=this._points[i].slice(0);
 			JMatrix3D.multiplyVector(transform,_point);
@@ -143,6 +205,14 @@
 		return arr;
 	};
 				
+	/**
+	 * @function getSqDistanceToPoint
+	 * @belongsTo JBox
+	 * @param {PhysicsState} state
+	 * @param {array} closestBoxPoint
+	 * @param {array} point
+	 * @type number
+	 **/
 	JBox.prototype.getSqDistanceToPoint=function(state, closestBoxPoint, point){
 		closestBoxPoint.pos = Vector3DUtil.subtract(point, state.position);
 		JMatrix3D.multiplyVector(JMatrix3D.getTransposeMatrix(state.get_orientation()), closestBoxPoint.pos);
@@ -185,12 +255,24 @@
 		return sqDistance;
 	};
 
-	// Returns the distance from the point to the box, (-ve if the
-	// point is inside the box), and optionally the closest point on the box.
+	/**
+	 * @function getDistanceToPoint returns the distance from the point to the box, (negative if the point is inside the box), and optionally the closest point on the box
+	 * @belongsTo JBox
+	 * @param {PhysicsState} state
+	 * @param {array} closestBoxPoint
+	 * @param {array} point
+	 * @type number
+	 **/
 	JBox.prototype.getDistanceToPoint=function(state, closestBoxPoint, point){
 		return Math.sqrt(this.getSqDistanceToPoint(state, closestBoxPoint, point));
 	};
 
+	/**
+	 * @function pointIntersect 
+	 * @belongsTo JBox
+	 * @param {array} pos
+	 * @type boolean
+	 **/
 	JBox.prototype.pointIntersect=function(pos){
 		var p = Vector3DUtil.subtract(pos, this.get_currentState().position);
 		var h = JNumber3D.getScaleVector(this._sideLengths, 0.5);
@@ -199,13 +281,19 @@
 		for (var dir; dir < 3; dir++){
 			dirVec = cols[dir].slice(0);
 			Vector3DUtil.normalize(dirVec);
-			if (Math.abs(Vector3DUtil.dotProduct(dirVec, p)) > JNumber3D.toArray(h)[dir] + JNumber3D.NUM_TINY){
+			if (Math.abs(Vector3DUtil.dotProduct(dirVec, p)) > h[dir] + JNumber3D.NUM_TINY){
 				return false;
 			}
 		}
 		return true;
 	};
 
+	/**
+	 * @function getSupportVertices 
+	 * @belongsTo JBox
+	 * @param {array} axis
+	 * @type array
+	 **/
 	JBox.prototype.getSupportVertices=function(axis){
 		var vertices = [];
 		var d = [1,1,1];
@@ -219,7 +307,7 @@
 			if (Math.abs(d[i]) > 1 - 0.001){
 				var f = (d[i] < 0) ? (i * 2) : (i * 2) + 1;
 				for (var j = 0; j < 4; j++){
-					H = this._points[this._face[f][j]];
+					H = this._points[this._faces[f][j]];
 					var _vj = vertices[j] = this.get_currentState().position.slice(0);
 					_vj = Vector3DUtil.add(_vj, JNumber3D.getScaleVector(temp[0], H[0]));
 					_vj = Vector3DUtil.add(_vj, JNumber3D.getScaleVector(temp[1], H[1]));
@@ -237,12 +325,12 @@
 
 				H = this.get_currentState().position.slice(0);
 				k = (d[m] > 0) ? -1 : 1;
-				H = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[m], k * JNumber3D.toArray(this._sideLengths)[m] / 2));
+				H = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[m], k * this._sideLengths[m] / 2));
 				k = (d[n] > 0) ? -1 : 1;
-				H = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[n], k * JNumber3D.toArray(this._sideLengths)[n] / 2));
+				H = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[n], k * this._sideLengths[n] / 2));
 
-				vertices[0] = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[i], JNumber3D.toArray(this._sideLengths)[i] / 2));
-				vertices[1] = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[i], -JNumber3D.toArray(this._sideLengths)[i] / 2));
+				vertices[0] = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[i], this._sideLengths[i] / 2));
+				vertices[1] = Vector3DUtil.add(H, JNumber3D.getScaleVector(temp[i], -this._sideLengths[i] / 2));
 				return vertices;
 			}
 		}
@@ -258,6 +346,14 @@
 	};
 	
 
+	/**
+	 * @function segmentIntersect 
+	 * @belongsTo JBox
+	 * @param {object} out
+	 * @param {JSegment} seg
+	 * @param {PhysicsState} state
+	 * @type boolean
+	 **/
 	JBox.prototype.segmentIntersect=function(out, seg, state){
 		out.fracOut = 0;
 		out.posOut = [0,0,0,0];
@@ -280,7 +376,7 @@
 		var t2;
 						
 		var orientationCol = state.getOrientationCols();
-		var directionVectorArray = JNumber3D.toArray(h);
+		var directionVectorArray = h.slice(0);
 		var directionVectorNumber;
 		for (dir = 0; dir < 3; dir++){
 			directionVectorNumber = directionVectorArray[dir];
@@ -333,6 +429,12 @@
 		return true;
 	};
 
+	/**
+	 * @function getInertiaProperties 
+	 * @belongsTo JBox
+	 * @param {number} m
+	 * @type JMatrix3D
+	 **/
 	JBox.prototype.getInertiaProperties=function(m){
 		return JMatrix3D.getScaleMatrix(
 			(m / 12) * (this._sideLengths[1] * this._sideLengths[1] + this._sideLengths[2] * this._sideLengths[2]),
@@ -340,6 +442,11 @@
 			(m / 12) * (this._sideLengths[0] * this._sideLengths[0] + this._sideLengths[1] * this._sideLengths[1]));
 	};
 				
+	/**
+	 * @function updateBoundingBox updates the bounding box for this JBox 
+	 * @belongsTo JBox
+	 * @type void
+	 **/
 	JBox.prototype.updateBoundingBox=function(){
 		this._boundingBox.clear();
 		this._boundingBox.addBox(this);

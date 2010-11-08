@@ -21,11 +21,8 @@ distribution.
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
-	var JConstraint=jigLib.JConstraint;
 	var JConfig=jigLib.JConfig;
-	var JSphere=jigLib.JSphere;
 	var MaterialProperties=jigLib.MaterialProperties;
-	var RigidBody=jigLib.RigidBody;
 	var CollPointInfo=jigLib.CollPointInfo;
 	var CollisionInfo=jigLib.CollisionInfo;
 
@@ -39,7 +36,6 @@ distribution.
 	 * @requires CollisionInfo
 	 * @requires Vector3DUtil
 	 * @requires JNumber3D
-	 * @requires JMatrix3D
 	 * @requires JConfig
 	 * @requires MaterialProperties
 	 * @constructor

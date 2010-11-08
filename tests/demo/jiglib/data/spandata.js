@@ -1,13 +1,1 @@
-
-(function(jigLib){
-	/**
-	* @author katopz
-	*/
-	var SpanData=function(){};
-	SpanData.prototype.min=null;
-	SpanData.prototype.max=null;
-	SpanData.prototype.flag=null;
-	SpanData.prototype.depth=null;
-	
-	jigLib.SpanData=SpanData;
-})(jigLib);
+(function(a){var b=function(){};b.prototype.min=null;b.prototype.max=null;b.prototype.flag=null;b.prototype.depth=null;a.SpanData=b;})(jigLib);

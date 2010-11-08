@@ -1,17 +1,1 @@
-(function(jigLib){
-
-	var Vector3DUtil=jigLib.Vector3DUtil;
-	
-	var PlaneData=function(pos, nor){
-		this.position = pos.slice(0);
-		this.normal = nor.slice(0);
-		this.distance = Vector3DUtil.dotProduct(this.position, this._normal);
-	};
-	
-	PlaneData.prototype.pointPlaneDistance=function(pt){
-		return Vector3DUtil.dotProduct(normal, pt) - distance;
-	};
-		
-	jigLib.PlaneData=PlaneData;
-	
-})(jigLib);
+(function(a){var b=a.Vector3DUtil;var c=function(e,d){this.position=e.slice(0);this.normal=d.slice(0);this.distance=b.dotProduct(this.position,this._normal);};c.prototype.position=null;c.prototype.normal=null;c.prototype.distance=null;c.prototype.pointPlaneDistance=function(d){return b.dotProduct(normal,d)-distance;};a.PlaneData=c;})(jigLib);

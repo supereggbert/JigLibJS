@@ -18,18 +18,25 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
- (function(jigLib){
+(function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
-	var PhysicsState=jigLib.PhysicsState;
 	var JRay=jigLib.JRay;
 	 
-	 
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class JSegment
+	 * @extends RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires JRay
+	 * @property {array} origin the origin of the segment expressed as a 3D vector
+	 * @property {array} delta the delta of the segment expressed as a 3D vector
+	 * @constructor
+	 * @param {array} _origin the origin of the segment expressed as a 3D vector
+	 * @param {array} _delta the delta of the segment expressed as a 3D vector
+	 **/
 	var JSegment=function(_origin, _delta){
 		this.origin = _origin;
 		this.delta = _delta;
@@ -37,18 +44,41 @@
 	JSegment.prototype.origin=null;
 	JSegment.prototype.delta=null;
 	
+	/**
+	 * @function getPoint gets the point of the segment expressed as a 3D vector
+	 * @belongsTo JSegment
+	 * @param {number} t
+	 * @type array
+	 **/
 	JSegment.prototype.getPoint=function(t){
 		return Vector3DUtil.add(this.origin, JNumber3D.getScaleVector(this.delta, t));
 	};
 
+	/**
+	 * @function getEnd gets the end of the segment expressed as a 3D vector
+	 * @belongsTo JSegment
+	 * @type array
+	 **/
 	JSegment.prototype.getEnd=function(){
 		return Vector3DUtil.add(this.origin, this.delta);
 	};
 
+	/**
+	 * @function clone returns a copy
+	 * @belongsTo JSegment
+	 * @type JSegment
+	 **/
 	JSegment.prototype.clone=function(){
 		return new JSegment(this.origin, this.delta);
 	};
 	
+	/**
+	 * @function segmentSegmentDistanceSq
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {JSegment} seg
+	 * @type number
+	 **/
 	JSegment.prototype.segmentSegmentDistanceSq=function(out, seg){
 		out.t0 = 0;
 		out.t1 = 0;
@@ -287,6 +317,13 @@
 		return Math.abs(fSqrDist);
 	};
 
+	/**
+	 * @function pointSegmentDistanceSq
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {array} pt
+	 * @type number
+	 **/
 	JSegment.prototype.pointSegmentDistanceSq=function(out, pt){
 		out.t = 0;
 
@@ -310,6 +347,14 @@
 		return Vector3DUtil.get_lengthSquared(kDiff);
 	};
 
+	/**
+	 * @function segmentBoxDistanceSq
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {JBox} rkBox
+	 * @param {PhysicsState} boxState
+	 * @type number
+	 **/
 	JSegment.prototype.segmentBoxDistanceSq=function(out, rkBox, boxState){
 		out.pfLParam = 0;
 		out.pfLParam0 = 0;
@@ -338,6 +383,15 @@
 		}
 	};
 
+	/**
+	 * @function sqrDistanceLine
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {JRay} rkLine
+	 * @param {JBox} rkBox
+	 * @param {PhysicsState} boxState
+	 * @type number
+	 **/
 	JSegment.prototype.sqrDistanceLine=function(out, rkLine, rkBox, boxState){
 		var orientationCols = boxState.getOrientationCols();
 		out.num = 0;
@@ -356,8 +410,8 @@
 										Vector3DUtil.dotProduct(rkLine.dir, orientationCols[2]), 
 							            0);
 						
-		var kPntArr = JNumber3D.toArray(kPnt);
-		var kDirArr = JNumber3D.toArray(kDir);
+		var kPntArr = kPnt.slice(0);
+		var kDirArr = kDir.slice(0);
 						
 		var bReflect = [1,1,1,0];
 		for (var i = 0; i < 3; i++){
@@ -416,7 +470,7 @@
 			}
 		}
 
-		kPntArr = JNumber3D.toArray(obj.rkPnt);
+		kPntArr = obj.rkPnt.slice(0);
 		for (i = 0; i < 3; i++){
 			if (bReflect[i]) kPntArr[i] = -kPntArr[i];
 		}
@@ -429,7 +483,15 @@
 		return Math.max(obj.rfSqrDistance, 0);
 	};
 	
-
+	/**
+	 * @function sqrDistancePoint
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {array} rkPoint
+	 * @param {JBox} rkBox
+	 * @param {PhysicsState} boxState
+	 * @type number
+	 **/
 	JSegment.prototype.sqrDistancePoint=function(out, rkPoint, rkBox, boxState){
 		var orientationVector = boxState.getOrientationCols();
 		var kDiff = Vector3DUtil.subtract(rkPoint, boxState.position);
@@ -479,6 +541,18 @@
 		return Math.max(fSqrDistance, 0);
 	};
 
+	/**
+	 * @function face
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {number} i0
+	 * @param {number} i1
+	 * @param {number} i2
+	 * @param {array} rkDir
+	 * @param {JBox} rkBox
+	 * @param {array} rkPmE
+	 * @type void
+	 **/
 	JSegment.prototype.face=function(out, i0, i1, i2, rkDir, rkBox, rkPmE){
 		var kPpE = [0,0,0,0];
 		var fLSqr;
@@ -489,11 +563,11 @@
 		var fDelta;
 
 		var boxHalfSide = rkBox.getHalfSideLengths();
-		var boxHalfArr = JNumber3D.toArray(boxHalfSide);
-		var rkPntArr = JNumber3D.toArray(out.rkPnt);
-		var rkDirArr = JNumber3D.toArray(rkDir);
-		var kPpEArr = JNumber3D.toArray(kPpE);
-		var rkPmEArr = JNumber3D.toArray(rkPmE);
+		var boxHalfArr = boxHalfSide;
+		var rkPntArr = out.rkPnt;
+		var rkDirArr = rkDir;
+		var kPpEArr = kPpE;
+		var rkPmEArr = rkPmE;
 
 		kPpEArr[i1] = rkPntArr[i1] + boxHalfArr[i1];
 		kPpEArr[i2] = rkPntArr[i2] + boxHalfArr[i2];
@@ -643,6 +717,14 @@
 		}
 	};
 	
+	/**
+	 * @function caseNoZeros
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {array} rkDir
+	 * @param {JBox} rkBox
+	 * @type void
+	 **/
 	JSegment.prototype.caseNoZeros=function(out, rkDir, rkBox){
 		var boxHalfSide = rkBox.getHalfSideLengths();
 		var kPmE = Vector3DUtil.create(out.rkPnt[0] - boxHalfSide[0], out.rkPnt[1] - boxHalfSide[1], out.rkPnt[2] - boxHalfSide[2], 0);
@@ -671,11 +753,22 @@
 		}
 	};
 
+	/**
+	 * @function case0
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {number} i0
+	 * @param {number} i1
+	 * @param {number} i2
+	 * @param {array} rkDir
+	 * @param {JBox} rkBox
+	 * @type void
+	 **/
 	JSegment.prototype.case0=function(out, i0, i1, i2, rkDir, rkBox){
 		var boxHalfSide = rkBox.getHalfSideLengths();
-		var boxHalfArr = JNumber3D.toArray(boxHalfSide);
-		var rkPntArr = JNumber3D.toArray(out.rkPnt);
-		var rkDirArr = JNumber3D.toArray(rkDir);
+		var boxHalfArr = boxHalfSide.slice(0);
+		var rkPntArr = out.rkPnt.slice(0);
+		var rkDirArr = rkDir.slice(0);
 		var fPmE0 = rkPntArr[i0] - boxHalfArr[i0];
 		var fPmE1 = rkPntArr[i1] - boxHalfArr[i1];
 		var fProd0 = rkDirArr[i1] * fPmE0;
@@ -732,12 +825,23 @@
 		JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
 	};
 
+	/**
+	 * @function case00
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {number} i0
+	 * @param {number} i1
+	 * @param {number} i2
+	 * @param {array} rkDir
+	 * @param {JBox} rkBox
+	 * @type void
+	 **/
 	JSegment.prototype.case00=function(out, i0, i1, i2, rkDir, rkBox){
 		var fDelta = 0;
 		var boxHalfSide = rkBox.getHalfSideLengths();
-		var boxHalfArr = JNumber3D.toArray(boxHalfSide);
-		var rkPntArr = JNumber3D.toArray(out.rkPnt);
-		var rkDirArr = JNumber3D.toArray(rkDir);
+		var boxHalfArr = boxHalfSide.slice(0);
+		var rkPntArr = out.rkPnt.slice(0);
+		var rkDirArr = rkDir.slice(0);
 		out.pfLParam = (boxHalfArr[i0] - rkPntArr[i0]) / rkDirArr[i0];
 
 		rkPntArr[i0] = boxHalfArr[i0];
@@ -765,6 +869,13 @@
 		JNumber3D.copyFromArray(out.rkPnt, rkPntArr);
 	};
 
+	/**
+	 * @function case000
+	 * @belongsTo JSegment
+	 * @param {object} out
+	 * @param {JBox} rkBox
+	 * @type void
+	 **/
 	JSegment.prototype.case000=function(out, rkBox){
 		var fDelta = 0;
 		var boxHalfSide = rkBox.getHalfSideLengths();
@@ -799,7 +910,6 @@
 			out.rkPnt[2] = boxHalfSide[2];
 		}
 	};
-	
 	
 	jigLib.JSegment=JSegment;
 	

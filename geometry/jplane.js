@@ -18,20 +18,27 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
-	var JConfig=jigLib.JConfig;
-	var ISkin3D=jigLib.ISkin3D;
-	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class JPlane
+	 * @extends RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @property {array} _initNormal the length of this JCapsule
+	 * @property {array} _normal the radius of this JCapsule
+	 * @property {number} _distance
+	 * @constructor
+	 * @param {ISkin3D} skin
+	 * @param {array} initNormal
+	 **/
 	var JPlane=function(skin, initNormal){
 		this.Super(skin);
 		if (initNormal == undefined) {
@@ -52,18 +59,42 @@
 	JPlane.prototype._normal=null;
 	JPlane.prototype._distance=null;
 
+	/**
+	 * @function get_normal gets the normal
+	 * @belongsTo JPlane
+	 * @type array
+	 **/
 	JPlane.prototype.get_normal=function(){
 		return this._normal;
 	};
 
+	/**
+	 * @function get_normal gets the distance
+	 * @belongsTo JPlane
+	 * @type number
+	 **/
 	JPlane.prototype.get_distance=function(){
 		return this._distance;
 	};
 
+	/**
+	 * @function pointPlaneDistance gets the distance from a given point
+	 * @belongsTo JPlane
+	 * @param {array} pt the point expressed as a 3D vector
+	 * @type array
+	 **/
 	JPlane.prototype.pointPlaneDistance=function(pt){
 		return Vector3DUtil.dotProduct(this._normal, pt) - this._distance;
 	};
 
+	/**
+	 * @function segmentIntersect tests for intersection with a JSegment
+	 * @belongsTo JPlane
+	 * @param {object} out
+	 * @param {JSegment} seg
+	 * @param {PhysicsState} state
+	 * @type boolean
+	 **/
 	JPlane.prototype.segmentIntersect=function(out, seg, state){
 		out.fracOut = 0;
 		out.posOut = [0,0,0,0];
@@ -92,6 +123,11 @@
 		}
 	};
 
+	/**
+	 * @function updateState updates the current PhysicsState
+	 * @belongsTo JPlane
+	 * @type void
+	 **/
 	JPlane.prototype.updateState=function(){
 		this.Super.prototype.updateState.call(this);
 		this._normal = this._initNormal.slice(0);

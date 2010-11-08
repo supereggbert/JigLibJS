@@ -18,19 +18,24 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
-	var JNumber3D=jigLib.JNumber3D;
-	var ISkin3D=jigLib.ISkin3D;
-	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class JSphere
+	 * @extends RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @property {string} name
+	 * @property {number} radius the radius of this JSphere
+	 * @constructor
+	 * @param {ISkin3D} skin
+	 * @param {number} r the radius of the new JSphere
+	 **/
 	var JSphere=function(skin, r){
 		this.Super(skin);
 		this._type = "SPHERE";
@@ -40,9 +45,16 @@
 		this.updateBoundingBox();
 	};
 	jigLib.extend(JSphere,jigLib.RigidBody);
+	
 	JSphere.prototype.name=null;
 	JSphere.prototype._radius=null;
 
+	/**
+	 * @function set_radius gets the radius
+	 * @belongsTo JSphere
+	 * @param {number} r the new radius
+	 * @type void
+	 **/
 	JSphere.prototype.set_radius=function(r){
 		this._radius = r;
 		this._boundingSphere = this._radius;
@@ -51,10 +63,23 @@
 		this.updateBoundingBox();
 	};
 
+	/**
+	 * @function get_radius returns the radius
+	 * @belongsTo JSphere
+	 * @type void
+	 **/
 	JSphere.prototype.get_radius=function(){
 		return this._radius;
 	};
 
+	/**
+	 * @function segmentIntersect
+	 * @belongsTo JSphere
+	 * @param {object} out 
+	 * @param {JSegment} seg
+	 * @param {PhysicsState} state
+	 * @type boolean
+	 **/
 	JSphere.prototype.segmentIntersect=function(out, seg, state){
 		out.fracOut = 0;
 		out.posOut = [0,0,0,0];
@@ -94,11 +119,22 @@
 		return true;
 	};
 
+	/**
+	 * @function getInertiaProperties
+	 * @belongsTo JSphere
+	 * @param {number} m
+	 * @type JMatrix3D
+	 **/
 	JSphere.prototype.getInertiaProperties=function(m){
 		var Ixx = 0.4 * m * this._radius * this._radius;
 		return JMatrix3D.getScaleMatrix(Ixx, Ixx, Ixx);
 	};
 				
+	/**
+	 * @function updateBoundingBox updates the bounding box
+	 * @belongsTo JSphere
+	 * @type void
+	 **/
 	JSphere.prototype.updateBoundingBox=function(){
 		this._boundingBox.clear();
 		this._boundingBox.addSphere(this);

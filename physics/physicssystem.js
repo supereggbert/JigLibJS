@@ -106,7 +106,7 @@
 		if (Math.abs(this._gravity[1]) > Math.abs(this._gravity[2]))
 			this._gravityAxis = 1;
 
-		if (Math.abs(this._gravity[2]) > Math.abs(JNumber3D.toArray(this._gravity)[this._gravityAxis]))
+		if (Math.abs(this._gravity[2]) > Math.abs(this._gravity[this._gravityAxis]))
 			this._gravityAxis = 2;
 	};
 

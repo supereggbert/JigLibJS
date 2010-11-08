@@ -9,9 +9,11 @@
 	JNumber3D.NUM_TINY = 0.00001;
 	JNumber3D.NUM_HUGE = 100000;
 
+	/* this method is redundant since we are already using arrays for 3D Vector storage
 	JNumber3D.toArray=function(v){
-		return [v[0], v[1], v[2]];
+		return v;//[v[0], v[1], v[2]];
 	};
+	*/
 	
 	JNumber3D.getScaleVector=function(v, s){
 		return [v[0]*s,v[1]*s,v[2]*s,v[3]];
@@ -31,7 +33,7 @@
 	};
 
 	JNumber3D.copyFromArray=function(v, arr){
-		if (arr.length >= 3) v=arr;
+		if (arr.length >= 3) v=arr.slice(0);
 	};
 
 	JNumber3D.getLimiteNumber=function(num, min, max){

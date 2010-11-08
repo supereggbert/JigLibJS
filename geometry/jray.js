@@ -18,15 +18,23 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @class JRay
+	 * @extends RigidBody
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @property {array} origin the origin of the ray expressed as a 3D vector
+	 * @property {array} dir the direction of the ray expressed as a 3D vector
+	 * @constructor
+	 * @param {array} _origin the origin of the ray expressed as a 3D vector
+	 * @param {array} _dir the direction of the ray expressed as a 3D vector
+	 **/
 	var JRay=function(_origin, _dir){
 		this.origin = _origin;
 		this.dir = _dir;
@@ -34,6 +42,12 @@
 	JRay.prototype.origin=null;
 	JRay.prototype.dir=null;
 	
+	/**
+	 * @function getOrigin gets the origin
+	 * @belongsTo JRay
+	 * @param {number} t
+	 * @type array
+	 **/
 	JRay.prototype.getOrigin=function(t){
 		return Vector3DUtil.add(this.origin, JNumber3D.getScaleVector(this.dir, t));
 	};
