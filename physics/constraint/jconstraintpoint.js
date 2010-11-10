@@ -18,24 +18,39 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
-	var JConstraint=jigLib.JConstraint;
-	var RigidBody=jigLib.RigidBody;
 	
-	// Constrains a point on one body to be fixed to a point on another body
-
-	/// allowed_distance indicated how much the points are allowed to deviate.
-	/// timescale indicates the timescale over which deviation is eliminated
-	/// (suggest a few times dt - be careful if there's a variable timestep!)
-	/// if timescale < 0 then the value indicates the number of dts
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name JConstraintPoint
+	 * @class JConstraintPoint a constraint that links a point on one body to a point on another body
+	 * @extends JConstraint
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @property {number} _maxVelMag limits the velocity of the constrained bodies
+	 * @property {number} _minVelForProcessing the lower velocity threshold below which the constraint is not processed
+	 * @property {RigidBody} _body0 the first body of the constrained pair
+	 * @property {RigidBody} _body1 the second body of the constrained pair
+	 * @property {array} _body0Pos the position of the first body
+	 * @property {array} _body1Pos the position of the second body
+	 * @property {number} _allowedDistance the maximum allowed distance
+	 * @property {array} r0 for internal use
+	 * @property {array} r1 for internal use
+	 * @property {array} _worldPos for internal use
+	 * @property {array} _vrExtra for internal use
+	 * @constructor
+	 * @param {RigidBody} body0 the first body of the constrained pair
+	 * @param {array} body0Pos the position of the first body expressed as a 3D vector
+	 * @param {RigidBody} body1 the second body of the constrained pair
+	 * @param {array} body1Pos the position of the second body expressed as a 3D vector
+	 * @param {number} allowedDistance how much the points are allowed to deviate
+	 * @param timescale the timescale over which deviation is eliminated (suggest a few times dt - be careful if there's a variable timestep!). If timescale < 0 then the value indicates the number of dts
+	 **/
 	var JConstraintPoint=function(body0, body0Pos, body1, body1Pos, allowedDistance, timescale)
 	{
 		this.Super();
@@ -67,6 +82,11 @@
 	JConstraintPoint.prototype._worldPos=null;
 	JConstraintPoint.prototype._vrExtra=null;
 	
+	/**
+	 * @function preApply prepare for applying the constraint
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	JConstraintPoint.prototype.preApply=function(dt)
 	{
 		this.set_satisfied(false);
@@ -98,6 +118,11 @@
 			this._vrExtra = [0,0,0,0];
 	};
 
+	/**
+	 * @function apply enforce the constraint
+	 * @param {number} dt a UNIX timestamp
+	 * @type boolean
+	 **/
 	JConstraintPoint.prototype.apply=function(dt)
 	{
 		//if (this._satisfied) return;

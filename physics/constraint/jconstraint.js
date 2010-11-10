@@ -18,13 +18,17 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name JConstraint
+	 * @class JConstraint the base class for constraints
+	 * @property {boolean} _satisfied flag indicating whether this constraint has been satisfied
+	 * @property {boolean} _constraintEnabled flag indicating whether this constraint is registered with the physics system
+	 * @constructor
+	 **/
 	var JConstraint=function(){
 		this._constraintEnabled = false;
 		this.enableConstraint();
@@ -32,30 +36,49 @@
 	JConstraint.prototype._satisfied=null;
 	JConstraint.prototype._constraintEnabled=null;
 
+	/**
+	 * @function set_satisfied setter for the _satisfied flag
+	 * @param {boolean} s
+	 * @type void
+	 **/
 	JConstraint.prototype.set_satisfied=function(s){
 		this._satisfied = s;
 	};
 
+	/**
+	 * @function get_satisfied getter for the _satisfied flag
+	 * @type boolean
+	 **/
 	JConstraint.prototype.get_satisfied=function(){
 		return this._satisfied;
 	};
 
-	// prepare for applying constraints - the subsequent calls to
-	// apply will all occur with a constant position i.e. precalculate
-	// everything possible
+	/**
+	 * @function preApply prepare for applying constraints - subsequent calls to
+	 * apply will all occur with a constant position i.e. precalculate everything possible 
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	JConstraint.prototype.preApply=function(dt){
 		this._satisfied = false;
 	};
 
-	// apply the constraint by adding impulses. Return value
-	// indicates if any impulses were applied. If impulses were applied
-	// the derived class should call SetConstraintsUnsatisfied() on each
-	// body that is involved.
+	/**
+	 * @function apply enforces the constraint using impulses. Return value
+	 * indicates if any impulses were applied. If impulses were applied
+	 * the derived class should call SetConstraintsUnsatisfied() on each
+	 * body that is involved.
+	 * @param {number} dt a UNIX timestamp
+	 * @type boolean
+	 **/
 	JConstraint.prototype.apply=function(dt){
 		return false;
 	};
 
-	// register with the physics system
+	/**
+	 * @function enableConstraint registers this constraint with the physics system
+	 * @type void
+	 **/
 	JConstraint.prototype.enableConstraint=function(){
 		if (this._constraintEnabled)
 			return;
@@ -64,7 +87,10 @@
 		jigLib.PhysicsSystem.getInstance().addConstraint(this);
 	};
 
-	// deregister from the physics system
+	/**
+	 * @function disableConstraint de-registers this constraint from the physics system
+	 * @type void
+	 **/
 	JConstraint.prototype.disableConstraint=function(){
 		if (!this._constraintEnabled)
 			return;
@@ -73,7 +99,10 @@
 		jigLib.PhysicsSystem.getInstance().removeConstraint(this);
 	};
 
-	// are we registered with the physics system?
+	/**
+	 * @function get_constraintEnabled determines whether this constraint is registered with the physics system
+	 * @type boolean
+	 **/
 	JConstraint.prototype.get_constraintEnabled=function(){
 		return this._constraintEnabled;
 	};

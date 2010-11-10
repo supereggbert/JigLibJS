@@ -17,20 +17,33 @@ misrepresented as being the original software.
 3. This notice may not be removed or altered from any source
 distribution.
  */
-
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
  
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
-	var JConstraint=jigLib.JConstraint;
-	var RigidBody=jigLib.RigidBody;
 
 	// pointOnBody is in body coords
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name JConstraintWorldPoint
+	 * @class JConstraintWorldPoint a constraint that links a point on a body to a point in the world
+	 * @extends JConstraint
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @property {number} _minVelForProcessing the lower velocity threshold below which the constraint is not processed
+	 * @property {number} allowedDeviation how much the points are allowed to deviate
+	 * @property {number} timescale the timescale over which deviation is eliminated
+	 * @property {RigidBody} _body the body to be constrained
+	 * @property {array} _pointOnBody the point on _body
+	 * @property {array} _worldPosition the point in the world
+	 * @constructor
+	 * @param {RigidBody} body the body to constrain
+	 * @param {array} pointOnBody point on the body, in body coordinates, expressed as a 3D vector
+	 * @param {array} worldPosition the point in the world to which the body should be constrained
+	 **/
 	var JConstraintWorldPoint=function(body, pointOnBody, worldPosition) {
 		this.Super();
 		this._body = body;
@@ -49,14 +62,28 @@ distribution.
 	JConstraintWorldPoint.prototype._worldPosition=null;
 	
 
+	/**
+	 * @function set_worldPosition setter for _worldPosition
+	 * @param {array} pos a 3D vector
+	 * @type void
+	 **/
 	JConstraintWorldPoint.prototype.set_worldPosition=function(pos){
 		this._worldPosition = pos;
 	};
 				
+	/**
+	 * @function get_worldPosition getter for _worldPosition
+	 * @type array
+	 **/
 	JConstraintWorldPoint.prototype.get_worldPosition=function(){
 		return this._worldPosition;
 	};
 				
+	/**
+	 * @function apply enforce the constraint
+	 * @param {number} dt a UNIX timestamp
+	 * @type boolean
+	 **/
 	JConstraintWorldPoint.prototype.apply=function(dt){
 		this.set_satisfied(true);
 

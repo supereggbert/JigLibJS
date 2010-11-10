@@ -18,18 +18,38 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
-	var JConstraint=jigLib.JConstraint;
-	var RigidBody=jigLib.RigidBody;
 
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name JConstraintMaxDistance
+	 * @class JConstraintMaxDistance a maximum distance constraint
+	 * @extends JConstraint
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @property {number} _maxVelMag limits the velocity of the constrained bodies
+	 * @property {number} _minVelForProcessing the lower velocity threshold below which the constraint is not processed 
+	 * @property {RigidBody} _body0 the first body of the constrained pair
+	 * @property {RigidBody} _body1 the second body of the constrained pair
+	 * @property {array} _body0Pos the position of the first body
+	 * @property {array} _body1Pos the position of the second body
+	 * @property {number} _maxDistance the maximum allowed distance
+	 * @property {array} r0 for internal use
+	 * @property {array} r1 for internal use
+	 * @property {array} _worldPos for internal use
+	 * @property {array} _currentRelPos0 for internal use
+	 * @constructor
+	 * @param {RigidBody} body0 the first body of the constrained pair
+	 * @param {array} body0Pos the position of the first body expressed as a 3D vector
+	 * @param {RigidBody} body1 the second body of the constrained pair
+	 * @param {array} body1Pos the position of the second body expressed as a 3D vector
+	 * @param {number} maxDistance the maximum allowed distance between body0 and body1
+	 **/
 	var JConstraintMaxDistance=function(body0, body0Pos, body1, body1Pos, maxDistance){
 		if(!maxDistance) maxDistance=1;
 		this.Super();
@@ -57,6 +77,11 @@
 	JConstraintMaxDistance.prototype._worldPos=null;
 	JConstraintMaxDistance.prototype._currentRelPos0=null;
 	
+	/**
+	 * @function preApply prepare for applying the constraint
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	JConstraintMaxDistance.prototype.preApply=function(dt){
 		this.set_satisfied(false);
 		
@@ -74,6 +99,11 @@
 		this._currentRelPos0 = Vector3DUtil.subtract(worldPos0, worldPos1);
 	};
 
+	/**
+	 * @function apply enforce the constraint
+	 * @param {number} dt a UNIX timestamp
+	 * @type boolean
+	 **/
 	JConstraintMaxDistance.prototype.apply=function(dt){
 		this.set_satisfied(true);
 
