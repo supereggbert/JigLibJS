@@ -3,9 +3,14 @@
 	var GLMatrix=jigLib.GLMatrix;
 	
 	/**
-	 * @author Paul Brunt
+	 * @author Paul Brunt - rewritten by Jim Sangwine to use GLMatrix (http://code.google.com/p/glmatrix/)
 	 * 
-	 * Class rewritten by Jim Sangwine to use GLMatrix (http://code.google.com/p/glmatrix/)
+	 * @name Matrix3D
+	 * @class Matrix3D a wrapper class for GLMatrix 
+	 * @requires Vector3DUtil
+	 * @requires GLMatrix
+	 * @property {GLMatrix} glmatrix the internal GLMatrix object
+	 * @constructor
 	 **/
 	var Matrix3D=function(v){
 		if(v) this.glmatrix=GLMatrix.create(v);
@@ -13,20 +18,38 @@
 	};
 	Matrix3D.prototype.glmatrix=null;
 	
+	/**
+	 * @function get_determinant returns the determinant for this matrix
+	 * @type number
+	 **/
 	Matrix3D.prototype.get_determinant=function() {
 		return GLMatrix.determinant(this.glmatrix);
 	};
 
+	/**
+	 * @function prepend prepends another matrix to this one
+	 * @param {GLMatrix} m the matrix to prepend
+	 * @type void
+	 **/
 	Matrix3D.prototype.prepend=function(m){
 		GLMatrix.multiply(m.glmatrix, this.glmatrix, this.glmatrix);
-		return;
 	};
 	
+	/**
+	 * @function append appends another matrix to this one
+	 * @param {GLMatrix} m the matrix to append
+	 * @type void
+	 **/
 	Matrix3D.prototype.append=function(m){
 		GLMatrix.multiply(this.glmatrix, m.glmatrix);
-		return;
 	};
 	
+	/**
+	 * @function angleAxis 
+	 * @param {number} angle
+	 * @param {array} axis 
+	 * @type Matrix3D
+	 **/
 	Matrix3D.prototype.angleAxis=function(angle, axis) {
 		var xmx,ymy,zmz,xmy,ymz,zmx,xms,yms,zms;
 
@@ -53,12 +76,23 @@
 		return new Matrix3D(matrix);
 	};
 	
+	/**
+	 * @function rotate clones and rotates this matrix
+	 * @param {number} angle
+	 * @param {array} axis 
+	 * @type Matrix3D
+	 **/
 	Matrix3D.prototype.rotate=function(angle, axis) {
 		var mat=this.clone();
 		GLMatrix.rotate(mat.glmatrix,angle,axis);
 		return mat;
 	};
 	
+	/**
+	 * @function translateMatrix returns a translate matrix based on v
+	 * @param {array} v translation expressed as a 3D vector
+	 * @type Matrix3D
+	 **/
 	Matrix3D.prototype.translateMatrix=function(v){
 		return new Matrix3D([
 		         			1,0,0,v[0],
@@ -68,6 +102,11 @@
 		         			]);
 	};
 	
+	/**
+	 * @function scaleMatrix returns a scale matrix based on v
+	 * @param {array} v scale expressed as a 3D vector
+	 * @type Matrix3D
+	 **/
 	Matrix3D.prototype.scaleMatrix=function(v){
 		return new Matrix3D([
 		         			v[0],0,0,0,
@@ -77,6 +116,13 @@
 		         			]);
 	};
 	
+	/**
+	 * @function appendRotation appends rotation to this matrix
+	 * @param {number} angle the rotation angle
+	 * @param {array} axis the rotation axis expressed as a 3D vector
+	 * @param {array} pivot the pivot point expressed as a 3D vector
+	 * @type void
+	 **/
 	Matrix3D.prototype.appendRotation=function(angle,axis,pivot){
 		angle=angle/(3.14159*2);
 		Vector3DUtil.negate(axis);
@@ -93,6 +139,13 @@
 			this.appendTranslation(pivot[0], pivot[1], pivot[2]);
 	};
 
+	/**
+	 * @function prependRotation prepends rotation to this matrix
+	 * @param {number} angle the rotation angle
+	 * @param {array} axis the rotation axis expressed as a 3D vector
+	 * @param {array} pivot the pivot point expressed as a 3D vector
+	 * @type void
+	 **/
 	Matrix3D.prototype.prependRotation=function(angle,axis,pivot){
 		if(pivot)
 			this.prepend(this.translateMatrix(Vector3DUtil.negate(pivot.slice(0))));
@@ -102,45 +155,85 @@
 			this.prepend(this.translateMatrix(pivot));
 	};
 	
+	/**
+	 * @function appendScale appends scale to this matrix
+	 * @param {number} x scale in the X axis
+	 * @param {number} y scale in the Y axis
+	 * @param {number} z scale in the Z axis
+	 * @type void
+	 **/
 	Matrix3D.prototype.appendScale=function(x,y,z){
 		GLMatrix.scale(this.glmatrix, [x,y,z]);
 	};
 	
+	/**
+	 * @function prependScale prepends scale to this matrix
+	 * @param {number} x scale in the X axis
+	 * @param {number} y scale in the Y axis
+	 * @param {number} z scale in the Z axis
+	 * @type void
+	 **/
 	Matrix3D.prototype.prependScale=function(x,y,z){
 		this.prepend(this.scaleMatrix([x,y,z]));
 	};
 	
+	/**
+	 * @function appendTranslation appends translation to this matrix
+	 * @param {number} x translation in the X axis
+	 * @param {number} y translation in the Y axis
+	 * @param {number} z translation in the Z axis
+	 * @type void
+	 **/
 	Matrix3D.prototype.appendTranslation=function(x,y,z){
 		this.append(this.translateMatrix([x,y,z]));
 	};
 	
+	/**
+	 * @function prependTranslation prepends translation to this matrix
+	 * @param {number} x translation in the X axis
+	 * @param {number} y translation in the Y axis
+	 * @param {number} z translation in the Z axis
+	 * @type void
+	 **/
 	Matrix3D.prototype.prependTranslation=function(x,y,z){
 		this.prepend(this.translateMatrix([x,y,z]));
 	};
 	
+	/**
+	 * @function identity
+	 * @type void
+	 **/
 	Matrix3D.prototype.identity=function(){
 		GLMatrix.identity(this.glmatrix);
-		return;
 	};
 	
+	/**
+	 * @function transpose transposes this matrix (making it compatible with the old Flex matrices)
+	 * @type void
+	 **/
 	Matrix3D.prototype.transpose=function(){
 		GLMatrix.transpose(this.glmatrix);
 	};
 	
+	/**
+	 * @function invert inverts this matrix
+	 * @type void
+	 **/
 	Matrix3D.prototype.invert=function(){
 		GLMatrix.inverse(this.glmatrix);
-		return;
 	};
 	
+	/**
+	 * @function clone returns a clone of this matrix
+	 * @type Matrix3D
+	 **/
 	Matrix3D.prototype.clone=function(){
 		return new Matrix3D(this.glmatrix);
 	};
 	
 	/**
-	 * this method is similar to JMatrix3D.multiplyVector except it uses  
-	 * the GLMatrix methed which uses the same cell references as the Flash 
-	 * version - added to aid in debugging the point constraint problems
-	 * @param vector
+	 * @function transformVector transforms (multiplies) this matrix by vector
+	 * @param vector a 3D vector
 	 * @returns
 	 */
 	Matrix3D.prototype.transformVector=function(vector){

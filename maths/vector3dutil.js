@@ -1,12 +1,16 @@
 (function(jigLib){
 	/**
-	 * @author Paul Brunt
+	 * @author Jim Sangwine
 	 * 
-	 * In an attempt to reduce the overhead of millions of Vector3D objects, I have
-	 * pulled all of the methods and constants out into this utility class as static
-	 * members. This class should never be instantiated (hence the constructor error).
-	 * Note also that all instances of Vector3D have been replaced with simple arrays (e.g. [x,y,z,w])
-	 * Jim Sangwine
+	 * These methods were originally in the Vector3D object ported by Paul Brunt from Flex. 
+	 * 
+	 * @name Vector3DUtil
+	 * @class Vector3DUtil a utility class (containing only static members) for manipulation of 3D vectors expressed as arrays
+	 * @constant {array} X_AXIS
+	 * @constant {array} Y_AXIS
+	 * @constant {array} Z_AXIS
+	 * @constructor
+	 * @throws Error on attempted instantiation
 	 **/
 	var Vector3DUtil=function(){ throw new Error('Vector3DUtil is a utility class and should not be instantiated'); };
 
@@ -15,29 +19,31 @@
 	Vector3DUtil.Z_AXIS=[0,0,1,0];
 
 	/**
-	 * returns a new 3D vector that is the sum of v1 and v2
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
-	 * @returns {Array} in the format [x,y,z,w]
+	 * @function add returns a new 3D vector that is the sum of v1 and v2
+	 * @static
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type array
 	 **/
 	Vector3DUtil.add=function(v1,v2){
 		return [v1[0]+v2[0],v1[1]+v2[1],v1[2]+v2[2],v1[3]+v2[3]];
 	};
 
 	/**
-	 * returns a new 3D vector that is the result of v2 subtracted from v1
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
-	 * @returns {Array} in the format [x,y,z,w]
+	 * @function subtract returns a new 3D vector that is the result of v2 subtracted from v1
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type array
 	 **/
 	Vector3DUtil.subtract=function(v1,v2){
 		return [v1[0]-v2[0],v1[1]-v2[1],v1[2]-v2[2],v1[3]-v2[3]];
 	};
 
 	/**
-	 * performs an in-place subtraction of v2 from v1 (v1 is modified)
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
+	 * @function decrementBy performs an in-place subtraction of v2 from v1 (v1 is modified)
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type void
 	 **/
 	Vector3DUtil.decrementBy=function(v1,v2){
 		v1[0]-=v2[0];
@@ -47,9 +53,10 @@
 	};
 
 	/**
-	 * performs an in-place addition of v2 to v1 (v1 is modified)
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
+	 * @function IncrementBy performs an in-place addition of v2 to v1 (v1 is modified)
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type void
 	 **/
 	Vector3DUtil.IncrementBy=function(v1,v2){
 		v1[0]+=v2[0];
@@ -59,10 +66,10 @@
 	};
 
 	/**
-	 * determines the distance between vectors v1 and v2
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
-	 * @returns {Number}
+	 * @function distance determines the distance between vectors v1 and v2
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type number
 	 **/
 	Vector3DUtil.distance=function(v1,v2) {
 		var math=Math;
@@ -74,29 +81,29 @@
 	};
 
 	/**
-	 * determines the dot product for two vectors
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
-	 * @returns {Number}
+	 * @function dotProduct determines the dot product for two vectors
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type number
 	 **/
 	Vector3DUtil.dotProduct=function(v1,v2){
 		return v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2];
 	};
 
 	/**
-	 * determines the cross product for two vectors
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
-	 * @returns {Array} in the format [x,y,z,w]
+	 * @function crossProduct determines the cross product for two vectors
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type array
 	 **/
 	Vector3DUtil.crossProduct=function(v1,v2){
 		return [v1[1]*v2[2]-v1[2]*v2[1],v1[2]*v2[0]-v1[0]*v2[2],v1[0]*v2[1]-v1[1]*v2[0],0];
 	};
 
 	/**
-	 * determines the length of a vector
-	 * @param v {Array} in the format [x,y,z,w]
-	 * @returns {Number}
+	 * @function get_length determines the length of a vector
+	 * @param v {array} in the format [x,y,z,w]
+	 * @type number
 	 **/
 	Vector3DUtil.get_length=function(v){
 		var sq=v[0]*v[0]+v[1]*v[1]+v[2]*v[2];
@@ -104,9 +111,9 @@
 	};
 
 	/**
-	 * determines the length squared of a vector
-	 * @param v {Array} in the format [x,y,z,w]
-	 * @returns {Number}
+	 * @function get_length_squared determines the length squared of a vector
+	 * @param v {array} in the format [x,y,z,w]
+	 * @type number
 	 **/
 	Vector3DUtil.get_lengthSquared=function(v){
 		var sq=v[0]*v[0]+v[1]*v[1]+v[2]*v[2];
@@ -114,9 +121,9 @@
 	};
 
 	/**
-	 * performs in-place normalisation of a vector
-	 * @param v {Array} in the format [x,y,z,w]
-	 * @returns {Number}
+	 * @function normalize performs in-place normalisation of a vector
+	 * @param v {array} in the format [x,y,z,w]
+	 * @type number
 	 **/
 	Vector3DUtil.normalize=function(v){
 		f=Vector3DUtil.get_length(v);
@@ -127,9 +134,9 @@
 	};
 
 	/**
-	 * performs in-place negation of a vector
-	 * @param v {Array} in the format [x,y,z,w]
-	 * @returns {Array} in the format [x,y,z,w]
+	 * @function negate performs in-place negation of a vector
+	 * @param v {array} in the format [x,y,z,w]
+	 * @type array
 	 **/
 	Vector3DUtil.negate=function(v){
 		v[0]*=-1;
@@ -139,9 +146,10 @@
 	};
 
 	/**
-	 * performs in-place scaling of a vector
-	 * @param v {Array} in the format [x,y,z,w]
-	 * @param s {Number}
+	 * @function scaleBy performs in-place scaling of a vector
+	 * @param v {array} in the format [x,y,z,w]
+	 * @param s {number}
+	 * @type void
 	 **/
 	Vector3DUtil.scaleBy=function(v,s){
 		v[0]*=s;
@@ -150,10 +158,10 @@
 	};
 
 	/**
-	 * gets the absolute sum of each value of a given 3D vector
+	 * @function getSum gets the absolute sum of each value of a given 3D vector
 	 * useful for determining the total amount of force acting on a given body for example
-	 * @param v {Array} in the format [x,y,z,w]
-	 * @returns {Number}
+	 * @param v {array} in the format [x,y,z,w]
+	 * @type number
 	 **/
 	Vector3DUtil.getSum=function(v){
 		var abs=Math.abs;
@@ -161,10 +169,11 @@
 	};
 	
 	/**
-	 * scales Vector3D v so that the absolute sum of x,y & z is no greater than s
+	 * @function limitSum scales Vector3D v so that the absolute sum of x,y & z is no greater than s
 	 * useful in situations when a force vector must be limited to some maximum total amount of force
-	 * @param v {Array} in the format [x,y,z,w]
-	 * @param s {Number} the scaling factor
+	 * @param v {array} in the format [x,y,z,w]
+	 * @param s {number} the scaling factor
+	 * @type void
 	 **/
 	Vector3DUtil.limitSum=function(v,s){
 		var abs=Math.abs;
@@ -175,8 +184,9 @@
 	};
 
 	/**
-	 * performs in-place projection on a vector
-	 * @param v {Array} in the format [x,y,z,w]
+	 * @function project performs in-place projection on a vector
+	 * @param v {array} in the format [x,y,z,w]
+	 * @type void
 	 **/
 	Vector3DUtil.project=function(v){
 		v[0]/=v[3];
@@ -186,10 +196,10 @@
 	};
 
 	/**
-	 * determines the angle between two vectors
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
-	 * @returns {Number}
+	 * @function angleBetween determines the angle between two vectors
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
+	 * @type number
 	 **/
 	Vector3DUtil.angleBetween=function(v1,v2){
 		var v1n=v1.slice(0);
@@ -204,11 +214,11 @@
 	};
 
 	/**
-	 * tests two vectors for equality
-	 * @param v1 {Array} in the format [x,y,z,w]
-	 * @param v2 {Array} in the format [x,y,z,w]
+	 * @function equals tests two vectors for equality
+	 * @param v1 {array} in the format [x,y,z,w]
+	 * @param v2 {array} in the format [x,y,z,w]
 	 * @param allFour {Boolean} whether to test all 4 slots [x,y,z,w] or only the 1st 3 coordinate values [x,y,z]
-	 * @returns {Boolean}
+	 * @type boolean
 	 **/
 	Vector3DUtil.equals=function(v1, v2, allFour){
 		if(!allFour)
@@ -218,13 +228,13 @@
 	};
 
 	/**
-	 * replacement for the Vector3D constructor - avoids NaN assignments
+	 * @function create replacement for the Vector3D constructor - avoids NaN assignments
 	 * 
-	 * @param x {Number}
-	 * @param y {Number}
-	 * @param z {Number}
-	 * @param w {Number}
-	 * @returns {Array} in the format [x,y,z,w]
+	 * @param x {number}
+	 * @param y {number}
+	 * @param z {number}
+	 * @param w {number}
+	 * @type array
 	 **/
 	Vector3DUtil.create=function(x,y,z,w){
 		var v3d=[];
