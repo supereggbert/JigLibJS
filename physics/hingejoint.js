@@ -18,20 +18,50 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;
-	var PhysicsController=jigLib.PhysicsController;
 	var JConstraintMaxDistance=jigLib.JConstraintMaxDistance;
 	var JConstraintPoint=jigLib.JConstraintPoint;
 
-	var HingeJoint=function(body0, body1,hingeAxis, hingePosRel0,hingeHalfWidth, hingeFwdAngle,hingeBckAngle, sidewaysSlack, damping){
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name HingeJoint
+	 * @class HingeJoint hinge connector for two rigid bodies
+	 * @extends PhysicsController
+	 * @requires Vector3DUtil
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @requires JConstraintMaxDistance
+	 * @requires JConstraintPoint
+	 * @constant {number} MAX_HINGE_ANGLE_LIMIT
+	 * @property {array} _hingeAxis
+	 * @property {array} _hingePosRel0
+	 * @property {RigidBody} body0 the first rigid body 
+	 * @property {RigidBody} body1 the second rigid body 
+	 * @property {boolean} _usingLimit
+	 * @property {boolean} _hingeEnabled
+	 * @property {boolean} _broken
+	 * @property {number} _damping
+	 * @property {number} _extraTorque
+	 * @property {array} sidePointConstraints used to store 2 JConstraintMaxDistance instances
+	 * @property {JConstraintPoint} midPointConstraint
+	 * @property {JConstraintMaxDistance} maxDistanceConstraint
+	 * @property {array} r a 3D vector
+	 * @constructor
+	 * @param {RigidBody} _body0 the first body of the constrained pair
+	 * @param {RigidBody} _body1 the second body of the constrained pair
+	 * @param {array} _hingeAxis
+	 * @param {array} _hingePosRel0
+	 * @param {number} hingeHalfWidth
+	 * @param {number} hingeFwdAngle
+	 * @param {number} hingeBckAngle
+	 * @param {number} sidewaysSlack
+	 * @param {number} damping
+	 **/
+	var HingeJoint=function(body0, body1, hingeAxis, hingePosRel0, hingeHalfWidth, hingeFwdAngle, hingeBckAngle, sidewaysSlack, damping){
 		this._body0 = body0;
 		this._body1 = body1;
 		this._hingeAxis = hingeAxis.slice(0);
@@ -96,7 +126,7 @@
 
 		this.enableHinge();
 	};
-	jigLib.extend(HingeJoint,jigLib.PhysicsController);
+	jigLib.extend(HingeJoint, jigLib.PhysicsController);
 	
 	HingeJoint.prototype.MAX_HINGE_ANGLE_LIMIT = 150;
 	HingeJoint.prototype._hingeAxis = null;
@@ -113,10 +143,13 @@
 	HingeJoint.prototype.midPointConstraint = null;
 	HingeJoint.prototype.maxDistanceConstraint = null;
 
+	/**
+	 * @function enableHinge enable the joint
+	 * @type void
+	 **/
 	HingeJoint.prototype.enableHinge=function(){
-		if (this._hingeEnabled){
-			return;
-		}
+		if (this._hingeEnabled) return;
+		
 		this.midPointConstraint.enableConstraint();
 		this.sidePointConstraints[0].enableConstraint();
 		this.sidePointConstraints[1].enableConstraint();
@@ -127,9 +160,12 @@
 		this._hingeEnabled = true;
 	};
 
+	/**
+	 * @function disableHinge disable the joint
+	 * @type void
+	 **/
 	HingeJoint.prototype.disableHinge=function(){
-		if (!this._hingeEnabled)
-			return;
+		if (!this._hingeEnabled) return;
 
 		this.midPointConstraint.disableConstraint();
 		this.sidePointConstraints[0].disableConstraint();
@@ -142,9 +178,12 @@
 		this._hingeEnabled = false;
 	};
 
+	/**
+	 * @function breakHinge break the joint
+	 * @type void
+	 **/
 	HingeJoint.prototype.breakHinge=function(){
-		if (this._broken)
-			return;
+		if (this._broken) return;
 
 		if (this._usingLimit)
 			this.maxDistanceConstraint.disableConstraint();
@@ -152,6 +191,10 @@
 		this._broken = true;
 	};
 
+	/**
+	 * @function mendHinge repair the joint
+	 * @type void
+	 **/
 	HingeJoint.prototype.mendHinge=function(){
 		if (!this._broken)
 			return;
@@ -162,22 +205,45 @@
 		this._broken = false;
 	};
 
+	/**
+	 * @function setExtraTorque setter for _extraTorque
+	 * @param {number} torque
+	 * @type void
+	 **/
 	HingeJoint.prototype.setExtraTorque=function(torque){
 		this._extraTorque = torque;
 	};
 
+	/**
+	 * @function getExtraTorque getter for _extraTorque
+	 * @type number
+	 **/
 	HingeJoint.prototype.getHingeEnabled=function(){
 		return this._hingeEnabled;
 	};
 
+	/**
+	 * @function isBroken getter for _broken
+	 * @type boolean
+	 **/
 	HingeJoint.prototype.isBroken=function(){
 		return this._broken;
 	};
 
+	/**
+	 * @function getHingePosRel0 getter for _hingePosRel0
+	 * @type array
+	 **/
 	HingeJoint.prototype.getHingePosRel0=function(){
 		return this._hingePosRel0;
 	};
 
+	/**
+	 * @function updateController updates this physics controller
+	 * @see PhysicsSystem.updateController
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	HingeJoint.prototype.updateController=function(dt){
 		if (this._damping > 0){
 			var hingeAxis = Vector3DUtil.subtract(this._body1.get_currentState().rotVelocity, this._body0.get_currentState().rotVelocity);

@@ -18,35 +18,59 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
 (function(jigLib){
 	 
-	var MaterialProperties=function(_restitution, _friction){
-		if(_restitution==null) _restitution=0.25;
-		if(_friction==null) _friction=0.25;
-		this._restitution = _restitution;
-		this._friction = _friction;
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name MaterialProperties
+	 * @class MaterialProperties 
+	 * @property {number} _restitution
+	 * @property {number} _friction
+	 * @constructor
+	 * @param {number} restitution
+	 * @param {number} friction
+	 **/
+	var MaterialProperties=function(restitution, friction){
+		if(restitution==null) restitution=0.25;
+		if(friction==null) friction=0.25;
+		this._restitution = restitution;
+		this._friction = friction;
 	};
 	
 	MaterialProperties.prototype._restitution=null;
 	MaterialProperties.prototype._friction=null;
 	
+	/**
+	 * @function get_restitution getter for _restitution
+	 * @type number
+	 **/
 	MaterialProperties.prototype.get_restitution=function(){
 		return this._restitution;
 	};
 
+	/**
+	 * @function set_restitution setter for _restitution
+	 * @param {number} restitution
+	 * @type void
+	 **/
 	MaterialProperties.prototype.set_restitution=function(restitution){
 		this._restitution = restitution;
 	};
 
+	/**
+	 * @function get_restitution getter for _friction
+	 * @type number
+	 **/
 	MaterialProperties.prototype.get_friction=function(){
 		return this._friction;
 	};
 
+	/**
+	 * @function get_restitution setter for _friction
+	 * @param {number} friction
+	 * @type void
+	 **/
 	MaterialProperties.prototype.set_friction=function(friction){
 		this._friction = friction;
 	};

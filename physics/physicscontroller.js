@@ -18,13 +18,16 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name PhysicsController
+	 * @class PhysicsController 
+	 * @property {boolean} _controllerEnabled
+	 * @constructor
+	 **/
 	var PhysicsController=function(){
 		this._controllerEnabled = false;
 	};
@@ -32,11 +35,18 @@
 	PhysicsController.prototype._controllerEnabled=null;
 	
 	
-	 // implement this to apply whatever forces are needed to the objects this controls
+	/**
+	 * @function updateController implement this to apply whatever forces are needed to the objects this controls
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	PhysicsController.prototype.updateController=function(dt){
 	};
 
-	// register with the physics system
+	/**
+	 * @function enableController register with the physics system
+	 * @type void
+	 **/
 	PhysicsController.prototype.enableController=function(){
 		if (this._controllerEnabled){
 			return;
@@ -45,7 +55,10 @@
 		jigLib.PhysicsSystem.getInstance().addController(this);
 	};
 
-	// deregister from the physics system
+	/**
+	 * @function disableController de-register from the physics system
+	 * @type void
+	 **/
 	PhysicsController.prototype.disableController=function(){
 		if (!this._controllerEnabled){
 			return;
@@ -54,7 +67,10 @@
 		jigLib.PhysicsSystem.getInstance().removeController(this);
 	};
 
-	// are we registered with the physics system?
+	/**
+	 * @function get_controllerEnabled returns true if this controller is registered with the PhysicsSystem
+	 * @type boolean
+	 **/
 	PhysicsController.prototype.get_controllerEnabled=function(){
 		return this._controllerEnabled;
 	};

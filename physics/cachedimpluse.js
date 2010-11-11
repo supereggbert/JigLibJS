@@ -18,13 +18,20 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
 (function(jigLib){
-	
-	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name CachedImpulse
+	 * @class CachedImpulse 
+	 * @property {number} normalImpulse 
+	 * @property {number} normalImpulseAux 
+	 * @property {array} frictionImpulse a 3D vector
+	 * @constructor
+	 * @param {number} _normalImpulse 
+	 * @param {number} _normalImpulseAux 
+	 * @param {array} _frictionImpulse a 3D vector
+	 **/
 	var CachedImpulse=function(_normalImpulse, _normalImpulseAux, _frictionImpulse){
 		this.normalImpulse = _normalImpulse;
 		this.normalImpulseAux = _normalImpulseAux;

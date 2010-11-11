@@ -17,23 +17,48 @@
    3. This notice may not be removed or altered from any source
    distribution.
  */
-
-/**
- * @author Muzer(muzerly@gmail.com), speedok(speedok@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
  
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JConfig=jigLib.JConfig;
 	var CollPointInfo=jigLib.CollPointInfo;
-	var CollisionInfo=jigLib.CollisionInfo;
 	var CollisionSystem=jigLib.CollisionSystem;
 	var ContactData=jigLib.ContactData;
 	var JMatrix3D=jigLib.JMatrix3D;
-	var JNumber3D=jigLib.JNumber3D;	var JConstraint=jigLib.JConstraint;	var BodyPair=jigLib.BodyPair;	var CachedImpulse=jigLib.CachedImpulse;
+	var JNumber3D=jigLib.JNumber3D;	var BodyPair=jigLib.BodyPair;	var CachedImpulse=jigLib.CachedImpulse;
 	
+	/**
+	 * @name PhysicsSystem
+	 * @class PhysicsSystem a singleton representing the physics system
+	 * @requires Vector3DUtil
+	 * @requires JConfig
+	 * @requires CollPointInfo
+	 * @requires CollisionSystem
+	 * @requires ContactData
+	 * @requires JMatrix3D
+	 * @requires JNumber3D
+	 * @requires BodyPair
+	 * @requires CachedImpulse
+	 * @property {PhysicsSystem} _currentPhysicsSystem
+	 * @property {number} _maxVelMag
+	 * @property {number} _minVelForProcessing
+	 * @property {array} _bodies a collection of RigidBody objects
+	 * @property {array} _activeBodies a collection of RigidBody objects
+	 * @property {array} _collisions a collection of CollisionInfo objects
+	 * @property {array} _constraints a collection of JConstraint objects
+	 * @property {array} _controllers a collection of PhysicsController objects
+	 * @property {array} _effects  a collection of JEffect objects
+	 * @property {number} _gravityAxis
+	 * @property {array} _gravity a 3D vector
+	 * @property {boolean} _doingIntegration
+	 * @property {function} preProcessCollisionFn
+	 * @property {function} preProcessContactFn
+	 * @property {function} processCollisionFn
+	 * @property {function} processContactFn
+	 * @property {array} _cachedContacts a collection of ContactData objects
+	 * @property {CollisionSystem} _collisionSystem
+	 * @constructor
+	 **/
 	var PhysicsSystem=function(){
 		this.setSolverType(JConfig.solverType);
 		this._doingIntegration = false;
@@ -74,7 +99,11 @@
 
 	PhysicsSystem.prototype._cachedContacts=null;
 	PhysicsSystem.prototype._collisionSystem=null;
-		
+	
+	/**
+	 * @function getInstance returns the singleton instance
+	 * @type PhysicsSystem
+	 **/
 	PhysicsSystem.getInstance=function(){
 		if (!PhysicsSystem._currentPhysicsSystem){
 			PhysicsSystem._currentPhysicsSystem = new PhysicsSystem();
@@ -82,6 +111,10 @@
 		return PhysicsSystem._currentPhysicsSystem;
 	};
 	
+	/**
+	 * @function getAllExternalForces
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.getAllExternalForces=function(dt){
 		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			this._bodies[i].addExternalForces(dt);
@@ -92,10 +125,19 @@
 		}
 	};
 
+	/**
+	 * @function getCollisionSystem getter for _collisionSystem
+	 * @type CollisionSystem
+	 **/
 	PhysicsSystem.prototype.getCollisionSystem=function(){
 		return this._collisionSystem;
 	};
 
+	/**
+	 * @function setGravity
+	 * @param {array} gravity a 3D vector
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.setGravity=function(gravity){
 		this._gravity = gravity;
 		if (this._gravity[0] == this._gravity[1] && this._gravity[1] == this._gravity[2])
@@ -110,20 +152,35 @@
 			this._gravityAxis = 2;
 	};
 
-	// global gravity acceleration
+	/**
+	 * @function get_gravity global gravity acceleration
+	 * @type array
+	 **/
 	PhysicsSystem.prototype.get_gravity=function(){
 		return this._gravity;
 	};
 
+	/**
+	 * @function get_gravityAxis getter for _gravityAxis
+	 * @type number
+	 **/
 	PhysicsSystem.prototype.get_gravityAxis=function(){
 		return this._gravityAxis;
 	};
 
+	/**
+	 * @function get_bodies getter for _bodies
+	 * @type array
+	 **/
 	PhysicsSystem.prototype.get_bodies=function(){
 		return this._bodies;
 	};
 
-	// Add a rigid body to the simulation
+	/**
+	 * @function addBody add a RigidBody to the simulation
+	 * @param {RigidBody} body
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.addBody=function(body){
 		if (!this.findBody(body)){
 			this._bodies.push(body);
@@ -131,6 +188,11 @@
 		}
 	};
 
+	/**
+	 * @function removeBody remove a RigidBody from the simulation
+	 * @param {RigidBody} body
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeBody=function(body){
 		if (this.findBody(body)){
 			this._bodies.splice(this._bodies.indexOf(body), 1);
@@ -138,56 +200,105 @@
 		}
 	};
 
+	/**
+	 * @function removeAllBodies remove all bodies from the simulation
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeAllBodies=function(){
 		this._bodies = [];
 		this._collisionSystem.removeAllCollisionBodies();
 	};
 
-	// Add a constraint to the simulation
+	/**
+	 * @function addConstraint add a constraint to the simulation
+	 * @param {JConstraint} constraint
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.addConstraint=function(constraint){
 		if (!this.findConstraint(constraint))
 			this._constraints.push(constraint);
 	};
 	
+	/**
+	 * @function removeConstraint remove a constraint from the simulation
+	 * @param {JConstraint} constraint
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeConstraint=function(constraint){
 		if (this.findConstraint(constraint))
 			this._constraints.splice(this._constraints.indexOf(constraint), 1);
 	};
 
+	/**
+	 * @function removeAllConstraints remove all constraints from the simulation
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeAllConstraints=function(){
 		this._constraints = [];
 	};
 	
-	// Add an effect to the simulation
+	/**
+	 * @function addEffect add an effect to the simulation
+	 * @param {JEffect} effect
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.addEffect=function(effect){
 		if (!this.findEffect(effect))
 			this._effects.push(effect);
 	};
 	
+	/**
+	 * @function removeEffect remove an effect from the simulation
+	 * @param {JEffect} effect
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeEffect=function(effect){
 		if (this.findEffect(effect))
 			this._effects.splice(this._effects.indexOf(effect), 1);
 	};
 
+	/**
+	 * @function removeAllEffects remove all effects from the simulation
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeAllEffects=function(){
 		this._effects = [];
 	};
 
-	// Add a physics controlled to the simulation
+	/**
+	 * @function addController add a physics controller to the simulation
+	 * @param {PhysicsController} controller
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.addController=function(controller){
 		if (!this.findController(controller))
 			this._controllers.push(controller);
 	};
 
+	/**
+	 * @function removeController remove a physics controller from the simulation
+	 * @param {PhysicsController} controller
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeController=function(controller){
 		if (this.findController(controller))
 			this._controllers.splice(this._controllers.indexOf(controller), 1);
 	};
 
+	/**
+	 * @function removeAllControllers remove all physics controllers from the simulation
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.removeAllControllers=function(){
 		this._controllers = [];
 	};
 
+	/**
+	 * @function setSolverType select which solver type should be used for the simulation
+	 * @see JConfig.solverType
+	 * @param {string} type
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.setSolverType=function(type){
 		switch (type)
 		{
@@ -218,31 +329,60 @@
 		}
 	};
 
+	/**
+	 * @function findBody find a body in _bodies
+	 * @param {RigidBody} body
+	 * @returns true if the body is found, otherwise false
+	 * @type boolean
+	 **/
 	PhysicsSystem.prototype.findBody=function(body){
 		var i=this._bodies.length-1;
 		if (i > 0) do { if(body==this._bodies[i]) return true; } while (i--);
 		return false;
 	};
 
+	/**
+	 * @function findConstraint find a constraint in _constraints
+	 * @param {JConstraint} constraint
+	 * @returns true if the constraint is found, otherwise false
+	 * @type boolean
+	 **/
 	PhysicsSystem.prototype.findConstraint=function(constraint){
 		var i=this._constraints.length-1;
 		if (i > 0) do { if(constraint==this._constraints[i]) return true; } while (i--);
 		return false;
 	};
 	
+	/**
+	 * @function findEffect find an effect in _effects
+	 * @param {JEffect} effect
+	 * @returns true if the effect is found, otherwise false
+	 * @type boolean
+	 **/
 	PhysicsSystem.prototype.findEffect=function(effect){
 		var i=this._effects.length-1;
 		if (i > 0) do { if(effect==this._effects[i]) return true; } while (i--);
 		return false;
 	};
 
+	/**
+	 * @function findController find a controller in _controllers
+	 * @param {PhysicsController} controller
+	 * @returns true if the controller is found, otherwise false
+	 * @type boolean
+	 **/
 	PhysicsSystem.prototype.findController=function(controller){
 		var i=this._controllers.length-1;
 		if (i > 0) do { if(controller==this._controllers[i]) return true; } while (i--);
 		return false;
 	};
 
-	// fast-but-inaccurate pre-processor
+	/**
+	 * @function preProcessCollisionFast a fast-but-inaccurate pre-processor
+	 * @param {CollisionInfo} collision
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.preProcessCollisionFast=function(collision, dt){
 		collision.satisfied=false;
 
@@ -312,7 +452,12 @@
 			ptInfo.minSeparationVel = this._maxVelMag;
 	};
 
-	// Special pre-processor for the normal solver
+	/**
+	 * @function preProcessCollisionNormal a special pre-processor for the normal solver
+	 * @param {CollisionInfo} collision
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.preProcessCollisionNormal=function(collision, dt){
 		collision.satisfied = false;
 
@@ -361,7 +506,12 @@
 		}
 	};
 
-	// Special pre-processor for the accumulated solver
+	/**
+	 * @function preProcessCollisionAccumulated a special pre-processor for the accumulated solver
+	 * @param {CollisionInfo} collision
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.preProcessCollisionAccumulated=function(collision, dt){
 		collision.satisfied = false;
 		var body0 = collision.objInfo.body0;
@@ -448,11 +598,15 @@
 		}
 	};
 	
-	/* Handle an individual collision by classifying it, calculating
-	impulse, applying impulse and updating the velocities of the
-	objects. Allows over-riding of the elasticity. Ret val indicates
-	if an impulse was applied
-	*/
+	/**
+	 * @function processCollision handle an individual collision by classifying it, calculating
+	 * impulse, applying impulse and updating the velocities of the objects. Allows over-riding of the elasticity.
+	 * 
+	 * @param {CollisionInfo} collision
+	 * @param {number} dt a UNIX timestamp
+	 * @returns true if an impulse was applied, otherwise false
+	 * @type boolean
+	 **/
 	PhysicsSystem.prototype.processCollision=function(collision, dt){
 		collision.satisfied = true;
 
@@ -537,7 +691,14 @@
 		return gotOne;
 	};
 
-	// Accumulated and clamp impulses
+	/**
+	 * @function processCollisionAccumulated accumulated and clamp impulses
+	 * 
+	 * @param {CollisionInfo} collision
+	 * @param {number} dt a UNIX timestamp
+	 * @returns true if an impulse was applied, otherwise false
+	 * @type boolean
+	 **/
 	PhysicsSystem.prototype.processCollisionAccumulated=function(collision, dt){
 		collision.satisfied = true;
 		var gotOne = false;
@@ -652,10 +813,13 @@
 	};
 	
 	
-	
-	
-	
-	
+	/**
+	 * @function sortPositionX
+	 * 
+	 * @param {RigidBody} body0
+	 * @param {RigidBody} body1
+	 * @type number
+	 **/
 	PhysicsSystem.prototype.sortPositionX=function(body0, body1){
 		if (body0.get_currentState().position[0] < body1.get_currentState().position[0])
 			return -1;
@@ -665,6 +829,13 @@
 			return 0;
 	};
                 
+	/**
+	 * @function sortPositionY
+	 * 
+	 * @param {RigidBody} body0
+	 * @param {RigidBody} body1
+	 * @type number
+	 **/
 	PhysicsSystem.prototype.sortPositionY=function(body0, body1){
 		if (body0.get_currentState().position[1] < body1.get_currentState().position[1])
 			return -1;
@@ -674,6 +845,13 @@
 			return 0;
 	};
                 
+	/**
+	 * @function sortPositionZ
+	 * 
+	 * @param {RigidBody} body0
+	 * @param {RigidBody} body1
+	 * @type number
+	 **/
 	PhysicsSystem.prototype.sortPositionZ=function(body0, body1){
 		if (body0.get_currentState().position[2] < body1.get_currentState().position[2])
 			return -1;
@@ -683,6 +861,13 @@
 			return 0;
 	};
                 
+	/**
+	 * @function doShockStep the shock step helps with stacking
+	 * @see JConfig.doShockStep
+	 * @param {RigidBody} body0
+	 * @param {RigidBody} body1
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.doShockStep=function(dt){
 		if (Math.abs(this._gravity[0]) > Math.abs(this._gravity[1]) && Math.abs(this._gravity[0]) > Math.abs(this._gravity[2])){
 			this._bodies = this._bodies.sort(this.sortPositionX);
@@ -748,6 +933,10 @@
 		}
 	};
 	
+	/**
+	 * @function updateContactCache
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.updateContactCache=function(){
 		this._cachedContacts = [];
 		var ptInfo;
@@ -767,6 +956,13 @@
 		}
 	};
 
+	/**
+	 * @function handleAllConstraints applies all constraints registered with the PhysicsSystem
+	 * @param {number} dt a UNIX timestamp
+	 * @param {number} iter
+	 * @param {boolean} forceInelastic
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.handleAllConstraints=function(dt, iter, forceInelastic){
 		var origNumCollisions = this._collisions.length;
 		var collInfo;
@@ -832,6 +1028,10 @@
 		}
 	};
 
+	/**
+	 * @function handleAllEffects applies all effects registered with the PhysicsSystem
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.handleAllEffects=function(){
 		var effect;
 		var i=this._effects.length-1;
@@ -843,6 +1043,11 @@
 		} while(i--);
 	};
 	
+	/**
+	 * @function activateObject 
+	 * @param {RigidBody} body
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.activateObject=function(body){
 		if (!body.get_movable() || body.isActive)
 			return;
@@ -865,6 +1070,10 @@
 		}
 	};
 
+	/**
+	 * @function dampAllActiveBodies 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.dampAllActiveBodies=function(){
 		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
@@ -872,6 +1081,10 @@
 		}
 	};
 
+	/**
+	 * @function tryToActivateAllFrozenObjects 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.tryToActivateAllFrozenObjects=function(){
 		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			var _body=this._bodies[i];
@@ -889,6 +1102,10 @@
 		}
 	};
 
+	/**
+	 * @function activateAllFrozenObjectsLeftHanging 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.activateAllFrozenObjectsLeftHanging=function(){
 		var other_body;
 		for(var i=0, bl=this._bodies.length; i<bl; i++){
@@ -908,6 +1125,11 @@
 		}
 	};
 
+	/**
+	 * @function updateAllVelocities
+	 * @param {number} dt a UNIX timestamp 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.updateAllVelocities=function(dt){
 		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
@@ -915,6 +1137,11 @@
 		}
 	};
 
+	/**
+	 * @function updateAllPositions
+	 * @param {number} dt a UNIX timestamp 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.updateAllPositions=function(dt){
 		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
@@ -922,6 +1149,11 @@
 		}
 	};
 
+	/**
+	 * @function notifyAllPostPhysics
+	 * @param {number} dt a UNIX timestamp 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.notifyAllPostPhysics=function(dt){
 		for(var i=0, abl=this._bodies.length; i<abl; i++){
 			_body=this._bodies[i];
@@ -929,6 +1161,10 @@
 		}
 	};
 
+	/**
+	 * @function updateAllObject3D
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.updateAllObject3D=function(){
 		for(var i=0, abl=this._bodies.length; i<abl; i++){
 			_body=this._bodies[i];
@@ -936,6 +1172,10 @@
 		}
 	};
 
+	/**
+	 * @function limitAllVelocities
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.limitAllVelocities=function(){
 		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
@@ -944,6 +1184,11 @@
 		}
 	};
 
+	/**
+	 * @function tryToFreezeAllObjects
+	 * @param {number} dt a UNIX timestamp 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.tryToFreezeAllObjects=function(dt){
 		for(var i=0, abl=this._activeBodies.length; i<abl; i++){
 			_activeBody=this._activeBodies[i];
@@ -951,6 +1196,11 @@
 		}
 	};
 
+	/**
+	 * @function detectAllCollisions
+	 * @param {number} dt a UNIX timestamp 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.detectAllCollisions=function(dt){
 		for (var i=0, abl=this._activeBodies.length; i<abl; i++)
 		{
@@ -977,6 +1227,10 @@
 		}
 	};
 
+	/**
+	 * @function copyAllCurrentStatesToOld
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.copyAllCurrentStatesToOld=function(){
 		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			_body=this._bodies[i];
@@ -985,6 +1239,10 @@
 		}
 	};
 
+	/**
+	 * @function findAllActiveBodies
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.findAllActiveBodies=function(){
 		this._activeBodies = [];
 				
@@ -994,9 +1252,12 @@
 		}
 	};
 
-	// Integrates the system forwards by dt - the caller is
-	// responsible for making sure that repeated calls to this use
-	// the same dt (if desired)
+	/**
+	 * @function integrate integrates the system forwards by dt 
+	 * the caller is responsible for making sure that repeated calls to this use the same dt (if desired)
+	 * @param {number} dt a UNIX timestamp 
+	 * @type void
+	 **/
 	PhysicsSystem.prototype.integrate=function(dt){
 		this._doingIntegration = true;
 

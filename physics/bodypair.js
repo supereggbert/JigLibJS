@@ -18,14 +18,21 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
- (function(jigLib){
-	
-	 
+(function(jigLib){
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name BodyPair
+	 * @class BodyPair a container for a pair of RigidBody objects
+	 * @property {RigidBody} body0 the first body of the constrained pair
+	 * @property {RigidBody} body1 the second body of the constrained pair
+	 * @property {array} r a 3D vector
+	 * @constructor
+	 * @param {RigidBody} _body0 the first body of the constrained pair
+	 * @param {RigidBody} _body1 the second body of the constrained pair
+	 * @param {array} _r0 a 3D vector
+	 * @param {array} _r1 a 3D vector
+	 **/
 	var BodyPair=function(_body0, _body1, r0, r1){
 		if (_body0.id > _body1.id){
 			this.body0 = _body0;
