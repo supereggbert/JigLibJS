@@ -1,26 +1,37 @@
 (function(jigLib){
+	
+	/**
+	 * @author Jim Sangwine
+	 * 
+	 * @name JEffect
+	 * @class JEffect the base class for effects
+	 * @property {boolean} _effectEnabled changing this boolean registers and de-registers the effect with the physics system
+	 * @constructor
+	 **/
 	var JEffect=function(){
-		this.enabled = true;
+		this._effectEnabled = true;
 	};
 	
-	JEffect.prototype._eventEnabled=false;
-	JEffect.prototype.__defineGetter__('enabled', function() { return this._eventEnabled; });
+	JEffect.prototype._effectEnabled=false;
+	
+	JEffect.prototype.__defineGetter__('enabled', 
+										function() { return this._effectEnabled; });
 	JEffect.prototype.__defineSetter__('enabled', 
 										function(bool) {
-											  				if (bool == this._eventEnabled) return;
-											  				this._eventEnabled = bool;
-											  				if (bool) jigLib.PhysicsSystem.getInstance().addEvent(this);
-											  				else jigLib.PhysicsSystem.getInstance().removeEvent(this);
+											  				if (bool == this._effectEnabled) return;
+											  				this._effectEnabled = bool;
+											  				if (bool) jigLib.PhysicsSystem.getInstance().addEffect(this);
+											  				else jigLib.PhysicsSystem.getInstance().removeEffect(this);
 														});
 	
 	/**
-	 * this should be implemented by the effect to apply force to 
-	 * bodies in the physics system as appropriate.
+	 * @function Apply this should be implemented by the effect to apply force to bodies in the physics system as appropriate.
+	 * @see PhysicsSystem.handleAllEffects
 	 * 
-	 * @returns
+	 * @type void
 	 */
 	JEffect.prototype.Apply=function(){
-		return false;
+		return;
 	};
 	
 	jigLib.JEffect=JEffect;

@@ -1,17 +1,21 @@
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
+	
 	/**
 	 * @author Jim Sangwine
 	 * 
-	 * This effect has global influence - All objects that are movable in the scene will be affected, apart from those
-	 * added to the exclusions array. 
+	 * @name Wind
+	 * @class Wind a wind effect
+	 * This effect has global influence - All objects that are movable in the scene will be affected, apart from those added to the exclusions array. 
+	 * This effect will be applied continuously as long as it is enabled
 	 * 
-	 * This effect will be applied continuously as long as this.enabled == true.
-	 * 
-	 * This effect accepts a vector to define it's direction of influence.
-	 * 
-	 * @param {Array}	direction	vector array in the format [x,y,z] defines the force of the effect in each direction
-	 * @param {Array}	exclusions	optional - a list of bodies that should be excluded from the effect 
+	 * @extends JEffect
+	 * @requires Vector3DUtil
+	 * @property {array} direction a 3D vector defining the force of the effect in each axis
+	 * @property {array} exclusions optional - a list of bodies to be excluded from the effect
+	 * @constructor
+	 * @param {array} _direction a 3D vector defining the force of the effect in each axis
+	 * @param {array} _exclusions optional - a list of bodies to be excluded from the effect
 	 **/
 	var Wind=function(_direction, _exclusions) {
 		this.Super();
@@ -24,7 +28,9 @@
 	Wind.prototype.exclusions = [];
 	
 	/**
-	 * Searches exclusions for a given body
+	 * @function isExcluded checks if a given body is in the exclusions list
+	 * @param {RigidBody} body the body to check for
+	 * @type boolean
 	 */
 	Wind.prototype.isExcluded = function(body) {
 		var i=this.exclusions.length;
@@ -33,11 +39,10 @@
 	};
 	
 	/**
-	 * Applies the effect to the relevant bodies.
-	 * Typically called by PhysicsSystem.handleAllEffects. 
-	 * 
-	 * @returns
-	 */
+	 * @function Apply applies the effect to the relevant bodies
+	 * @see JEffect.Apply
+	 * @type void
+	 **/
 	Wind.prototype.Apply = function() {
 		var system=jigLib.PhysicsSystem.getInstance();
 		var bodies=system.get_bodies();

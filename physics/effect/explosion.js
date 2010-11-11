@@ -10,11 +10,30 @@
 	 * 
 	 * This effect can either be placed at an arbitrary location in the scene, or it can be attached to a parent object.
 	 * 
-	 * @param {Array}	location	vector array in the format [x,y,z]
-	 * @param {Number}	radius		radius of effect - at [radius] distance, gravity effect will be 0
-	 * @param {Number}	force		the force of the explosion at 0 distance (impulse will be force/distance)
-	 * @param {Object}	parent		optional - a RigidBody that the gravitational field will follow - excluded from effect
-	 * @param {Boolean}	relativity	optional - toggle whether or not the parent obeys the theory of relativity 
+	 **/
+	/**
+	 * @author Jim Sangwine
+	 * 
+	 * @name Explosion
+	 * @class Explosion an explosive force effect
+	 * This effect has a radius within which it will repel bodies depending on the defined force 
+	 * and their distance (the closer the object, the stronger the effect). 
+	 * This effect will only be applied during a single cycle of the PhysicsSystem, imparting a sudden impulse.
+	 * This effect can either be placed at an arbitrary location in the scene, or it can be attached to a parent object.
+	 * 
+	 * @extends JEffect
+	 * @requires Vector3DUtil
+	 * @property {array} location initial location of the effect expressed as a 3D vector
+	 * @property {number} radius radius of effect - the distance at which the effect's influence will drop to zero
+	 * @property {number} force the force of the effect at 0 distance (impulse will be force/distance)
+	 * @property {RigidBody} parent optional - a RigidBody that the gravitational field will follow - excluded from the main effect force, but optionally receives relative force
+	 * @property {boolean} relativity optional - toggle whether or not the parent receives a reactive impulse relative to that delivered to bodies falling within the effect radius 
+	 * @constructor
+	 * @param {array} _location initial location of the effect expressed as a 3D vector
+	 * @param {number} _radius radius of effect
+	 * @param {number} _force the force of the effect at 0 distance
+	 * @param {RigidBody} _parent optional parent body
+	 * @param {boolean} _relativity optional toggle whether or not the parent receives a reactive impulse
 	 **/
 	var Explosion=function(_location, _radius, _force, _parent, _relativity) {
 		this.Super();
@@ -35,15 +54,18 @@
 	Explosion.prototype.relativity = false;
 
 	/**
-	 * Sets the effect to fire the next time Apply() is called
+	 * @function explode triggers the effect (sets the effect to fire the next time Apply() is called)
+	 * 
+	 * @type void
 	 **/
 	Explosion.prototype.explode = function() {
 		this.enabled = true;
 	};
 	
 	/**
-	 * Applies the effect to the relevant bodies.
-	 * Typically called by PhysicsSystem.handleAllEffects. 
+	 * @function Apply applies the effect to the relevant bodies
+	 * @see JEffect.Apply
+	 * @type void
 	 **/
 	Explosion.prototype.Apply = function() {
 		this.enabled = false;
