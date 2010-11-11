@@ -18,11 +18,6 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
- 
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JMatrix3D=jigLib.JMatrix3D;
@@ -34,6 +29,58 @@
 	// get local refs to Math methods to improve performance
 	var mr=Math, mrPI=mr.PI, mrMin=mr.min, mrMax=mr.max, mrCos=mr.cos, mrAbs=mr.abs, mrSqrt=mr.sqrt;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name JWheel
+	 * @class JWheel represents a wheel
+	 * @constant {number} noslipVel
+	 * @constant {number} slipVel
+	 * @constant {number} slipFactor
+	 * @constant {number} smallVel
+	 * @property {string} name a unique name by which to identify the wheel (e.g. FrontRight, RearLeft etc.)
+	 * @property {JCar} _car the car this wheel belongs to
+	 * @property {array} _pos position of the wheel relative to the car's center as a 3D vector
+	 * @property {array} _axisUp the inverse of the gravity axis as a 3D vector
+	 * @property {number} _spring amount of suspension spring
+ 	 * @property {number} _travel vertical suspension travel
+	 * @property {number} _inertia the wheel inertia
+	 * @property {number} _radius the wheel radius
+	 * @property {number} _sideFriction side friction
+	 * @property {number} _fwdFriction forward friction
+	 * @property {number} _damping suspension damping
+	 * @property {number} _numRays
+	 * @property {number} _angVel
+	 * @property {number} _steerAngle the steering angle
+	 * @property {number} _torque amount of torque
+	 * @property {number} _driveTorque
+	 * @property {number} _axisAngle
+	 * @property {number} _displacement current suspension travel
+	 * @property {number} _upSpeed
+	 * @property {number} _rotDamping
+	 * @property {number} _normalForce
+	 * @property {boolean} _locked whether the wheel is locked
+	 * @property {number} _lastDisplacement previous suspension travel
+	 * @property {boolean} _lastOnFloor whether the wheel was previously on the floor
+	 * @property {number} _angVelForGrip
+	 * @property {array} worldPos a 3D vector
+	 * @property {array} worldAxis a 3D vector
+	 * @property {array} wheelFwd a 3D vector
+	 * @property {array} wheelUp a 3D vector
+	 * @property {array} wheelLeft a 3D vector
+	 * @property {array} wheelRayEnd a 3D vector
+	 * @property {JSegment} wheelRay
+	 * @property {array} groundUp a 3D vector
+	 * @property {array} groundLeft a 3D vector
+	 * @property {array} groundFwd a 3D vector
+	 * @property {array} wheelPointVel a 3D vector
+	 * @property {array} rimVel a 3D vector
+	 * @property {array} worldVel a 3D vector
+	 * @property {array} wheelCentreVel a 3D vector
+	 * @property {CollisionSystem} _collSystem the collision system
+	 * @constructor
+	 * @param {JCar} car the vehicle this wheel belongs to
+	 **/
 	var JWheel=function(car){
 		this._car = car;
 	};
@@ -89,14 +136,22 @@
 	
 	JWheel.prototype._collSystem=null;
 	
-	/*
-	* pos: position relative to car, in car's space
-	* axisUp: in car's space
-	* spring: force per suspension offset
-	* travel: suspension travel upwards
-	* inertia: inertia about the axel
-	* radius: wheel radius
-	*/
+	/**
+	 * @function setup setup the wheel
+	 * @param {array} pos position relative to car, in car's space
+	 * @param {array} axisUp in car's space
+	 * @param {number} spring force per suspension offset
+	 * @param {number} travel suspension travel upwards
+	 * @param {number} inertia inertia about the axle
+	 * @param {number} radius wheel radius
+	 * @param {number} sideFriction side friction
+	 * @param {number} fwdFriction forward friction
+	 * @param {number} damping suspension damping
+	 * @param {number} numRays 
+	 * @param {number} drive 
+	 * @param {number} normalForce 
+	 * @type void
+	 **/
 	JWheel.prototype.setup=function(pos, axisUp, spring, travel, inertia, radius, sideFriction, fwdFriction, damping, numRays, drive, normalForce){
 		if(spring==null) spring=0;
 		if(travel==null) travel=0;
@@ -125,70 +180,129 @@
 		this.reset();
 	};
 
-	// power
+	/**
+	 * @function addTorque add torque to the wheel
+	 * @param {number} torque the amount of torque to add
+	 * @type void
+	 **/
 	JWheel.prototype.addTorque=function(torque){
 		this._driveTorque += torque;
 	};
 
-	// lock/unlock the wheel
+	/**
+	 * @function setLock lock/unlock the wheel
+	 * @param {boolean} lock
+	 * @type void
+	 **/
 	JWheel.prototype.setLock=function(lock){
 		this._locked = lock;
 	};
 
+	/**
+	 * @function setSteerAngle set the target steering angle
+	 * @param {number} steer
+	 * @type void
+	 **/
 	JWheel.prototype.setSteerAngle=function(steer){
 		this._steerAngle = steer;
 	};
 
-	// get steering angle in degrees
+	/**
+	 * @function setSteerAngle get the steering angle in degrees
+	 * @type number
+	 **/
 	JWheel.prototype.getSteerAngle=function(){
 		return this._steerAngle;
 	};
 
+	/**
+	 * @function getPos get the base wheel position as a 3D vector
+	 * @type array
+	 **/
 	JWheel.prototype.getPos=function(){
 		return this._pos;
 	};
 	
 
-	// the suspension axis in the car's frame
+	/**
+	 * @function getLocalAxisUp get the suspension axis in the car's frame as a 3D vector
+	 * @type array
+	 **/
 	JWheel.prototype.getLocalAxisUp=function(){
 		return this._axisUp;
 	};
 
+	/**
+	 * @function getActualPos get the real position of the wheel taking into account current suspension travel
+	 * @type array
+	 **/
 	JWheel.prototype.getActualPos=function(){
 		return Vector3DUtil.add(this._pos, JNumber3D.getScaleVector(this._axisUp, this._displacement));
 	};
 
-	// wheel radius
+	/**
+	 * @function getRadius get the wheel radius
+	 * @type number
+	 **/
 	JWheel.prototype.getRadius=function(){
 		return this._radius;
 	};
 
-	// the displacement along our up axis
+	/**
+	 * @function getDisplacement get the current suspension travel
+	 * @type number
+	 **/
 	JWheel.prototype.getDisplacement=function(){
 		return this._displacement;
 	};
 
+	/**
+	 * @function getAxisAngle
+	 * @type array
+	 **/
 	JWheel.prototype.getAxisAngle=function(){
 		return this._axisAngle;
 	};
 
+	/**
+	 * @function getRollAngle get the current rotation around the axle axis
+	 * @type number
+	 **/
 	JWheel.prototype.getRollAngle=function(){
 		return 0.1 * this._angVel * 180 / mrPI;
 	};
 
+	/**
+	 * @function setRotationDamping set the rotation damping
+	 * @param {number} vel
+	 * @type void
+	 **/
 	JWheel.prototype.setRotationDamping=function(vel){
 		this._rotDamping = vel;
 	};
+	
+	/**
+	 * @function getRotationDamping get the rotation damping value
+	 * @type number
+	 **/
 	JWheel.prototype.getRotationDamping=function(){
 		return this._rotDamping;
 	};
 				
-	//if it's on the ground.
+	/**
+	 * @function getOnFloor tests whether the wheel is on the ground or not
+	 * @returns true if on the ground, else false
+	 * @type boolean
+	 **/
 	JWheel.prototype.getOnFloor=function(){
 		return this._lastOnFloor;
 	};
-	var maxforce=0;
-	// Adds the forces die to this wheel to the parent. Return value indicates if it's on the ground.
+	
+	/**
+	 * @function addForcesToCar adds the forces from this wheel to the parent vehicle.
+	 * @returns true if the wheel is on the ground, else false
+	 * @type boolean
+	 **/
 	JWheel.prototype.addForcesToCar=function(dt){
 		var force = [0,0,0,0];
 		this._lastDisplacement = this._displacement;
@@ -270,7 +384,7 @@
 		
 		var mass = carBody.get_mass();
 		var mass4 = mass/4;
-		var otherFriction=otherBody.get_friction()
+		var otherFriction=otherBody.get_friction();
 	
 		var wheelCenterVel=carBody.getVelocity(this._pos);
 		
@@ -329,7 +443,10 @@
 		return true;
 	};
 
-	// Updates the rotational state etc
+	/**
+	 * @function update updates the rotational state etc
+	 * @type void
+	 **/
 	JWheel.prototype.update=function(dt){
 		if (dt <= 0) return;
 
@@ -358,6 +475,10 @@
 		}
 	};
 
+	/**
+	 * @function reset resets everything
+	 * @type void
+	 **/
 	JWheel.prototype.reset=function(){
 		this._angVel = 0;
 		this._steerAngle = 0;

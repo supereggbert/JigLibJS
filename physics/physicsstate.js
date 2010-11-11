@@ -6,8 +6,8 @@
 	 * @author katopz
 	 * Devin Reimer (blog.almostlogical.com)
 	 * 
-	 * @name PhysicsController
-	 * @class PhysicsController 
+	 * @name PhysicsState
+	 * @class PhysicsState 
 	 * @requires Matrix3D
 	 * @requires JMatrix3D
 	 * @property {array} position

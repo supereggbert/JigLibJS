@@ -18,15 +18,9 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
-	var JSegment=jigLib.JSegment;
 	var JChassis=jigLib.JChassis;
 	var JWheel=jigLib.JWheel;
 	var PhysicsSystem=jigLib.PhysicsSystem;
@@ -34,6 +28,30 @@
 	// get local refs to Math methods to improve performance
 	var mr=Math, mrAbs=mr.abs, mrSqrt=mr.sqrt;
 	
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name JCar
+	 * @class JCar represents a wheeled vehicle
+	 * @requires Vector3DUtil
+	 * @requires JNumber3D
+	 * @requires JChassis
+	 * @requires JWheel
+	 * @requires PhysicsSystem
+	 * @property {number} _maxSteerAngle the maximum steering angle
+	 * @property {number} _steerRate the rate of steering angle change
+	 * @property {number} _driveTorque the maximum torque of a wheel
+	 * @property {number} _destSteering the target steering angle
+	 * @property {number} _destAccelerate the target acceleration
+	 * @property {number} _steering the current steering angle
+	 * @property {number} _accelerate the current acceleration
+	 * @property {number} _HBrake whether the handbrake is on (1) or off (0)
+	 * @property {JChassis} _chassis the vehicle chassis
+	 * @property {array} _wheels the wheels (a collection of Wheel objects)
+	 * @property {array} _steerWheels the wheels used for steering (a collection of Wheel objects)
+	 * @constructor
+	 * @param {ISkin3D} skin
+	 **/
 	var JCar=function(skin){
 		this._chassis = new JChassis(this, skin);
 		this._wheels = [];
@@ -56,7 +74,14 @@
 	JCar.prototype._chassis=null;
 	JCar.prototype._wheels=null;
 	JCar.prototype._steerWheels=null;
-
+	
+	/**
+	 * @function setCar sets up the vehicle
+	 * @param {number} maxSteerAngle the maximum steering angle
+	 * @param {number} steerRate the rate of steering angle change
+	 * @param {number} driveTorque the maximum torque of a wheel
+	 * @type void
+	 **/
 	JCar.prototype.setCar=function(maxSteerAngle, steerRate, driveTorque){
 		if(maxSteerAngle==null) maxSteerAngle=45;
 		if(steerRate==null) steerRate=4;
@@ -67,6 +92,20 @@
 		this._driveTorque = driveTorque;
 	};
 
+	/**
+	 * @function setupWheel add a wheel to the vehicle
+	 * @param {string} _name a unique name by which to identify the wheel (e.g. FrontRight, RearLeft etc.)
+	 * @param {array} pos position of the wheel relative to the car's center
+	 * @param {number} wheelSideFriction side friction
+	 * @param {number} wheelFwdFriction forward friction
+	 * @param {number} wheelTravel vertical suspension travel
+	 * @param {number} wheelRadius wheel radius
+	 * @param {number} wheelRestingFrac elasticity coefficient
+	 * @param {number} wheelDampingFrac suspension damping
+	 * @param {number} wheelNumRays 
+	 * @param {number} drive
+	 * @type void
+	 **/
 	JCar.prototype.setupWheel=function(_name, pos, wheelSideFriction, wheelFwdFriction, wheelTravel, wheelRadius, wheelRestingFrac, wheelDampingFrac, wheelNumRays, drive){
 		if(wheelSideFriction==null) wheelSideFriction=2;
 		if(wheelFwdFriction==null) wheelFwdFriction=2;
@@ -91,8 +130,8 @@
 		var normalForce = gravityLen*mass4;
 		//var damping = 2 * mrSqrt(spring * mass);
 		//damping *= (0.25 * wheelDampingFrac);
-//		damping /= this._steerRate;
-//		damping *= wheelDampingFrac;
+		//damping /= this._steerRate;
+		//damping *= wheelDampingFrac;
 
 		var wheel = new JWheel(this);
 		wheel.name = _name;
@@ -100,10 +139,21 @@
 		this._wheels.push(wheel);
 	};
 
+	/**
+	 * @function setAccelerate set the target acceleration
+	 * @param {number} val the target acceleration
+	 * @type void
+	 **/
 	JCar.prototype.setAccelerate=function(val){
 		this._destAccelerate = val;
 	};
 
+	/**
+	 * @function setSteer set the target steering angle and define which wheels should turn
+	 * @param {array} wheels a collection of Wheel objects
+	 * @param {number} val the target acceleration
+	 * @type void
+	 **/
 	JCar.prototype.setSteer=function(wheels, val){
 		this._destSteering = val;
 		this._steerWheels = [];
@@ -115,6 +165,11 @@
 		}
 	};
 
+	/**
+	 * @function findWheel checks if a wheel exists matching a given name
+	 * @param {string} name the name of the wheel to find
+	 * @type boolean
+	 **/
 	JCar.prototype.findWheel=function(_name){
 		for (var i=0, l=this._wheels.length; i<l; i++){
 			if (this._wheels[i].name == _name) return true;
@@ -122,6 +177,11 @@
 		return false;
 	};
 	
+	/**
+	 * @function getWheel get a wheel by name
+	 * @param {string} name the name of the wheel to get
+	 * @type Wheel
+	 **/
 	JCar.prototype.getWheel=function(_name){
 		for (var i=0; i<this._wheels.length; i++){
 			if (this._wheels[i].name == _name) return this._wheels[i];
@@ -129,17 +189,31 @@
 		return null;
 	};
 	
+	/**
+	 * @function setHBrake sets the handbrake off or on
+	 * @param {number} val 0 to set the handbrake off, and 1 to set it on
+	 * @type void
+	 **/
 	JCar.prototype.setHBrake=function(val){
 		this._HBrake = val;
 	};
 
+	/**
+	 * @function addExternalForces applies wheel forces to the vehicle
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	JCar.prototype.addExternalForces=function(dt){
 		for(var i=0, wl=this._wheels.length; i<wl; i++){
 			this._wheels[i].addForcesToCar(dt);
 		}
 	};
 
-	// Update stuff at the end of physics
+	/**
+	 * @function postPhysics runs after the PhysicsSystem has been applied
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	JCar.prototype.postPhysics=function(dt){
 		for(var i=0, wl=this._wheels.length; i<wl; i++){
 			this._wheels[i].update(dt);
@@ -173,6 +247,11 @@
 		}
 	};
 
+	/**
+	 * @function getNumWheelsOnFloor returns the number of wheels in contact with the ground
+	 * @param {number} dt a UNIX timestamp
+	 * @type number
+	 **/
 	JCar.prototype.getNumWheelsOnFloor=function(dt){
 		var count = 0;
 		for(var i=0, wl=this._wheels.length; i<wl; i++){

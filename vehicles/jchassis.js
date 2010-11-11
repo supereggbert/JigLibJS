@@ -18,16 +18,24 @@
    distribution.
  */
 
-/**
- * @author Muzer(muzerly@gmail.com)
- * @link http://code.google.com/p/jiglibflash
- */
-
 (function(jigLib){
 	
-	var JNumber3D=jigLib.JNumber3D;
 	var JBox=jigLib.JBox;
 
+	/**
+	 * @author Muzer(muzerly@gmail.com)
+	 * 
+	 * @name JChassis
+	 * @class JChassis represents vehicle chassis
+	 * @extends JBox
+	 * @property {JCar} _car the vehicle this chassis belongs to
+	 * @constructor
+	 * @param {JCar} car the vehicle this chassis belongs to
+	 * @param {ISkin3D} skin the mesh
+	 * @param {number} width the required chassis width
+	 * @param {number} depth the required chassis depth
+	 * @param {number} height the required chassis height
+	 **/
 	var JChassis=function(car, skin, width, depth, height){
 		if(width==null) width=40;
 		if(depth==null) depth=70;
@@ -37,16 +45,26 @@
 
 		this._car = car;
 	};
-	jigLib.extend(JChassis,jigLib.JBox);
+	jigLib.extend(JChassis, jigLib.JBox);
 	
 	JChassis.prototype._car=null;
 	
+	/**
+	 * @function addExternalForces applies wheel forces to the vehicle
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	JChassis.prototype.addExternalForces=function(dt){
 		this.clearForces();
 		this.addGravity();
 		this._car.addExternalForces(dt);
 	};
 
+	/**
+	 * @function postPhysics runs after the PhysicsSystem has been applied
+	 * @param {number} dt a UNIX timestamp
+	 * @type void
+	 **/
 	JChassis.prototype.postPhysics=function(dt){
 		this._car.postPhysics(dt);
 	};

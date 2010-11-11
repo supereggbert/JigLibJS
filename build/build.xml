@@ -63,7 +63,7 @@
 		<jsdoctoolkit jsdochome="${basedir}/build/tasks/JSDoc/jsdoc-toolkit-2.4.0/" 
 					  template="jsdoc" 
 					  outputdir="${basedir}/build/output/docs/"
-					  includeundocumented="true">
+					  includeundocumented="false">
 			<fileset dir="${basedir}">
 				<exclude name="build/**" />
 				<exclude name="tests/**" />
