@@ -24,21 +24,22 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	var JConstraint=jigLib.JConstraint;
+	
 	var CollDetectBoxBox=jigLib.CollDetectBoxBox;
-	var CollDetectSphereBox=jigLib.CollDetectSphereBox;
-	var CollDetectCapsuleBox=jigLib.CollDetectCapsuleBox;
 	var CollDetectBoxPlane=jigLib.CollDetectBoxPlane;
 	var CollDetectBoxTerrain=jigLib.CollDetectBoxTerrain;
-	var CollDetectSphereBox=jigLib.CollDetectSphereBox;
-	var CollDetectSphereSphere=jigLib.CollDetectSphereSphere;
-	var CollDetectSphereCapsule=jigLib.CollDetectSphereCapsule;
-	var CollDetectSpherePlane=jigLib.CollDetectSpherePlane;
-	var CollDetectSphereTerrain=jigLib.CollDetectSphereTerrain;
-	var CollDetectCapsuleCapsule=jigLib.CollDetectCapsuleCapsule;
+	
 	var CollDetectCapsuleBox=jigLib.CollDetectCapsuleBox;
-	var CollDetectSphereCapsule=jigLib.CollDetectSphereCapsule;
+	var CollDetectCapsuleCapsule=jigLib.CollDetectCapsuleCapsule;
 	var CollDetectCapsulePlane=jigLib.CollDetectCapsulePlane;
 	var CollDetectCapsuleTerrain=jigLib.CollDetectCapsuleTerrain;
+	
+	var CollDetectSphereBox=jigLib.CollDetectSphereBox;
+	var CollDetectSphereCapsule=jigLib.CollDetectSphereCapsule;
+	var CollDetectSpherePlane=jigLib.CollDetectSpherePlane;
+	var CollDetectSphereSphere=jigLib.CollDetectSphereSphere;
+	var CollDetectSphereTerrain=jigLib.CollDetectSphereTerrain;
+	
 	var CollDetectInfo=jigLib.CollDetectInfo;
 	 
 	/**

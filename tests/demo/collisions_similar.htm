@@ -87,11 +87,11 @@
 
 
 <div id="container">
-<canvas id="canvas" width="900" height="400"></canvas>
+	<canvas id="canvas" width="900" height="400"></canvas>
 
 	<h2>Similar collisions</h2>
-	This test is designed to act as a simple benchmark for box->plane,
-	box->box, sphere->plane, sphere-sphere, capsule->plane and capsule->capsule collisions.<br />
+	This test is designed to act as a simple benchmark for box->plane &amp;
+	box->box or sphere->plane &amp; sphere->sphere collisions.<br />
 	Should be used to measure the performance impact of optimisations,
 	changes to the codebase and browser updates.<br />
 	<br />
@@ -151,12 +151,8 @@
 			<!--camera id="mainCamera" loc_z="0" loc_y="150" fov_y="35" rot_x="-1.57" /-->
 			
 			<object id="groundObject" mesh="#groundMesh" material="#grid" scale="100" />
-			<object id="backWall" mesh="#groundMesh" material="#grid" scale="100" loc_z="-100" rot_x="-1.57" />
-			<object id="leftWall" mesh="#groundMesh" material="#grid" scale="100" rot_z="-1.57" loc_x="-50" />
-			<object id="rightWall" mesh="#groundMesh" material="#grid" scale="100" rot_z="-1.57" loc_x="50" />
 
 			<light id="light1" loc_x="-40" loc_y="150" loc_z="0" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1" type="L_POINT" />
-		
 			<light id="light2" loc_x="40" loc_y="150" loc_z="-70" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1.5" type="L_POINT" />
 			
 		</scene>
@@ -169,6 +165,7 @@
 		var renderer = new GLGE.Renderer( canvas );
 		var system;
 		var start;
+		var shape;
 		
 		var XMLdoc = new GLGE.Document();
 		
@@ -184,9 +181,6 @@
 			var cmesh = XMLdoc.getElement("Cube");
 			var cymesh = XMLdoc.getElement("Cylinder");
 			var groundObj = XMLdoc.getElement( "groundObject" );
-			var bWallObj = XMLdoc.getElement( "backWall" );
-			var lWallObj = XMLdoc.getElement( "leftWall" );
-			var rWallObj = XMLdoc.getElement( "rightWall" );
 			var camera = XMLdoc.getElement( "mainCamera" );
 			
 			// user interaction event handlers
@@ -237,24 +231,13 @@
 			var rad=5;
 			
 			// adds objects to the scene
-			function addObjects(shape, count) {
-				var s=(shape=='spheres') ? rad : rad*1.2;
-				var i=count;
-				do {
-					var ii=count;
-					do {
-						var iii=count;
-						do {
-							switch(shape) 
-							{
-								case 'spheres': addSphere(100-ii*s,180-i*s,iii*s); break;
-								case 'cubes': addCube(100-ii*s,180-i*s,iii*s); break;
-								case 'capsules': addCylinder(100-ii*s,180-i*s,iii*s); break;
-							}
-						} while(iii--);
-					} while(ii--);
-				} while(i--);
-				return true;
+			function addObject() {
+				switch(shape)
+				{
+					case 'spheres': addSphere(Math.random(),100,-50+Math.random()); break;
+					case 'cubes': addCube(Math.random(),100,-50+Math.random()); break;
+					case 'capsules': addCylinder(Math.random(),100,-50+Math.random()); break;
+				}
 			}
 			
 			// removes all JigLib and GLGE objects from the scene
@@ -302,6 +285,7 @@
 				cube.set_friction(0);
 				system.addBody(cube);
 				cube.moveTo([x,y,z,0]);
+				cube.setRotation(randomAngle());
 				links.push({glge:newObject,jig:cube,type:'temporary'})
 			}
 			
@@ -318,51 +302,26 @@
 				capsule.set_friction(0);
 				system.addBody(capsule);
 				capsule.moveTo([x,y,z,0]);
+				capsule.setRotation(randomAngle());
 				links.push({glge:newObject,jig:capsule,type:'temporary'})
 			}
 			
 			// reference to the JigLibJS physics system singleton
 			system=jigLib.PhysicsSystem.getInstance();
-			system.setGravity([0,-9.8,0,0]);
+			system.setGravity([0,-20,0,0]);
 			
 			// initial JigLib bodies matching the GLGE objects added in the XML above
 			var ground=new jigLib.JPlane(null,[0, 1, 0, 0]);
 			ground.set_friction(0);
 			system.addBody(ground);
 		
-			var lWall=new jigLib.JPlane(null,[0,1,0]);
-			lWall.set_friction(0);
-			lWall.set_x(-50);
-			lWall.set_rotationZ(-45);
-			system.addBody(lWall);
-		
-			var rWall=new jigLib.JPlane(null,[0,1,0]);
-			rWall.set_friction(0);
-			rWall.set_x(50);
-			rWall.set_rotationZ(-45);
-			system.addBody(rWall);
-		
-			var bWall=new jigLib.JPlane(null,[0,1,0]);
-			bWall.set_friction(0);
-			bWall.set_rotationX(90);
-			bWall.set_z(-115);
-			bWall.set_y(-40);
-			system.addBody(bWall);
-		
-			var fWall=new jigLib.JPlane(null,[0,-1,0]);
-			fWall.set_friction(0);
-			fWall.set_rotationX(-90);
-			fWall.set_z(20);
-			system.addBody(fWall);
-			
 			// link the GLGE scene objects to the jiglib bodies
 			links.push({glge:groundObj,jig:ground,type:'fixed'});
-			links.push({glge:bWallObj,jig:bWall,type:'fixed'});
-			links.push({glge:lWallObj,jig:lWall,type:'fixed'});
-			links.push({glge:rWallObj,jig:rWall,type:'fixed'});
 			
-			var lasttime;
+			var lasttime, starttime;
 			var renderCount;
+			var bodyCount=0;
+			var dropGap=1000;
 			
 			// renders the scene
 			function render(){
@@ -372,6 +331,12 @@
 				if (inttime<0.05) inttime=0.05;
 				system.integrate((now-lasttime)/1000);
 				lasttime=now;
+				
+				if((now-starttime) >= (bodyCount*dropGap))
+				{
+					addObject();
+					bodyCount++;
+				}
 				
 				for(var i=0; i<links.length;i++){
 					links[i].glge.setLocY(links[i].jig.get_currentState().position[1]);
@@ -391,20 +356,25 @@
 			start=function() {
 				document.getElementById('startBtn').disabled=true;
 				system.setSolverType(document.getElementById('solver').value);
+				shape=document.getElementById('shape').value;
 				clearObjects();
-				addObjects(document.getElementById('shape').value, document.getElementById('count').value);
-				lasttime=(new Date()).getTime();
+				lasttime=starttime=(new Date()).getTime();
+				bodyCount=0;
 				renderCount=0;
-				renderT=setInterval(render,30);
-				runnerT=setInterval(stop, 30000);
+				renderT=setInterval(render,15);
+				runnerT=setInterval(stop, 60000);
 			}
 			
 			// stops rendering
 			function stop() {
 				clearInterval(runnerT);
 				clearInterval(renderT);
-				alert('total renders: '+renderCount+'\nrenders per second: '+renderCount/30);
+				alert('total renders: '+renderCount+'\nrenders per second: '+renderCount/30+'\nbodies added: '+bodyCount);
 				document.getElementById('startBtn').disabled=false;
+			}
+			
+			function randomAngle() {
+				return [Math.floor(Math.random()*90), Math.floor(Math.random()*90), Math.floor(Math.random()*90)];
 			}
 		}
 		
@@ -418,12 +388,6 @@
 		<option value="spheres">spheres</option>
 		<option value="cubes">cubes</option>
 		<option value="capsules">capsules</option>
-	</select> <br />
-	object count:
-	<select name="count" id="count">
-		<option value="1">8 (2x2x2)</option>
-		<option value="2">27 (3x3x3)</option>
-		<option value="3">64 (4x4x4)</option>
 	</select> <br />
 	solver: <select name="solver" id="solver">
 		<option value="FAST">fast</option>
