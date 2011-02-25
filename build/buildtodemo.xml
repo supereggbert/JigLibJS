@@ -4,8 +4,8 @@
 		<taskdef name="yuicompress"
 			classname="com.yahoo.platform.yui.compressor.YUICompressTask">
 			<classpath>
-				<pathelement path="${basedir}/build/yuicompressor-2.4.2.jar" />
-				<pathelement path="${basedir}/build/YUIAnt.jar" />
+				<pathelement path="${basedir}/build/tasks/YUICompress/yuicompressor-2.4.2.jar" />
+				<pathelement path="${basedir}/build/tasks/YUICompress/YUIAnt.jar" />
 			</classpath>
 		</taskdef>
 		<yuicompress linebreak="16000" warn="false" munge="yes"

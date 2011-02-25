@@ -360,7 +360,7 @@
 	 * @type number
 	 **/
 	RigidBody.prototype.get_z=function(){
-		return _currState.position[2];
+		return this._currState.position[2];
 	};
 
 	/**
