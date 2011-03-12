@@ -178,13 +178,13 @@
                           }
                         }else{  // region 0
                           // minimum at interior point
-                          var fInvDet:Number = 1/fDet;
+                          var fInvDet = 1/fDet;
                           fS *= fInvDet;
                           fT *= fInvDet;
                           fSqrDist = fS * (fA00 * fS + fA01 * fT + 2 * fB0) +fT * (fA01 * fS + fA11 * fT + 2 * fB1) + fC;
                         }
                   }else{
-                        var fTmp0:Number,fTmp1:Number,fNumer:Number,fDenom:Number;
+                        var fTmp0,fTmp1,fNumer,fDenom;
 
                         if ( fS < 0 ){  // region 2
                           fTmp0 = fA01 + fB0;

@@ -31,7 +31,7 @@
 	};
 	
 	JIndexedTriangle.prototype.updateVertexIndices=function(vertexArray){
-		var i0:,i1,i2;
+		var i0,i1,i2;
 		i0=this._vertexIndices[0];
 		i1=this._vertexIndices[1];
 		i2=this._vertexIndices[2];

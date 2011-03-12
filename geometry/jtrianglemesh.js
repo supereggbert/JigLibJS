@@ -75,7 +75,7 @@
 		var bestFrac = JNumber3D.NUM_HUGE;
 		var tri;
 		var meshTriangle;
-		for (var iTriangle:uint = 0 ; iTriangle < numTriangles ; iTriangle++) {
+		for (var iTriangle = 0 ; iTriangle < numTriangles ; iTriangle++) {
 			meshTriangle = this._octree.getTriangle(potentialTriangles[iTriangle]);
                                 
 			tri = new JTriangle(this._octree.getVertex(meshTriangle.getVertexIndex(0)), this._octree.getVertex(meshTriangle.getVertexIndex(1)), this._octree.getVertex(meshTriangle.getVertexIndex(2)));
