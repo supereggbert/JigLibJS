@@ -5,6 +5,7 @@
 	var JIndexedTriangle=jigLib.JIndexedTriangle;
 	var OctreeCell=jigLib.OctreeCell;
 	var TriangleVertexIndices=jigLib.TriangleVertexIndices;
+	var JAABox=jigLib.JAABox;
         
 	var JOctree=function(){
 		this._testCounter = 0;
@@ -12,7 +13,7 @@
 		this._vertices = [];
 		this._triangles = [];
 		this._cellsToTest = [];
-		this._boundingBox = [];
+		this._boundingBox = new JAABox();
 	};
 	
 	
@@ -45,9 +46,8 @@
 	// Add the triangles - doesn't actually build the octree
 	JOctree.prototype.addTriangles=function(vertices, numVertices, triangleVertexIndices, numTriangles){
 		this.clear();
-                        
-		this._vertices.concat(vertices);
-                        
+		this._vertices=vertices.slice(0);
+		
 		var NLen,tiny=JNumber3D.NUM_TINY;
 		var i0,i1,i2;
 		var dr1,dr2,N;

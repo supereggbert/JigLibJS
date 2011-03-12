@@ -4,8 +4,8 @@
 	var JNumber3D=jigLib.JNumber3D;
                 
 	var OctreeCell=function(aabox){
-		childCellIndices = [];
-		triangleIndices = [];
+		this.childCellIndices = [];
+		this.triangleIndices = [];
                         
 		this.clear();
                         

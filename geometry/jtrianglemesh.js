@@ -49,11 +49,11 @@
 			var _point=vertices[j];
 			vts[i++] = transform.transformVector(_point);
 		}
-                        
+
 		this._octree = new JOctree();
                         
 		this._octree.addTriangles(vts, vts.length, triangleVertexIndices, triangleVertexIndices.length);
-		this._octree.buildOctree(this._maxTrianglesPerCell, _minCellSize);
+		this._octree.buildOctree(this._maxTrianglesPerCell, this._minCellSize);
                         
 	}
 	

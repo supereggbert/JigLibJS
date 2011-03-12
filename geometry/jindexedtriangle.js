@@ -2,6 +2,7 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	var PlaneData=jigLib.PlaneData;
+	var JAABox=jigLib.JAABox;
 	
         /// Support for an indexed triangle - assumes ownership by something that 
         /// has an array of vertices and an array of tIndexedTriangle
