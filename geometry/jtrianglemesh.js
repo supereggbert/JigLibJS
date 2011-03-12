@@ -1,18 +1,19 @@
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
-	var Matrix3D=jigLib.Matrix3D;
+	var JMatrix3D=jigLib.JMatrix3D;
+	var JOctree=jigLib.JOctree;
 	var CollOutData=jigLib.CollOutData;
 	var TriangleVertexIndices=jigLib.TriangleVertexIndices;
 	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 	var ISkin3D=jigLib.ISkin3D;
 
-	//removed init position and init orientation seems weird to have on trimesh but now other geom types
+	//removed init position and init orientation seems weird to have on trimesh but no other geom types
 	var JTriangleMesh=function(skin, maxTrianglesPerCell, minCellSize){
+		this.Super(skin);
 		if(maxTrianglesPerCell==undefined) maxTrianglesPerCell=10;
 		if(minCellSize==undefined) minCellSize=10;
-		this.Super(skin);
                         
 		this._maxTrianglesPerCell = maxTrianglesPerCell;
 		this._minCellSize = minCellSize;
@@ -28,10 +29,9 @@
 		}
                         
 		this._type = "TRIANGLEMESH";
-	}
+	};
 	
 	jigLib.extend(JTriangleMesh,jigLib.RigidBody);
-	
 	
 	/*Internally set up and preprocess all numTriangles. Each index
                  should, of course, be from 0 to numVertices-1. Vertices and
@@ -47,7 +47,7 @@
 		var i = 0;
 		for(var j=0;j<vertices.length;j++){
 			var _point=vertices[j];
-			vts[i++] = this.transform.transformVector(_point);
+			vts[i++] = transform.transformVector(_point);
 		}
                         
 		this._octree = new JOctree();

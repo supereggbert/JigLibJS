@@ -2,6 +2,7 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	var EdgeData=jigLib.EdgeData;
+	var JIndexedTriangle=jigLib.JIndexedTriangle;
 	var OctreeCell=jigLib.OctreeCell;
 	var TriangleVertexIndices=jigLib.TriangleVertexIndices;
         
@@ -53,9 +54,9 @@
 		var indexedTriangle;
 		for(var i=0;i<triangleVertexIndices.length;i++){
 			var tri=triangleVertexIndices[i];
-			i0 = tri.i0;
-			i1 = tri.i1;
-			i2 = tri.i2;
+			var i0 = triangleVertexIndices[i][0];
+			var i1 = triangleVertexIndices[i][1];
+			var i2 = triangleVertexIndices[i][2];
                                 
 			dr1 = Vector3DUtil.subtract(vertices[i1],vertices[i0]);
 			dr2 = Vector3DUtil.subtract(vertices[i2],vertices[i0]);
