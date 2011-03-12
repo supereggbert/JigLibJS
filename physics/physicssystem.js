@@ -127,10 +127,7 @@
 		}
 	};
 	//TODO document here
-	PhysicsSystem.prototype.etCollisionSystem=function(collisionSystemGrid, sx, sy, sz, nx, ny, nz, dx, dy, dz){
-		if(!sx) sx=0;
-		if(!sy) sy=0;
-		if(!sz) sz=0;
+	PhysicsSystem.prototype.setCollisionSystem=function(collisionSystemGrid, nx, ny, nz, dx, dy, dz){
 		if(nx==undefined) nx=20;
 		if(ny==undefined) ny=20;
 		if(nz==undefined) nz=20;
@@ -139,7 +136,7 @@
 		if(dz==undefined) dz=200;
 		// which collisionsystem to use grid / brute
 		if (collisionSystemGrid){
-			this._collisionSystem = new CollisionSystemGrid(sx, sy, sz, nx, ny, nz, dx, dy, dz);
+			this._collisionSystem = new CollisionSystemGrid(nx, ny, nz, dx, dy, dz);
 		}else{
 			this._collisionSystem = new CollisionSystemBrute(); // brute by default      
 		}

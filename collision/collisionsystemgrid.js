@@ -9,7 +9,6 @@
 	var CollisionSystemGridEntry=jigLib.CollisionSystemGridEntry;
 	var CollDetectInfo=jigLib.CollDetectInfo;
 
-	
 	/*
 	* Initializes a new CollisionSystem which uses a grid to speed up collision detection.
 	* Use this system for larger scenes with many objects.
@@ -34,11 +33,11 @@
 		this.gridEntries = [];
 		//gridBoxes = new Vector.<JAABox>(nx*ny*nz,true);
                         
-		var len=gridEntries.length;
+		var len=this.gridEntries.length;
 		for (var j = 0; j < len; ++j){
 			var gridEntry = new CollisionSystemGridEntry(null);
 			gridEntry.gridIndex = j;
-			gridEntries[j]=gridEntry;
+			this.gridEntries[j]=gridEntry;
 		}
                         
 		this.overflowEntries = new CollisionSystemGridEntry(null);
@@ -67,11 +66,11 @@
         CollisionSystemGrid.prototype.minDelta=0;
 
         CollisionSystemGrid.prototype.calcIndex=function(i, j, k){
-		var _i = i % nx;
-		var _j = j % ny;
-		var _k = k % nz;
+		var _i = i % this.nx;
+		var _j = j % this.ny;
+		var _k = k % this.nz;
                         
-		return (_i + nx * _j + (nx + ny) * _k);
+		return (_i + this.nx * _j + (this.nx + this.ny) * _k);
 	};
 
                 
@@ -79,7 +78,7 @@
 		var i;var j;var k;
 		var sides = colBody.get_boundingBox().get_sideLengths();
                         
-		if ((sides[0] > dx) || (sides[1] > dy) || (sides[2] > dz)){
+		if ((sides[0] > this.dx) || (sides[1] > this.dy) || (sides[2] > this.dz)){
 			//trace("calcGridForSkin3 -- Rigidbody to big for gridsystem - putting it into overflow list (lengths,type,id):", sides.x,sides.y,sides.z,colBody.type,colBody.id,colBody.boundingBox.minPos,colBody.boundingBox.maxPos);
 			i = j = k = -1;
 			return new [i,j,k];
@@ -87,13 +86,13 @@
 		//trace(sides.x,sides.y,sides.z);
                         
 		var min = colBody.get_boundingBox().get_minPos();
-		min[0] = JMath3D.wrap(min[0], 0, sizeX);
-		min[1] = JMath3D.wrap(min[1], 0, sizeY);
-		min[2] = JMath3D.wrap(min[2], 0, sizeZ);
+		min[0] = JMath3D.wrap(min[0], 0, this.sizeX);
+		min[1] = JMath3D.wrap(min[1], 0, this.sizeY);
+		min[2] = JMath3D.wrap(min[2], 0, this.sizeZ);
                         
-		i = int( (min.x / dx) % nx);
-		j = int( (min.y / dy) % ny);
-		k = int( (min.z / dz) % nz);
+		i = ( (min[0] / this.dx) % this.nx)|0;
+		j = ( (min[1] / this.dy) % this.ny)|0;
+		k = ( (min[2] / this.dz) % this.nz)|0;
                         
 		return [i,j,k];
 	};
@@ -106,7 +105,7 @@
                         
 		var sides = colBody.get_boundingBox().get_sideLengths();
                         
-		if ((sides[0] > dx) || (sides[1] > dy) || (sides[2] > dz)){
+		if ((sides[0] > this.dx) || (sides[1] > this.dy) || (sides[2] > this.dz)){
 			//trace("calcGridForSkin6 -- Rigidbody to big for gridsystem - putting it into overflow list (lengths,type,id):", sides.x,sides.y,sides.z,colBody.type,colBody.id,colBody.boundingBox.minPos,colBody.boundingBox.maxPos);
 			i = j = k = -1;
 			fi = fj = fk = 0.0;
@@ -116,28 +115,28 @@
                         
 		var min = colBody.get_boundingBox().get_minPos();
 
-		min[0] = JMath3D.wrap(min[0], 0, sizeX);
-		min[1] = JMath3D.wrap(min[1], 0, sizeY);
-		min[2] = JMath3D.wrap(min[2], 0, sizeZ);
+		min[0] = JMath3D.wrap(min[0], 0, this.sizeX);
+		min[1] = JMath3D.wrap(min[1], 0, this.sizeY);
+		min[2] = JMath3D.wrap(min[2], 0, this.sizeZ);
                         
-		fi = min[0] / dx;
-		fj = min[1] / dy;
-		fk = min[2] / dz;
+		fi = min[0] / this.dx;
+		fj = min[1] / this.dy;
+		fk = min[2] / this.dz;
                         
 		i = fi;
 		j = fj;
 		k = fk;
                         
 		if (i < 0) { i = 0; fi = 0.0; }
-		else if (i >= nx) { i = 0; fi = 0.0; }
+		else if (i >= this.nx) { i = 0; fi = 0.0; }
 		else fi -= i;
                         
 		if (j < 0) { j = 0; fj = 0.0; }
-		else if (j >= ny) { j = 0; fj = 0.0; }
+		else if (j >= this.ny) { j = 0; fj = 0.0; }
 		else fj -= j;
                         
 		if (k < 0) { k = 0; fk = 0.0; }
-		else if (k >= nz) { k = 0; fk = 0.0; }
+		else if (k >= this.nz) { k = 0; fk = 0.0; }
 		else fk -= k;
                         
 		tempStoreObject.i = i; tempStoreObject.j = j; tempStoreObject.k = k; tempStoreObject.fi = fi; tempStoreObject.fj = fj; tempStoreObject.fk = fk;
@@ -208,11 +207,12 @@
 
 		//trace(gridIndex);
 		var start;
+		var gridEntries=this.gridEntries;
 		//if (gridIndex >= 0**)
 		if (gridEntries.length-1 > gridIndex && gridIndex >=0) // check if it's outside the gridspace, if so add to overflow
 			start = gridEntries[gridIndex];
 		else
-			start = overflowEntries;
+			start = this.overflowEntries;
                         
 		CollisionSystemGridEntry.removeGridEntry(entry);
 		CollisionSystemGridEntry.insertGridEntryAfter(entry, start);
@@ -245,18 +245,18 @@
                         
 		var delta = colBody.get_boundingBox().get_sideLengths(); // skin.WorldBoundingBox.Max - skin.WorldBoundingBox.Min;
 		var maxI = 1, maxJ = 1, maxK = 1;
-		if (fi + (delta.x / dx) < 1)
+		if (fi + (delta[0] / this.dx) < 1)
 			maxI = 0;
-		if (fj + (delta.y / dy) < 1)
+		if (fj + (delta[1] / this.dy) < 1)
 			maxJ = 0;
-		if (fk + (delta.z / dz) < 1)
+		if (fk + (delta[2]/ this.dz) < 1)
 			maxK = 0;
                         
 		// now add the contents of all grid boxes - their contents may extend beyond the bounds
 		for (var di = -1; di <= maxI; ++di){
 			for (var dj = -1; dj <= maxJ; ++dj){
 				for (var dk = -1; dk <= maxK; ++dk){
-					var thisIndex = this.calcIndex(nx + i + di, ny + j + dj, nz + k + dk); // + ((nx*ny*nz)*0.5);
+					var thisIndex = this.calcIndex(this.nx + i + di, this.ny + j + dj, this.nz + k + dk); // + ((nx*ny*nz)*0.5);
 					//trace("ge", gridEntries.length);
 					if (this.gridEntries.length-1 > thisIndex && thisIndex >=0) {
 						var start = this.gridEntries[thisIndex];
@@ -285,7 +285,7 @@
 			if (!body.isActive) continue;
 
 			bodyID = body.id;
-			bodyType = body.type;
+			bodyType = body.get_type();
                                 
 			var lists=this.getListsToCheck(body);
                                 
@@ -297,11 +297,11 @@
 					if (entry.collisionBody && entry.collisionBody.isActive && bodyID > entry.collisionBody.id)
 						continue;
                                                 
-					if (this.checkCollidables(body, entry.collisionBody) && this.detectionFunctors[bodyType + "_" + entry.collisionBody.type] != undefined){
+					if (this.checkCollidables(body, entry.collisionBody) && this.detectionFunctors[bodyType + "_" + entry.collisionBody.get_type()] != undefined){
 						info = new CollDetectInfo();
 						info.body0 = body;
 						info.body1 = entry.collisionBody;
-						fu = this.detectionFunctors[info.body0.type + "_" + info.body1.type];
+						fu = this.detectionFunctors[info.body0.get_type() + "_" + info.body1.get_type()];
 						fu.collDetect(info, collArr);
 						this._numCollisionsChecks += 1;
 					} //check collidables
