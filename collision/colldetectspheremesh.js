@@ -25,11 +25,11 @@
 		var sphereTolR = collTolerance + sphere.get_radius();
 		var sphereTolR2 = sphereTolR * sphereTolR;
                         
-		var collNormal = new Vector3D();
+		var collNormal = [];
 		var collPts = []
                         
 		var potentialTriangles = [];
-		var numTriangles = mesh.octree.getTrianglesIntersectingtAABox(potentialTriangles, sphere.get_boundingBox());
+		var numTriangles = mesh.get_octree().getTrianglesIntersectingtAABox(potentialTriangles, sphere.get_boundingBox());
                         
 		var newD2,distToCentre,oldD2,dist,depth,tiny=JNumber3D.NUM_TINY;
 		var meshTriangle;
@@ -37,13 +37,13 @@
 		var arr;
 		var triangle;
 		for (var iTriangle = 0 ; iTriangle < numTriangles ; ++iTriangle) {
-			meshTriangle = mesh.octree.getTriangle(potentialTriangles[iTriangle]);
-			distToCentre = meshTriangle.plane.pointPlaneDistance(sphere.get_currentState().position);
+			meshTriangle = mesh.get_octree().getTriangle(potentialTriangles[iTriangle]);
+			distToCentre = meshTriangle.get_plane().pointPlaneDistance(sphere.get_currentState().position);
 			if (distToCentre <= 0) continue;
 			if (distToCentre >= sphereTolR) continue;
                                 
 			vertexIndices = meshTriangle.get_vertexIndices();
-			triangle = new JTriangle(mesh.octree.getVertex(vertexIndices[0]), mesh.octree.getVertex(vertexIndices[1]), mesh.octree.getVertex(vertexIndices[2]));
+			triangle = new JTriangle(mesh.get_octree().getVertex(vertexIndices[0]), mesh.get_octree().getVertex(vertexIndices[1]), mesh.get_octree().getVertex(vertexIndices[2]));
 			arr = [];
 			newD2 = triangle.pointTriangleDistanceSq(arr, sphere.get_currentState().position);
                                 
@@ -67,7 +67,7 @@
 			}
 		}
                         
-		var collInfo = new CollisionInfo();
+		var collInfo = new jigLib.CollisionInfo();
 		collInfo.objInfo = info;
 		collInfo.dirToBody = collNormal;
 		collInfo.pointInfo = collPts;

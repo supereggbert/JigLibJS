@@ -33,7 +33,7 @@
 	 * @type number
 	 **/
 	PlaneData.prototype.pointPlaneDistance=function(pt){
-		return Vector3DUtil.dotProduct(normal, pt) - distance;
+		return Vector3DUtil.dotProduct(this.normal, pt) - this.distance;
 	};
 	
                 

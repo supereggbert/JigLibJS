@@ -58,7 +58,7 @@
                 
 	// Get the triangle plane
         JIndexedTriangle.prototype.get_plane=function(){
-		return _plane;
+		return this._plane;
 	};
                 
         JIndexedTriangle.prototype.get_boundingBox=function(){
