@@ -49,7 +49,7 @@
 	CollDetectBoxMesh.prototype.addPoint=function(contactPoints, pt, combinationDistanceSq){
 		for(var i=0; i<contactPoints.length;i++){
 			var contactPoint=contactPoints[i];
-			if (Vector3DUtil.get_lengthSquared(Vector3DUtil.subtract(contactPoint,pt))< combinationDistanceSq)
+			if (Vector3DUtil.get_lengthSquared(Vector3DUtil.subtract(contactPoint,pt))< combinationDistanceSq){
 				contactPoint = Vector3DUtil.add(contactPoint,pt);
 				Vector3DUtil.scaleBy(contactPoint,0.5);
 				return false;
@@ -101,7 +101,7 @@
 		var triEdge0,triEdge1,triEdge2,triNormal,D,N,boxOldPos,boxNewPos,meshPos,delta;
 		var dirs0=box.get_currentState().getOrientationCols();
 		var tri=new JTriangle(mesh.octree.getVertex(triangle.getVertexIndex(0)),mesh.octree.getVertex(triangle.getVertexIndex(1)),mesh.octree.getVertex(triangle.getVertexIndex(2)));
-		triEdge0=Vector3DUtil.subtract(tri.getVertex(1).,tri.getVertex(0));
+		triEdge0=Vector3DUtil.subtract(tri.getVertex(1),tri.getVertex(0));
 		Vector3DUtil.normalize(triEdge0);
 		triEdge1=Vector3DUtil.subtract(tri.getVertex(2),tri.getVertex(1));
 		Vector3DUtil.normalize(triEdge1);

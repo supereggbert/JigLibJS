@@ -38,7 +38,7 @@
         CollisionSystemAbstract.prototype.collBody=null;
 	CollisionSystemAbstract.prototype._numCollisionsChecks = 0;
 
-        CollisionSystemAbstract.prototype.addCollisionBody=function(body:RigidBody){
+        CollisionSystemAbstract.prototype.addCollisionBody=function(body){
 		if (!this.findBody(body)) this.collBody.push(body);
 	};
                 
@@ -124,7 +124,7 @@
                         else return false;
 	};
 
-	CollisionSystemAbstract.prototype.get_numCollisionsChecks(){
+	CollisionSystemAbstract.prototype.get_numCollisionsChecks=function(){
 		return this._numCollisionsChecks;    
 	};
 	

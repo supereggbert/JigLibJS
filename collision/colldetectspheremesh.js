@@ -36,7 +36,7 @@
 		var vertexIndices;
 		var arr;
 		var triangle;
-		for (var iTriangle: = 0 ; iTriangle < numTriangles ; ++iTriangle) {
+		for (var iTriangle = 0 ; iTriangle < numTriangles ; ++iTriangle) {
 			meshTriangle = mesh.octree.getTriangle(potentialTriangles[iTriangle]);
 			distToCentre = meshTriangle.plane.pointPlaneDistance(sphere.get_currentState().position);
 			if (distToCentre <= 0) continue;

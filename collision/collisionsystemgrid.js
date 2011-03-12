@@ -35,7 +35,7 @@
 		//gridBoxes = new Vector.<JAABox>(nx*ny*nz,true);
                         
 		var len=gridEntries.length;
-		for (var j:int = 0; j < len; ++j){
+		for (var j = 0; j < len; ++j){
 			var gridEntry = new CollisionSystemGridEntry(null);
 			gridEntry.gridIndex = j;
 			gridEntries[j]=gridEntry;
@@ -45,7 +45,7 @@
 		this.overflowEntries.gridIndex = -1;
 	}
 	
-	jigLib.extend(CollisionSystemBrute,jigLib.CollisionSystemAbstract);
+	jigLib.extend(CollisionSystemGrid,jigLib.CollisionSystemAbstract);
 	
 	CollisionSystemGrid.prototype.gridEntries=null;            
 	//private var gridBoxes:Vector.<JAABox>;
