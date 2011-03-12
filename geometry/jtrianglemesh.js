@@ -8,14 +8,12 @@
 	var RigidBody=jigLib.RigidBody;
 	var ISkin3D=jigLib.ISkin3D;
 
-
-	var JTriangleMesh=function(skin, initPosition, initOrientation, maxTrianglesPerCell, minCellSize){
+	//removed init position and init orientation seems weird to have on trimesh but now other geom types
+	var JTriangleMesh=function(skin, maxTrianglesPerCell, minCellSize){
 		if(maxTrianglesPerCell==undefined) maxTrianglesPerCell=10;
 		if(minCellSize==undefined) minCellSize=10;
 		this.Super(skin);
                         
-		this.get_currentState().position=Vector3DUtil.clone(initPosition);
-		this.get_currentState().set_orientation(Vector3DUtil.clone(initOrientation));
 		this._maxTrianglesPerCell = maxTrianglesPerCell;
 		this._minCellSize = minCellSize;
                         
