@@ -134,7 +134,8 @@
 	}
                 
 	JOctree.prototype.updateTriangles=function(vertices){
-		this._vertices.concat(vertices);
+		//this._vertices.concat(vertices);
+		this._vertices=vertices.slice(0);
 		for(var i=0;i<this._triangles.length;i++){
 			var triangle=this._triangles[i];
 			triangle.updateVertexIndices(this._vertices);

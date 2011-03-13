@@ -68,11 +68,16 @@
 		xmx = x * x;ymy = y * y;zmz = z * z;
 		xmy = x * y;ymz = y * z;zmx = z * x;
 
-		var matrix=[(cosi * xmx) + cos,(cosi * xmy) - zms,(cosi * zmx) + yms,0,
+		/*var matrix=[(cosi * xmx) + cos,(cosi * xmy) - zms,(cosi * zmx) + yms,0,
 					(cosi * xmy) + zms,(cosi * ymy) + cos,(cosi * ymz) - xms,0,
 					(cosi * zmx) - yms,(cosi * ymz) + xms,(cosi * zmz) + cos,0,
-					0,0,0,1];
-
+					0,0,0,1];  again this should be transposed when using glmatrix*/
+		var matrix=[(cosi * xmx) + cos,(cosi * xmy) + zms,(cosi * zmx) - yms,0,
+					(cosi * xmy) - zms,(cosi * ymy) + cos,(cosi * ymz) + xms,0,
+					(cosi * zmx) + yms,(cosi * ymz) - xms,(cosi * zmz) + cos,0,
+					0,0,0,1];  
+					
+		
 		return new Matrix3D(matrix);
 	};
 	
@@ -94,11 +99,17 @@
 	 * @type Matrix3D
 	 **/
 	Matrix3D.prototype.translateMatrix=function(v){
-		return new Matrix3D([
+		/*return new Matrix3D([ this is wrong it looks like glmatrix uses transposed matrix
 		         			1,0,0,v[0],
 		         			0,1,0,v[1],
 		         			0,0,1,v[2],
 		         			0,0,0,1
+		         			]);*/
+		return new Matrix3D([
+		         			1,0,0,0,
+		         			0,1,0,0,
+		         			0,0,1,0,
+		         			v[0],v[1],v[2],1
 		         			]);
 	};
 	

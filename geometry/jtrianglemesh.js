@@ -46,7 +46,7 @@
                         
 		var i = 0;
 		for(var j=0;j<vertices.length;j++){
-			var _point=vertices[j];
+			var _point=vertices[j].slice(0);
 			vts[i++] = transform.transformVector(_point);
 		}
 
@@ -99,16 +99,16 @@
                         
 		var len=this._skinVertices.length;
 		var vts=[];
-                        
+		alert(this.get_currentState().position);
 		var transform = JMatrix3D.getTranslationMatrix(this.get_currentState().position[0], this.get_currentState().position[1], this.get_currentState().position[2]);
 		transform = JMatrix3D.getAppendMatrix3D(this.get_currentState().get_orientation(), transform);
-                        
+
 		var i = 0;
 		for(j=0;j<this._skinVertices.length;j++){
-			var _point=this._skinVertices[j];
+			var _point=this._skinVertices[j].slice(0);
 			vts[i++] = transform.transformVector(_point);
 		}
-                        
+
 		this._octree.updateTriangles(vts);
 		this._octree.buildOctree(this._maxTrianglesPerCell, this._minCellSize);
                         
