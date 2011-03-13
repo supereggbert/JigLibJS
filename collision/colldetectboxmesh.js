@@ -206,15 +206,15 @@
 		var boxCentre=box.get_currentState().position;
                         
 		var potentialTriangles = [];
-		var numTriangles=mesh.octree.getTrianglesIntersectingtAABox(potentialTriangles,box.get_boundingBox());
+		var numTriangles=mesh.get_octree().getTrianglesIntersectingtAABox(potentialTriangles,box.get_boundingBox());
                         
 		var collision=false;
 		var dist;
 		var meshTriangle;
 		for (var iTriangle = 0 ; iTriangle < numTriangles ; ++iTriangle) {
-			meshTriangle=mesh.octree.getTriangle(potentialTriangles[iTriangle]);
+			meshTriangle=mesh.get_octree().getTriangle(potentialTriangles[iTriangle]);
                                 
-			dist=meshTriangle.plane.pointPlaneDistance(boxCentre);
+			dist=meshTriangle.get_plane().pointPlaneDistance(boxCentre);
 			if (dist > boxRadius || dist < 0){
 				continue;
 			}
