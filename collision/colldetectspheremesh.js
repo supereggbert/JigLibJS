@@ -8,6 +8,8 @@
 	var JNumber3D=jigLib.JNumber3D;
 	var MaterialProperties=jigLib.MaterialProperties;
 	var RigidBody=jigLib.RigidBody;
+	var CollPointInfo=jigLib.CollPointInfo;
+	
 
         var CollDetectSphereMesh=function() {
 		this.name = "SphereMesh";
@@ -21,11 +23,11 @@
 	CollDetectSphereMesh.prototype.collDetectSphereStaticMeshOverlap=function(sphere, mesh, info, collTolerance, collArr){
 		var body0Pos = info.body0.get_oldState().position;
 		var body1Pos = info.body1.get_oldState().position;
-                        
+
 		var sphereTolR = collTolerance + sphere.get_radius();
 		var sphereTolR2 = sphereTolR * sphereTolR;
                         
-		var collNormal = [];
+		var collNormal = [0,0,0];
 		var collPts = []
                         
 		var potentialTriangles = [];
@@ -39,6 +41,7 @@
 		for (var iTriangle = 0 ; iTriangle < numTriangles ; ++iTriangle) {
 			meshTriangle = mesh.get_octree().getTriangle(potentialTriangles[iTriangle]);
 			distToCentre = meshTriangle.get_plane().pointPlaneDistance(sphere.get_currentState().position);
+			//alert(distToCentre);
 			if (distToCentre <= 0) continue;
 			if (distToCentre >= sphereTolR) continue;
                                 
@@ -52,7 +55,7 @@
 				oldD2 = triangle.pointTriangleDistanceSq(arr, sphere.get_oldState().position);
 				dist = Math.sqrt(oldD2);
 				depth = sphere.get_radius() - dist;
-				var collisionN = (dist > tiny) ? (Vector3DUtil.subtract(sphere.get_oldState().position,triangle.getPoint(arr[0], arr[1]))) : Vector3DUtil.clone(triangle.normal);
+				var collisionN = (dist > tiny) ? (Vector3DUtil.subtract(sphere.get_oldState().position,triangle.getPoint(arr[0], arr[1]))) : triangle.normal.slice(0);
 				Vector3DUtil.normalize(collisionN);
 				// since impulse get applied at the old position
 				var pt = Vector3DUtil.subtract(sphere.get_oldState().position,JNumber3D.getScaleVector(collisionN, sphere.get_radius()));

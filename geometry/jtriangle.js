@@ -39,8 +39,8 @@
 	// Returns the point parameterised by t0 and t1
 	JTriangle.prototype.getPoint=function(t0, t1) {
 		var d0,d1;
-		d0 = Vector3DUtil.crossProduct(this.edge0);
-		d1 = Vector3DUtil.crossProduct(this.edge1);
+		d0 = this.edge0.slice(0);
+		d1 = this.edge1.slice(0);
                         
 		Vector3DUtil.scaleBy(d0,t0);
 		Vector3DUtil.scaleBy(d1,t1);

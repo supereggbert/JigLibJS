@@ -37,7 +37,7 @@
                  should, of course, be from 0 to numVertices-1. Vertices and
                  triangles are copied and stored internally.*/
         JTriangleMesh.prototype.createMesh=function(vertices, triangleVertexIndices){
-                        
+		this._skinVertices=vertices;
 		var len=vertices.length;
 		var vts=[];
                         
@@ -95,7 +95,7 @@
 	}
 	
 	JTriangleMesh.prototype.updateState=function(){
-		this.Super.updateState();
+		this.Super.prototype.updateState.call(this);
                         
 		var len=this._skinVertices.length;
 		var vts=[];
@@ -104,7 +104,7 @@
 		transform = JMatrix3D.getAppendMatrix3D(this.get_currentState().get_orientation(), transform);
                         
 		var i = 0;
-		for(k=0;j<this._skinVertices.length;j++){
+		for(j=0;j<this._skinVertices.length;j++){
 			var _point=this._skinVertices[j];
 			vts[i++] = transform.transformVector(_point);
 		}
