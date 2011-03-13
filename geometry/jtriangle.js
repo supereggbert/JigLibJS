@@ -64,7 +64,7 @@
 			case 2:
 				return Vector3DUtil.add(this.origin,this.edge1);
 			default:
-				return origin;
+				return this.origin;
 		}
 	};
 	
