@@ -248,7 +248,13 @@
 	 * @returns
 	 */
 	Matrix3D.prototype.transformVector=function(vector){
-		return GLMatrix.multiplyVec3(GLMatrix.transpose(this.glmatrix), vector);
+		var x=vector[0];
+		var y=vector[1];
+		var z=vector[2];
+		var m=this.glmatrix;
+		return [m[0]*x+m[1]*y+m[2]*z+m[3],m[4]*x+m[5]*y+m[6]*z+m[7],m[8]*x+m[9]*y+m[10]*z+m[11]];
+		
+		//return GLMatrix.multiplyVec3(GLMatrix.transpose(this.glmatrix), vector); for some reason this is giving a very wrong answer!!!
 	};
 	
 	jigLib.Matrix3D=Matrix3D;
