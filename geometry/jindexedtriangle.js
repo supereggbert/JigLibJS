@@ -2,6 +2,7 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	var PlaneData=jigLib.PlaneData;
+	var JAABox=jigLib.JAABox;
 	
         /// Support for an indexed triangle - assumes ownership by something that 
         /// has an array of vertices and an array of tIndexedTriangle
@@ -31,7 +32,7 @@
 	};
 	
 	JIndexedTriangle.prototype.updateVertexIndices=function(vertexArray){
-		var i0:,i1,i2;
+		var i0,i1,i2;
 		i0=this._vertexIndices[0];
 		i1=this._vertexIndices[1];
 		i2=this._vertexIndices[2];
@@ -57,7 +58,7 @@
                 
 	// Get the triangle plane
         JIndexedTriangle.prototype.get_plane=function(){
-		return _plane;
+		return this._plane;
 	};
                 
         JIndexedTriangle.prototype.get_boundingBox=function(){

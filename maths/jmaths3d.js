@@ -40,6 +40,17 @@
 				v1[2] + (v0[2] - v1[2]) * m, 
 				0];
 	};
+	
+	
+	 JMath3D.wrap=function(val, min, max){
+		var delta = max - min;
+		if (val > delta){
+			val = val / delta;
+			val = val - Math.floor(val);
+			val = val * delta;
+		}
+		return val;
+	};
 
 	/**
 	 * @function unproject
@@ -55,5 +66,6 @@
 		var vector = Vector3DUtil.create(mX / persp, -mY / persp, focus, 0);
 		return matrix3D.transformVector(vector);
 	};
+	jigLib.JMath3D=JMath3D;
 	
 })(jigLib);

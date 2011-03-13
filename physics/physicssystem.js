@@ -22,11 +22,13 @@
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JConfig=jigLib.JConfig;
 	var CollPointInfo=jigLib.CollPointInfo;
-	var CollisionSystem=jigLib.CollisionSystem;
+	var CollisionSystemBrute=jigLib.CollisionSystemBrute;
+	var CollisionSystemGrid=jigLib.CollisionSystemGrid;
 	var ContactData=jigLib.ContactData;
 	var JMatrix3D=jigLib.JMatrix3D;
 	var JNumber3D=jigLib.JNumber3D;	var BodyPair=jigLib.BodyPair;	var CachedImpulse=jigLib.CachedImpulse;
-	
+
+
 	/**
 	 * @name PhysicsSystem
 	 * @class PhysicsSystem a singleton representing the physics system
@@ -70,7 +72,7 @@
 		this._controllers = [];
 
 		this._cachedContacts = [];
-		this._collisionSystem = new CollisionSystem();
+		this._collisionSystem = new CollisionSystemBrute();
 
 		this.setGravity(JNumber3D.getScaleVector(Vector3DUtil.Y_AXIS, -10));
 	};
@@ -122,6 +124,21 @@
 
 		for(var i=0, cl=this._controllers.length; i<cl; i++){
 			this._controllers[i].updateController(dt);
+		}
+	};
+	//TODO document here
+	PhysicsSystem.prototype.setCollisionSystem=function(collisionSystemGrid, nx, ny, nz, dx, dy, dz){
+		if(nx==undefined) nx=20;
+		if(ny==undefined) ny=20;
+		if(nz==undefined) nz=20;
+		if(dx==undefined) dx=200;
+		if(dy==undefined) dy=200;
+		if(dz==undefined) dz=200;
+		// which collisionsystem to use grid / brute
+		if (collisionSystemGrid){
+			this._collisionSystem = new CollisionSystemGrid(nx, ny, nz, dx, dy, dz);
+		}else{
+			this._collisionSystem = new CollisionSystemBrute(); // brute by default      
 		}
 	};
 

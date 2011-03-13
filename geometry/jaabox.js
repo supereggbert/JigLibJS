@@ -22,6 +22,7 @@ distribution.
 	
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
+	var EdgeData=jigLib.EdgeData;
 	
 	/**
 	 * @author Muzer(muzerly@gmail.com)
@@ -37,8 +38,10 @@ distribution.
 	 * @param {array} maxPos a 3D vector
 	 **/
 	var JAABox=function(minPos, maxPos) {
-		this._minPos = minPos.slice(0);
-		this._maxPos = maxPos.slice(0);
+		if(minPos){
+			this._minPos = minPos.slice(0);
+			this._maxPos = maxPos.slice(0);
+		}
 	};
 	
 	JAABox.prototype._minPos=null;
@@ -98,6 +101,35 @@ distribution.
 		var pos = this._minPos.slice(0);
 		return JNumber3D.getScaleVector(Vector3DUtil.add(pos, this._maxPos), 0.5);
 	};
+	
+	
+	JAABox.prototype.getAllPoints=function(){
+		var center,halfSide;
+		var points;
+		center = this.get_centrePos();
+		halfSide = this.get_sideLengths().slice(0);
+		Vector3DUtil.scaleBy(halfSide, 0.5);
+		points = [];
+		points[0] = Vector3DUtil.add(center,[halfSide[0], -halfSide[1], halfSide[2]]);
+		points[1] = Vector3DUtil.add(center,[halfSide[0], halfSide[1], halfSide[2]]);
+		points[2] = Vector3DUtil.add(center,[-halfSide[0], -halfSide[1], halfSide[2]]);
+		points[3] = Vector3DUtil.add(center,[-halfSide[0], halfSide[1], halfSide[2]]);
+		points[4] = Vector3DUtil.add(center,[-halfSide[0], -halfSide[1], -halfSide[2]]);
+		points[5] = Vector3DUtil.add(center,[-halfSide[0], halfSide[1], -halfSide[2]]);
+		points[6] = Vector3DUtil.add(center,[halfSide[0], -halfSide[1], -halfSide[2]]);
+		points[7] = Vector3DUtil.add(center,[halfSide[0], halfSide[1], -halfSide[2]]);
+                        
+		return points;
+	}
+                
+	JAABox.prototype.get_edges=function(){
+		return [
+		new EdgeData( 0, 1 ), new EdgeData( 0, 2 ), new EdgeData( 0, 6 ),
+		new EdgeData( 2, 3 ), new EdgeData( 2, 4 ), new EdgeData( 6, 7 ),
+		new EdgeData( 6, 4 ), new EdgeData( 1, 3 ), new EdgeData( 1, 7 ),
+		new EdgeData( 3, 5 ), new EdgeData( 7, 5 ), new EdgeData( 4, 5 )];
+	}
+	
 				
 	/**
 	 * @function move moves the JAABox by delta

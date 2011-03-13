@@ -22,7 +22,7 @@
 			if(!_body.isActive) continue;
                                 
 			bodyID = _body.id;
-			bodyType = _body.type;
+			bodyType = _body.get_type();
 			for(k=0;k<this.collBody.length;k++){
 				var _collBody=this.collBody[k];
 				if (_body == _collBody){
@@ -33,11 +33,11 @@
 					continue;
 				}
                                         
-				if (this.checkCollidables(_body, _collBody) && this.detectionFunctors[bodyType + "_" + _collBody.type] != undefined){
+				if (this.checkCollidables(_body, _collBody) && this.detectionFunctors[bodyType + "_" + _collBody.get_type()] != undefined){
 					info = new CollDetectInfo();
 					info.body0 = _body;
 					info.body1 = _collBody;
-					fu = this.detectionFunctors[info.body0.type + "_" + info.body1.type];
+					fu = this.detectionFunctors[info.body0.get_type() + "_" + info.body1.get_type()];
 					fu.collDetect(info, collArr);
 					this._numCollisionsChecks += 1;
 				}

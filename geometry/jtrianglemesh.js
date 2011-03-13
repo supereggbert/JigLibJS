@@ -1,21 +1,20 @@
 (function(jigLib){
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
-	var Matrix3D=jigLib.Matrix3D;
+	var JMatrix3D=jigLib.JMatrix3D;
+	var JOctree=jigLib.JOctree;
 	var CollOutData=jigLib.CollOutData;
 	var TriangleVertexIndices=jigLib.TriangleVertexIndices;
 	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 	var ISkin3D=jigLib.ISkin3D;
 
-
-	var JTriangleMesh=function(skin, initPosition, initOrientation, maxTrianglesPerCell, minCellSize){
+	//removed init position and init orientation seems weird to have on trimesh but no other geom types
+	var JTriangleMesh=function(skin, maxTrianglesPerCell, minCellSize){
+		this.Super(skin);
 		if(maxTrianglesPerCell==undefined) maxTrianglesPerCell=10;
 		if(minCellSize==undefined) minCellSize=10;
-		this.Super(skin);
                         
-		this.get_currentState().position=Vector3DUtil.clone(initPosition);
-		this.get_currentState().set_orientation(Vector3DUtil.clone(initOrientation));
 		this._maxTrianglesPerCell = maxTrianglesPerCell;
 		this._minCellSize = minCellSize;
                         
@@ -30,16 +29,15 @@
 		}
                         
 		this._type = "TRIANGLEMESH";
-	}
+	};
 	
 	jigLib.extend(JTriangleMesh,jigLib.RigidBody);
-	
 	
 	/*Internally set up and preprocess all numTriangles. Each index
                  should, of course, be from 0 to numVertices-1. Vertices and
                  triangles are copied and stored internally.*/
         JTriangleMesh.prototype.createMesh=function(vertices, triangleVertexIndices){
-                        
+		this._skinVertices=vertices;
 		var len=vertices.length;
 		var vts=[];
                         
@@ -48,14 +46,14 @@
                         
 		var i = 0;
 		for(var j=0;j<vertices.length;j++){
-			var _point=vertices[j];
-			vts[i++] = this.transform.transformVector(_point);
+			var _point=vertices[j].slice(0);
+			vts[i++] = transform.transformVector(_point);
 		}
-                        
+
 		this._octree = new JOctree();
                         
 		this._octree.addTriangles(vts, vts.length, triangleVertexIndices, triangleVertexIndices.length);
-		this._octree.buildOctree(this._maxTrianglesPerCell, _minCellSize);
+		this._octree.buildOctree(this._maxTrianglesPerCell, this._minCellSize);
                         
 	}
 	
@@ -75,7 +73,7 @@
 		var bestFrac = JNumber3D.NUM_HUGE;
 		var tri;
 		var meshTriangle;
-		for (var iTriangle:uint = 0 ; iTriangle < numTriangles ; iTriangle++) {
+		for (var iTriangle = 0 ; iTriangle < numTriangles ; iTriangle++) {
 			meshTriangle = this._octree.getTriangle(potentialTriangles[iTriangle]);
                                 
 			tri = new JTriangle(this._octree.getVertex(meshTriangle.getVertexIndex(0)), this._octree.getVertex(meshTriangle.getVertexIndex(1)), this._octree.getVertex(meshTriangle.getVertexIndex(2)));
@@ -97,20 +95,20 @@
 	}
 	
 	JTriangleMesh.prototype.updateState=function(){
-		this.Super.updateState();
+		this.Super.prototype.updateState.call(this);
                         
 		var len=this._skinVertices.length;
 		var vts=[];
-                        
+		
 		var transform = JMatrix3D.getTranslationMatrix(this.get_currentState().position[0], this.get_currentState().position[1], this.get_currentState().position[2]);
 		transform = JMatrix3D.getAppendMatrix3D(this.get_currentState().get_orientation(), transform);
-                        
+
 		var i = 0;
-		for(k=0;j<this._skinVertices.length;j++){
-			var _point=this._skinVertices[j];
+		for(j=0;j<this._skinVertices.length;j++){
+			var _point=this._skinVertices[j].slice(0);
 			vts[i++] = transform.transformVector(_point);
 		}
-                        
+
 		this._octree.updateTriangles(vts);
 		this._octree.buildOctree(this._maxTrianglesPerCell, this._minCellSize);
                         
