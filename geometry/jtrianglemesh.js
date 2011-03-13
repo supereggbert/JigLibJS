@@ -99,7 +99,7 @@
                         
 		var len=this._skinVertices.length;
 		var vts=[];
-		alert(this.get_currentState().position);
+		
 		var transform = JMatrix3D.getTranslationMatrix(this.get_currentState().position[0], this.get_currentState().position[1], this.get_currentState().position[2]);
 		transform = JMatrix3D.getAppendMatrix3D(this.get_currentState().get_orientation(), transform);
 
