@@ -26,7 +26,9 @@
 	var CollisionSystemGrid=jigLib.CollisionSystemGrid;
 	var ContactData=jigLib.ContactData;
 	var JMatrix3D=jigLib.JMatrix3D;
-	var JNumber3D=jigLib.JNumber3D;	var BodyPair=jigLib.BodyPair;	var CachedImpulse=jigLib.CachedImpulse;
+	var JNumber3D=jigLib.JNumber3D;
+	var BodyPair=jigLib.BodyPair;
+	var CachedImpulse=jigLib.CachedImpulse;
 
 
 	/**
@@ -127,7 +129,10 @@
 		}
 	};
 	//TODO document here
-	PhysicsSystem.prototype.setCollisionSystem=function(collisionSystemGrid, nx, ny, nz, dx, dy, dz){
+	PhysicsSystem.prototype.setCollisionSystem=function(collisionSystemGrid, sx, sy, sz, nx, ny, nz, dx, dy, dz){
+		if(sx==undefined) sx=0;
+		if(sy==undefined) sy=0;
+		if(sz==undefined) sz=0;
 		if(nx==undefined) nx=20;
 		if(ny==undefined) ny=20;
 		if(nz==undefined) nz=20;
@@ -136,7 +141,7 @@
 		if(dz==undefined) dz=200;
 		// which collisionsystem to use grid / brute
 		if (collisionSystemGrid){
-			this._collisionSystem = new CollisionSystemGrid(nx, ny, nz, dx, dy, dz);
+			this._collisionSystem = new CollisionSystemGrid(sx, sy, sz, nx, ny, nz, dx, dy, dz);
 		}else{
 			this._collisionSystem = new CollisionSystemBrute(); // brute by default      
 		}
@@ -959,7 +964,8 @@
 		var ptInfo;
 		var fricImpulse;
 		var contact;
-		for(var i=0, cl=this._collisions.length; i<cl; i++){			var collInfo=this._collisions[i];
+		for(var i=0, cl=this._collisions.length; i<cl; i++){
+			var collInfo=this._collisions[i];
 			for (var j=0, pilen=collInfo.pointInfo.length; j<pilen; j++){
 				ptInfo = collInfo.pointInfo[j];
 				fricImpulse = (collInfo.objInfo.body0.id > collInfo.objInfo.body1.id) ? ptInfo.accumulatedFrictionImpulse : JNumber3D.getScaleVector(ptInfo.accumulatedFrictionImpulse, -1);
@@ -983,7 +989,8 @@
 	PhysicsSystem.prototype.handleAllConstraints=function(dt, iter, forceInelastic){
 		var origNumCollisions = this._collisions.length;
 		var collInfo;
-		var _constraint;
+		var _constraint;
+
 		for(var i=0, cl=this._constraints.length; i<cl; i++){
 			this._constraints[i].preApply(dt);
 		}
@@ -1135,7 +1142,8 @@
 						if (other_body == _body)
 							other_body = _body.collisions[j].objInfo.body1;
 
-						if (!other_body.isActive)							_body.addMovementActivation(_body.get_currentState().position, other_body);
+						if (!other_body.isActive)
+							_body.addMovementActivation(_body.get_currentState().position, other_body);
 					}
 				}
 			}
@@ -1264,7 +1272,8 @@
 		this._activeBodies = [];
 				
 		for(var i=0, bl=this._bodies.length; i<bl; i++){
-			var _body=this._bodies[i];			if (_body.isActive)
+			var _body=this._bodies[i];
+			if (_body.isActive)
 				this._activeBodies.push(_body);
 		}
 	};

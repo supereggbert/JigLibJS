@@ -41,6 +41,15 @@
 				0];
 	};
 	
+	 JMath3D.getLimiteNumber=function(num, min, max){
+		var n = num;
+		if (n < min){
+			n = min;
+		}else if (n > max){
+			n = max;
+		}
+		return n;
+	};
 	
 	 JMath3D.wrap=function(val, min, max){
 		var delta = max - min;

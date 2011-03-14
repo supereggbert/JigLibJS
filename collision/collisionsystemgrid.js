@@ -12,7 +12,9 @@
 	/*
 	* Initializes a new CollisionSystem which uses a grid to speed up collision detection.
 	* Use this system for larger scenes with many objects.
-	*
+	* @param sx start point of grid in X axis.
+	* @param sy start point of grid in Y axis.
+	* @param sz start point of grid in Z axis.
 	* @param nx Number of GridEntries in X Direction.
 	* @param ny Number of GridEntries in Y Direction.
 	* @param nz Number of GridEntries in Z Direction.
@@ -20,9 +22,17 @@
 	* @param dy Size of a single GridEntry in Y Direction.
 	* @param dz Size of a single GridEntry in Z Direction.
 	*/
-	var CollisionSystemGrid=function(nx, ny, nz, dx, dy, dz){
+	var CollisionSystemGrid=function(sx, sy, sz, nx, ny, nz, dx, dy, dz){
 		this.Super();
-
+		if(sx==undefined) sx=0;
+		if(sy==undefined) sy=0;
+		if(sz==undefined) sz=0;
+		if(nx==undefined) nx=20; 
+		if(ny==undefined) ny=20;
+		if(nz==undefined) nz=20;
+		if(dx==undefined) dx=200;
+		if(dy==undefined) dy=200;
+		if(dz==undefined) dz=200;
 		this.nx = nx; this.ny = ny; this.nz = nz;
 		this.dx = dx; this.dy = dy; this.dz = dz;
 		this.sizeX = nx * dx;
@@ -30,6 +40,8 @@
 		this.sizeZ = nz * dz;
 		this.minDelta = Math.min(dx, dy, dz);
                         
+		this.startpoint = [sx, sy, sz];
+		
 		this.gridEntries = [];
 		//gridBoxes = new Vector.<JAABox>(nx*ny*nz,true);
                         
@@ -86,13 +98,13 @@
 		//trace(sides.x,sides.y,sides.z);
                         
 		var min = colBody.get_boundingBox().get_minPos();
-		min[0] = JMath3D.wrap(min[0], 0, this.sizeX);
-		min[1] = JMath3D.wrap(min[1], 0, this.sizeY);
-		min[2] = JMath3D.wrap(min[2], 0, this.sizeZ);
+		min[0] = JMath3D.wrap(min[0], this.startpoint[0], this.startpoint[0]+this.sizeX);
+		min[1] = JMath3D.wrap(min[1], this.startpoint[1], this.startpoint[1]+this.sizeY);
+		min[2] = JMath3D.wrap(min[2], this.startpoint[2], this.startpoint[2]+this.sizeZ);
                         
-		i = ( (min[0] / this.dx) % this.nx)|0;
-		j = ( (min[1] / this.dy) % this.ny)|0;
-		k = ( (min[2] / this.dz) % this.nz)|0;
+		i = ( ((min[0]-this.startpoint[0]) / this.dx) % this.nx)|0;
+		j = ( ((min[1]-this.startpoint[1]) / this.dy) % this.ny)|0;
+		k = ( ((min[2]-this.startpoint[2]) / this.dz) % this.nz)|0;
                         
 		return [i,j,k];
 	};
@@ -114,14 +126,14 @@
 		}
                         
 		var min = colBody.get_boundingBox().get_minPos();
-
-		min[0] = JMath3D.wrap(min[0], 0, this.sizeX);
-		min[1] = JMath3D.wrap(min[1], 0, this.sizeY);
-		min[2] = JMath3D.wrap(min[2], 0, this.sizeZ);
+	
+		min[0] = JMath3D.getLimiteNumber(min[0], this.startpoint[0], this.startpoint[0] + this.sizeX);
+		min[1] = JMath3D.getLimiteNumber(min[1], this.startpoint[1], this.startpoint[1] + this.sizeY);
+		min[2] = JMath3D.getLimiteNumber(min[2], this.startpoint[2], this.startpoint[2] + this.sizeZ);
                         
-		fi = min[0] / this.dx;
-		fj = min[1] / this.dy;
-		fk = min[2] / this.dz;
+		fi = (min[0] - this.startpoint[0]) / this.dx;
+		fj = (min[1] - this.startpoint[1]) / this.dy;
+		fk = (min[2] - this.startpoint[2]) / this.dz;
                         
 		i = fi;
 		j = fj;
