@@ -39,9 +39,9 @@
 	 * @type number
 	 **/
 	JTerrain.prototype.getHeightByIndex=function(i, j){
-		i = this.limiteInt(i, 0, _terrain.sw);
-		j = this.limiteInt(j, 0, _terrain.sh);
-		return _terrain.heights[i][j];
+		i = this.limiteInt(i, 0, _terrain.get_sw());
+		j = this.limiteInt(j, 0, _terrain.get_sh());
+		return _terrain.get_heights(i,j);
 	};
 	
 	/**
@@ -50,47 +50,47 @@
 	 * @type object
 	 **/
 	JTerrain.prototype.getHeightAndNormalByPoint=function(point){
-		var w = this.limiteInt(point[0], this._terrain.minW, this._terrain.maxW);
-		var h = this.limiteInt(point[2], this._terrain.minH, this._terrain.maxH);
+		var w = this.limiteInt(point[0], this._terrain.get_minW(), this._terrain.get_maxW());
+		var h = this.limiteInt(point[2], this._terrain.get_minH(), this._terrain.get_maxH());
 						
-		var i0 = ((w - _terrain.minW) / this._terrain.dw)|0;
-		var j0 = ((h - _terrain.minH) / this._terrain.dh)|0;
-		i0 = this.limiteInt(i0, 0, this._terrain.sw);
-		j0 = this.limiteInt(j0, 0, this._terrain.sh);
+		var i0 = ((w - this._terrain.get_minW()) / this._terrain.get_dw())|0;
+		var j0 = ((h - this._terrain.get_minH()) / this._terrain.get_dh())|0;
+		i0 = this.limiteInt(i0, 0, this._terrain.get_sw());
+		j0 = this.limiteInt(j0, 0, this._terrain.get_sh());
 		
 		var i1 = i0 + 1;
 		var j1 = j0 + 1;
-		i1 = this.limiteInt(i1, 0, this._terrain.sw);
-		j1 = this.limiteInt(j1, 0, this._terrain.sh);
+		i1 = this.limiteInt(i1, 0, this._terrain.get_sw());
+		j1 = this.limiteInt(j1, 0, this._terrain.get_sh());
 						
-		var iFrac = 1 - (w - (i0 * this._terrain.dw + this._terrain.minW)) / this._terrain.dw;
-		var jFrac = (h - (j0 * this._terrain.dh + this._terrain.minH)) / this._terrain.dh;
+		var iFrac = 1 - (w - (i0 * this._terrain.get_dw() + this._terrain.get_minW())) / this._terrain.get_dw();
+		var jFrac = (h - (j0 * this._terrain.get_dh() + this._terrain.get_minH())) / this._terrain.get_dh();
 		iFrac = JNumber3D.getLimiteNumber(iFrac, 0, 1);
 		jFrac = JNumber3D.getLimiteNumber(jFrac, 0, 1);
 						
-		var h00 = this._terrain.heights[i0][j0];
-		var h01 = this._terrain.heights[i0][j1];
-		var h10 = this._terrain.heights[i1][j0];
-		var h11 = this._terrain.heights[i1][j1];
+		var h00 = this._terrain.get_heights(i0,j0);
+		var h01 = this._terrain.get_heights(i0,j1);
+		var h10 = this._terrain.get_heights(i1,j0);
+		var h11 = this._terrain.get_heights(i1,j1);
 						
 		var obj = { };
 		obj.height = 0;
 		obj.normal = [0,0,0,0];
 		var plane;
 		if (iFrac < jFrac || i0==i1 || j0 == j1){
-			obj.normal = Vector3DUtil.crossProduct( [0, h11 - h10, this._terrain.dh, 0],
-													[this._terrain.dw, h11 - h01, 0, 0]);
+			obj.normal = Vector3DUtil.crossProduct( [0, h11 - h10, this._terrain.get_dh(), 0],
+													[this._terrain.get_dw(), h11 - h01, 0, 0]);
 			Vector3DUtil.normalize(obj.normal);
 								
-			plane = new PlaneData([(i1 * this._terrain.dw + this._terrain.minW), h11, (j1 * this._terrain.dh + this._terrain.minH), 0], 
+			plane = new PlaneData([(i1 * this._terrain.get_dw() + this._terrain.get_minW()), h11, (j1 * this._terrain.get_dh() + this._terrain.get_minH()), 0], 
 								  obj.normal);
 			obj.height = plane.pointPlaneDistance(point);
 		}else{
-			obj.normal = Vector3DUtil.crossProduct( [0, h01 - h00, this._terrain.dh, 0], 
-													[this._terrain.dw, h10 - h00, 0, 0]);
+			obj.normal = Vector3DUtil.crossProduct( [0, h01 - h00, this._terrain.get_dh(), 0], 
+													[this._terrain.get_dw(), h10 - h00, 0, 0]);
 			Vector3DUtil.normalize(obj.normal);
 								
-			plane = new PlaneData([(i0 * this._terrain.dw + this._terrain.minW), h00, (j0 * this._terrain.dh + this._terrain.minH), 0], 
+			plane = new PlaneData([(i0 * this._terrain.get_dw() + this._terrain.get_minW()), h00, (j0 * this._terrain.get_dh() + this._terrain.get_minH()), 0], 
 			                      obj.normal);
 			obj.height = plane.pointPlaneDistance(point);
 		}
