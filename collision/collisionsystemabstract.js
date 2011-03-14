@@ -4,6 +4,8 @@
 	var JSegment=jigLib.JSegment;
 	var JNumber3D=jigLib.JNumber3D;
 	var RigidBody=jigLib.RigidBody;
+	var CollDetectInfo=jigLib.CollDetectInfo;
+	
 
 	var CollisionSystemAbstract=function(){
 		this.collBody = [];
@@ -38,7 +40,7 @@
         CollisionSystemAbstract.prototype.collBody=null;
 	CollisionSystemAbstract.prototype._numCollisionsChecks = 0;
 
-        CollisionSystemAbstract.prototype.addCollisionBody=function(body:RigidBody){
+        CollisionSystemAbstract.prototype.addCollisionBody=function(body){
 		if (!this.findBody(body)) this.collBody.push(body);
 	};
                 
@@ -53,21 +55,20 @@
 	
 	// Detects collisions between the body and all the registered collision bodies
         CollisionSystemAbstract.prototype.detectCollisions=function(body, collArr){
-		if (!this.body.isActive) return;
+		if (!body.isActive) return;
                         
 		var info;
 		var fu;
-                        
-		for(var j=0;i<this.collBody.length;j++){
+		for(var j=0;j<this.collBody.length;j++){
 			var _collBody=this.collBody[j];
 			if (body == _collBody){
 				continue;
 			}
-			if (this.checkCollidables(body, _collBody) && this.detectionFunctors[body.type + "_" + _collBody.type] != undefined){
+			if (this.checkCollidables(body, _collBody) && this.detectionFunctors[body.get_type() + "_" + _collBody.get_type()] != undefined){
 				info = new CollDetectInfo();
 				info.body0 = body;
 				info.body1 = _collBody;
-				fu = this.detectionFunctors[info.body0.type + "_" + info.body1.type];
+				fu = this.detectionFunctors[info.body0.get_type() + "_" + info.body1.get_type()];
 				fu.collDetect(info, collArr);
 			}
 		}
@@ -124,7 +125,7 @@
                         else return false;
 	};
 
-	CollisionSystemAbstract.prototype.get_numCollisionsChecks(){
+	CollisionSystemAbstract.prototype.get_numCollisionsChecks=function(){
 		return this._numCollisionsChecks;    
 	};
 	
@@ -133,7 +134,7 @@
 	};
                 
 	CollisionSystemAbstract.prototype.checkCollidables=function(body0, body1){
-		if (body0.nonCollidables.length == 0 && body1.nonCollidables.length == 0) return true;
+		if (body0.get_nonCollidables().length == 0 && body1.get_nonCollidables().length == 0) return true;
                         
 		if(body0.nonCollidables.indexOf(body1) > -1) return false;
                         

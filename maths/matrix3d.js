@@ -72,7 +72,12 @@
 					(cosi * xmy) + zms,(cosi * ymy) + cos,(cosi * ymz) - xms,0,
 					(cosi * zmx) - yms,(cosi * ymz) + xms,(cosi * zmz) + cos,0,
 					0,0,0,1];
-
+		/*var matrix=[(cosi * xmx) + cos,(cosi * xmy) + zms,(cosi * zmx) - yms,0,
+					(cosi * xmy) - zms,(cosi * ymy) + cos,(cosi * ymz) + xms,0,
+					(cosi * zmx) + yms,(cosi * ymz) - xms,(cosi * zmz) + cos,0,
+					0,0,0,1];   */
+					
+		
 		return new Matrix3D(matrix);
 	};
 	
@@ -94,12 +99,18 @@
 	 * @type Matrix3D
 	 **/
 	Matrix3D.prototype.translateMatrix=function(v){
-		return new Matrix3D([
+		return new Matrix3D([ 
 		         			1,0,0,v[0],
 		         			0,1,0,v[1],
 		         			0,0,1,v[2],
 		         			0,0,0,1
 		         			]);
+		/*return new Matrix3D([
+		         			1,0,0,0,
+		         			0,1,0,0,
+		         			0,0,1,0,
+		         			v[0],v[1],v[2],1
+		         			]);*/
 	};
 	
 	/**
@@ -237,7 +248,13 @@
 	 * @returns
 	 */
 	Matrix3D.prototype.transformVector=function(vector){
-		return GLMatrix.multiplyVec3(this.glmatrix, vector);
+		var x=vector[0];
+		var y=vector[1];
+		var z=vector[2];
+		var m=this.glmatrix;
+		return [m[0]*x+m[1]*y+m[2]*z+m[3],m[4]*x+m[5]*y+m[6]*z+m[7],m[8]*x+m[9]*y+m[10]*z+m[11]];
+		
+		//return GLMatrix.multiplyVec3(GLMatrix.transpose(this.glmatrix), vector); for some reason this is giving a very wrong answer!!!
 	};
 	
 	jigLib.Matrix3D=Matrix3D;
