@@ -93,7 +93,7 @@
 		if ((sides[0] > this.dx) || (sides[1] > this.dy) || (sides[2] > this.dz)){
 			//trace("calcGridForSkin3 -- Rigidbody to big for gridsystem - putting it into overflow list (lengths,type,id):", sides.x,sides.y,sides.z,colBody.type,colBody.id,colBody.boundingBox.minPos,colBody.boundingBox.maxPos);
 			i = j = k = -1;
-			return new [i,j,k];
+			return [i,j,k];
 		}
 		//trace(sides.x,sides.y,sides.z);
                         
