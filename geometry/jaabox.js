@@ -308,6 +308,10 @@ distribution.
 				(pos[2] >= _minPos[2]) && 
 				(pos[2] <= _maxPos[2]));
 	};
+	
+	JAABox.prototype.getRadiusAboutCentre=function(){
+		return 0.5 * (Vector3DUtil.get_length(Vector3DUtil.subtract(this._maxPos,this._minPos)));
+	}
 
 	/**
 	 * @function toString  
