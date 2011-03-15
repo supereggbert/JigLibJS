@@ -110,20 +110,19 @@
 		var childCell;
 		while (cellsToProcess.length != 0) {
 			cellIndex = cellsToProcess.pop();
-			console.log(cellIndex);
 			if (this._cells[cellIndex].triangleIndices.length <= maxTrianglesPerCell || this._cells[cellIndex].AABox.getRadiusAboutCentre() < minCellSize) {
 				continue;
 			}
 			for (i = 0; i < OctreeCell.NUM_CHILDREN; i++ ) {
 				this._cells[cellIndex].childCellIndices[i] = this._cells.length;
 				cellsToProcess.push(this._cells.length);
-				this._cells.push(new OctreeCell(createAABox(this._cells[cellIndex].AABox, i)));
+				this._cells.push(new OctreeCell(this.createAABox(this._cells[cellIndex].AABox, i)));
                                         
 				childCell = this._cells[this._cells.length - 1];
 				numTriangles = this._cells[cellIndex].triangleIndices.length;
 				for (var j=0; j < numTriangles; j++ ) {
 					iTri = this._cells[cellIndex].triangleIndices[j];
-					if (doesTriangleIntersectCell(this._triangles[iTri], childCell))
+					if (this.doesTriangleIntersectCell(this._triangles[iTri], childCell))
 					{
 						childCell.triangleIndices.push(iTri);
 					}
