@@ -29,7 +29,7 @@
 	var JNumber3D=jigLib.JNumber3D;
 	var BodyPair=jigLib.BodyPair;
 	var CachedImpulse=jigLib.CachedImpulse;
-	var JCollisionEvent=jigLib.JCollisionEvent;
+
 
 	/**
 	 * @name PhysicsSystem
@@ -129,10 +129,10 @@
 		}
 	};
 	//TODO document here
-	PhysicsSystem.prototype.setCollisionSystem=function(collisionSystemGrid, sx, sy, sz, nx, ny, nz, dx, dy, dz){
-		if(sx==undefined) sx=0;
-		if(sy==undefined) sy=0;
-		if(sz==undefined) sz=0;
+	PhysicsSystem.prototype.etCollisionSystem=function(collisionSystemGrid, sx, sy, sz, nx, ny, nz, dx, dy, dz){
+		if(!sx) sx=0;
+		if(!sy) sy=0;
+		if(!sz) sz=0;
 		if(nx==undefined) nx=20;
 		if(ny==undefined) ny=20;
 		if(nz==undefined) nz=20;
@@ -632,7 +632,7 @@
 	PhysicsSystem.prototype.processCollision=function(collision, dt){
 		collision.satisfied = true;
 
-		var body0 = collision.objInfo.body0;
+		var body0= collision.objInfo.body0;
 		var body1 = collision.objInfo.body1;
 
 		var gotOne = false;
@@ -646,9 +646,6 @@
 		var Vr0;
 		var Vr1;
 		var ptInfo;
-		
-		// tracking var for the collision event
-		var appliedImpulse = [0,0,0,0];
 		
 		var len = collision.pointInfo.length;
 		for (var i = 0; i < len; i++){
@@ -673,7 +670,6 @@
 
 			gotOne = true;
 			impulse = JNumber3D.getScaleVector(N, normalImpulse);
-			appliedImpulse = Vector3DUtil.add(appliedImpulse, impulse); // keep track of the total impulse applied
 
 			body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
 			body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
@@ -713,9 +709,6 @@
 		if (gotOne){
 			body0.setConstraintsAndCollisionsUnsatisfied();
 			body1.setConstraintsAndCollisionsUnsatisfied();
-			// dispatch collision events
-			body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
-			body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
 		}
 		return gotOne;
 	};
@@ -743,9 +736,6 @@
 		var Vr1;
 		var ptInfo;
 		
-		// tracking var for the collision event
-		var appliedImpulse = [0,0,0,0];
-		
 		var len = collision.pointInfo.length;
 		for (var i = 0; i < len; i++){
 			ptInfo = collision.pointInfo[i];
@@ -766,8 +756,6 @@
 				var actualImpulse = accImpulse - origAccumulatedNormalImpulse;
 
 				impulse = JNumber3D.getScaleVector(N, actualImpulse);
-				appliedImpulse = Vector3DUtil.add(appliedImpulse, impulse); // keep track of the total impulse applied
-				
 				body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
 				body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
 
@@ -842,9 +830,6 @@
 		{
 			body0.setConstraintsAndCollisionsUnsatisfied();
 			body1.setConstraintsAndCollisionsUnsatisfied();
-			// dispatch collision events
-			body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
-			body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
 		}
 		return gotOne;
 	};
