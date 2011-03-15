@@ -109,7 +109,7 @@
 		var childCell;
 		while (cellsToProcess.length != 0) {
 			cellIndex = cellsToProcess.pop();
-                                
+			console.log(cellIndex);
 			if (this._cells[cellIndex].triangleIndices.length <= maxTrianglesPerCell || this._cells[cellIndex].AABox.getRadiusAboutCentre() < minCellSize) {
 				continue;
 			}
