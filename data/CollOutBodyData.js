@@ -6,7 +6,7 @@
 		if(frac==undefined) frac=0;
 		this.Super(frac, position, normal);
 		this.rigidBody = rigidBody;
-	}
+	};
 	jigLib.extend(CollOutBodyData,jigLib.CollOutData);
 	
 	jigLib.CollOutBodyData=CollOutBodyData;

@@ -97,11 +97,11 @@
 		this._cells.push(new OctreeCell(this._boundingBox));
                         
 		var numTriangles = this._triangles.length;
-		for (var i:uint = 0; i < numTriangles; i++ ) {
+		for (var i = 0; i < numTriangles; i++ ) {
 			this._cells[0].triangleIndices[i] = i;
 		}
                         
-		var cellsToProcess:Vector = [];
+		var cellsToProcess = [];
 		cellsToProcess.push(0);
                         
 		var iTri;
@@ -147,7 +147,7 @@
 	JOctree.prototype.getTrianglesIntersectingtAABox=function(triangles, aabb){
 		if (this._cells.length == 0) return 0;
                         
-		this._cellsToTest.=[];
+		this._cellsToTest=[];
 		this._cellsToTest.push(0);
                         
 		this.incrementTestCounter();
@@ -165,7 +165,7 @@
                                 
 			if (cell.isLeaf()) {
 				nTris = cell.triangleIndices.length;
-				for (var i:uint = 0 ; i < nTris ; i++) {
+				for (var i = 0 ; i < nTris ; i++) {
 					triangle = this.getTriangle(cell.triangleIndices[i]);
 					if (triangle.counter != this._testCounter) {
 						triangle.counter = this._testCounter;
@@ -268,7 +268,7 @@
 		}
                                 
 		var tri = new JTriangle(this.getVertex(triangle.getVertexIndex(0)), this.getVertex(triangle.getVertexIndex(1)), this.getVertex(triangle.getVertexIndex(2)));
-		var edge:;
+		var edge;
 		var seg;
 		var edges = cell.egdes;
 		var pts = cell.points;

@@ -53,7 +53,8 @@
 	
 	 JMath3D.wrap=function(val, min, max){
 		var delta = max - min;
-		if (val > delta){
+		if (val > delta)
+		{
 			val = val / delta;
 			val = val - Math.floor(val);
 			val = val * delta;

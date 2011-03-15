@@ -133,14 +133,14 @@
 	};
                 
 	CollisionSystemAbstract.prototype.checkCollidables=function(body0, body1){
-		if (body0.nonCollidables.length == 0 && body1.nonCollidables.length == 0) return true;
+		if (body0._nonCollidables.length == 0 && body1._nonCollidables.length == 0) return true;
                         
-		if(body0.nonCollidables.indexOf(body1) > -1) return false;
+		if(body0._nonCollidables.indexOf(body1) > -1) return false;
                         
-		if(body1.nonCollidables.indexOf(body0) > -1) return false;
+		if(body1._nonCollidables.indexOf(body0) > -1) return false;
                         
 		return true;
-	}
+	};
 	
 	jigLib.CollisionSystemAbstract=CollisionSystemAbstract;
 

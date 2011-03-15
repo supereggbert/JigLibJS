@@ -30,7 +30,7 @@
 		}
                         
 		this._type = "TRIANGLEMESH";
-	}
+	};
 	
 	jigLib.extend(JTriangleMesh,jigLib.RigidBody);
 	
@@ -57,13 +57,13 @@
 		this._octree.addTriangles(vts, vts.length, triangleVertexIndices, triangleVertexIndices.length);
 		this._octree.buildOctree(this._maxTrianglesPerCell, _minCellSize);
                         
-	}
+	};
 	
 	
 	
 	JTriangleMesh.prototype.get_octree=function(){
 		return this._octree;
-	}
+	};
                 
         JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
 		var segBox = new JAABox();
@@ -75,7 +75,7 @@
 		var bestFrac = JNumber3D.NUM_HUGE;
 		var tri;
 		var meshTriangle;
-		for (var iTriangle:uint = 0 ; iTriangle < numTriangles ; iTriangle++) {
+		for (var iTriangle = 0 ; iTriangle < numTriangles; iTriangle++) {
 			meshTriangle = this._octree.getTriangle(potentialTriangles[iTriangle]);
                                 
 			tri = new JTriangle(this._octree.getVertex(meshTriangle.getVertexIndex(0)), this._octree.getVertex(meshTriangle.getVertexIndex(1)), this._octree.getVertex(meshTriangle.getVertexIndex(2)));
@@ -94,7 +94,7 @@
 		}else {
 			return false;
 		}
-	}
+	};
 	
 	JTriangleMesh.prototype.updateState=function(){
 		this.Super.updateState();
@@ -115,7 +115,7 @@
 		this._octree.buildOctree(this._maxTrianglesPerCell, this._minCellSize);
                         
 		this._boundingBox=this._octree.boundingBox().clone();
-	}
+	};
                 
                 /*
                 override public function getInertiaProperties(m:Number):Matrix3D

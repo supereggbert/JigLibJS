@@ -21,7 +21,8 @@
 			<filelist dir="${basedir}/tests/demo/jiglib/cof" files="jconfig.js" />
 			<filelist dir="${basedir}/tests/demo/jiglib/events" files="JEvent.js,JCollisionEvent.js,JEventDispatcher.js" />
 			<filelist dir="${basedir}/tests/demo/jiglib/maths" files="glmatrix.js,vector3dutil.js,matrix3d.js,jnumber3d.js,jmatrix3d.js,jmaths3d.js" />
-			<fileset dir="${basedir}/tests/demo/jiglib/data" includes="*.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/data" files="CollOutData.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/data" includes="*.js" excludes="CollOutData.js" />
 			<fileset dir="${basedir}/tests/demo/jiglib/plugins" includes="*.js" />
 			<filelist dir="${basedir}/tests/demo/jiglib/geometry" files="jaabox.js" />
 			<fileset dir="${basedir}/tests/demo/jiglib/physics" includes="*.js" excludes="hingejoint.js,physicssystem.js" />
@@ -29,8 +30,8 @@
 			<fileset dir="${basedir}/tests/demo/jiglib/physics/effect" includes="*.js" excludes="jeffect.js" />
 			<fileset dir="${basedir}/tests/demo/jiglib/geometry" includes="*.js" excludes="jaabox.js" />
 			<filelist dir="${basedir}/tests/demo/jiglib/collision" files="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js" />
-			<fileset dir="${basedir}/tests/demo/jiglib/collision" includes="*.js" excludes="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js,collisionsystem.js" />
-			<filelist dir="${basedir}/tests/demo/jiglib/collision" files="collisionsystem.js" />
+			<fileset dir="${basedir}/tests/demo/jiglib/collision" includes="*.js" excludes="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js,collisionsystem.js,collisionsystemabstract.js,collisionsystembrute.js,collisionsystemgrid.js" />
+			<filelist dir="${basedir}/tests/demo/jiglib/collision" files="collisionsystem.js,collisionsystemabstract.js,collisionsystembrute.js,collisionsystemgrid.js" />
 			<fileset dir="${basedir}/tests/demo/jiglib/physics/constraint" includes="*.js" />
 			<filelist dir="${basedir}/tests/demo/jiglib/physics" files="hingejoint.js" />
 			<filelist dir="${basedir}/tests/demo/jiglib/physics" files="physicssystem.js" />
@@ -41,7 +42,8 @@
 			<filelist dir="${basedir}/cof" files="jconfig.js" />
 			<filelist dir="${basedir}/events" files="JEvent.js,JCollisionEvent.js,JEventDispatcher.js" />
 			<filelist dir="${basedir}/maths" files="glmatrix.js,vector3dutil.js,matrix3d.js,jnumber3d.js,jmatrix3d.js,jmaths3d.js" />
-			<fileset dir="${basedir}/data" includes="*.js" />
+			<filelist dir="${basedir}/data" files="CollOutData.js" />
+			<fileset dir="${basedir}/data" includes="*.js" excludes="CollOutData.js" />
 			<fileset dir="${basedir}/plugins" includes="*.js" />
 			<filelist dir="${basedir}/geometry" files="jaabox.js" />
 			<fileset dir="${basedir}/physics" includes="*.js" excludes="hingejoint.js,physicssystem.js" />
@@ -49,8 +51,8 @@
 			<fileset dir="${basedir}/physics/effect" includes="*.js" excludes="jeffect.js" />
 			<fileset dir="${basedir}/geometry" includes="*.js" excludes="jaabox.js" />
 			<filelist dir="${basedir}/collision" files="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js" />
-			<fileset dir="${basedir}/collision" includes="*.js" excludes="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js,collisionsystem.js" />
-			<filelist dir="${basedir}/collision" files="collisionsystem.js" />
+			<fileset dir="${basedir}/collision" includes="*.js" excludes="collpointinfo.js,collisioninfo.js,colldetectinfo.js,colldetectfunctor.js,collisionsystem.js,collisionsystemabstract.js,collisionsystembrute.js,collisionsystemgrid.js" />
+			<filelist dir="${basedir}/collision" files="collisionsystem.js,collisionsystemabstract.js,collisionsystembrute.js,collisionsystemgrid.js" />
 			<fileset dir="${basedir}/physics/constraint" includes="*.js" />
 			<filelist dir="${basedir}/physics" files="hingejoint.js" />
 			<filelist dir="${basedir}/physics" files="physicssystem.js" />
