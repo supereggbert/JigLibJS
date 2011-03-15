@@ -136,6 +136,7 @@
 		this._boundingBox = new JAABox([0,0,0,0], [0,0,0,0]);
 		this._boundingBox.clear();
 	};
+	jigLib.extend(RigidBody,jigLib.JEventDispatcher);
 	
 	RigidBody.idCounter = 0;
 	
