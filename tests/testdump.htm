@@ -1,0 +1,170 @@
+<!-- 
+<html>
+	<head>
+		<script type="text/javascript" src="../jiglib.js"></script>
+		<script type="text/javascript" src="../maths/vector3dutil.js"></script>
+		<script type="text/javascript" src="../maths/jnumber3d.js"></script>
+		<script type="text/javascript">
+			function calc() {
+				var mass = parseFloat(document.getElementById('mass').value);
+				var gravX = parseFloat(document.getElementById('gravX').value);
+				var gravY = parseFloat(document.getElementById('gravY').value);
+				var gravZ = parseFloat(document.getElementById('gravZ').value);
+				
+				var sv = jigLib.JNumber3D.getScaleVector([gravX, gravY, gravZ, 0], mass);
+				
+				document.getElementById('result').innerHTML = 'X: '+sv[0]+'<br />Y: '+sv[1]+'<br />Z: '+sv[2]+'<br />W: '+sv[3];
+			}
+		</script>
+	</head>
+	<body>
+		<h3>gravity:</h3>
+		X: <input type="text" id="gravX" />
+		Y: <input type="text" id="gravY" />
+		Z: <input type="text" id="gravZ" />
+		<h3>mass:</h3>
+		<input type="text" id="mass" />
+		<h3>calculate gravity effect: JNumber3d.getScaleVector(gravityV3D, mass);</h3>
+		<input type="submit" value="go!" onClick="calc();" />
+		<div id="result"></div>
+	</body>
+</html>
+-->
+
+<html>
+        <head>
+                <script type="text/javascript" src="../jiglib.js"></script>
+ 
+                <script type="text/javascript" src="../cof/jconfig.js"></script>
+ 
+                <script type="text/javascript" src="../maths/glmatrix.js"></script>
+                <script type="text/javascript" src="../maths/vector3dutil.js"></script>
+                <script type="text/javascript" src="../maths/matrix3d.js"></script>
+                <script type="text/javascript" src="../maths/jnumber3d.js"></script>
+                <script type="text/javascript" src="../maths/jmatrix3d.js"></script>
+                <script type="text/javascript" src="../maths/jmaths3d.js"></script>
+ 
+                <script type="text/javascript" src="../data/contactdata.js"></script>
+                <script type="text/javascript" src="../data/edgedata.js"></script>
+                <script type="text/javascript" src="../data/planedata.js"></script>
+                <script type="text/javascript" src="../data/spandata.js"></script>
+ 
+                <script type="text/javascript" src="../plugins/iskin3d.js"></script>
+ 
+                <script type="text/javascript" src="../geometry/jaabox.js"></script>
+ 
+                <script type="text/javascript" src="../physics/bodypair.js"></script>
+                <script type="text/javascript" src="../physics/cachedimpluse.js"></script>
+                <script type="text/javascript" src="../physics/materialproperties.js"></script>
+                <script type="text/javascript" src="../physics/physicscontroller.js"></script>
+                <script type="text/javascript" src="../physics/physicsstate.js"></script>
+                <script type="text/javascript" src="../physics/rigid_body.js"></script>
+ 
+                <script type="text/javascript" src="../geometry/jbox.js"></script>
+                <script type="text/javascript" src="../geometry/jcapsule.js"></script>
+                <script type="text/javascript" src="../geometry/jplane.js"></script>
+                <script type="text/javascript" src="../geometry/jray.js"></script>
+                <script type="text/javascript" src="../geometry/jsegment.js"></script>
+                <script type="text/javascript" src="../geometry/jsphere.js"></script>
+                <script type="text/javascript" src="../geometry/jterrain.js"></script>
+ 
+                <script type="text/javascript" src="../collision/collpointinfo.js"></script>
+                <script type="text/javascript" src="../collision/collisioninfo.js"></script>
+                <script type="text/javascript" src="../collision/colldetectinfo.js"></script>
+                <script type="text/javascript" src="../collision/colldetectfunctor.js"></script>
+                <script type="text/javascript" src="../collision/colldetectboxbox.js"></script>
+                <script type="text/javascript" src="../collision/colldetectboxplane.js"></script>
+                <script type="text/javascript" src="../collision/colldetectboxterrain.js"></script>
+                <script type="text/javascript" src="../collision/colldetectcapsulebox.js"></script>
+                <script type="text/javascript" src="../collision/colldetectcapsulecapsule.js"></script>
+                <script type="text/javascript" src="../collision/colldetectcapsuleplane.js"></script>
+                <script type="text/javascript" src="../collision/colldetectcapsuleterrain.js"></script>
+                <script type="text/javascript" src="../collision/colldetectspherebox.js"></script>
+                <script type="text/javascript" src="../collision/colldetectspherecapsule.js"></script>
+                <script type="text/javascript" src="../collision/colldetectsphereplane.js"></script>
+                <script type="text/javascript" src="../collision/colldetectspheresphere.js"></script>
+                <script type="text/javascript" src="../collision/colldetectsphereterrain.js"></script>
+                <script type="text/javascript" src="../collision/collisionsystem.js"></script>
+ 
+                <script type="text/javascript" src="../physics/physicssystem.js"></script>
+        </head>
+        <body onLoad="updateHtmlData()">
+                <script>
+                        var system, ball, second;
+                        function _init()
+                        {
+                                system = jigLib.PhysicsSystem.getInstance();
+                                system.setGravity([0, 0, 0, 0]);
+                                
+                                var radius = 1;
+                                ball = new jigLib.JSphere(null, radius);
+                                ball.set_mass(1);
+                                ball.set_friction(0);
+                                ball.set_linVelocityDamping([1,1,1]);
+                                system.addBody(ball);
+                                ball.moveTo([-5, 0, 1, 0]);
+                                ball.setVelocity([1, 0, 0, 0]);
+                                
+                        }
+                        
+                        function iterate() 
+                        {
+                                system.integrate(0.1);
+                                updateHtmlData();
+                        }
+ 
+                        function updateHtmlData()
+                        {
+                                var ballX = document.getElementById("ballX")
+                                var ballY = document.getElementById("ballY")
+                                var ballZ = document.getElementById("ballZ")
+                                var ballVelX = document.getElementById("ballVelX")
+                                var ballVelY = document.getElementById("ballVelY")
+                                var ballVelZ = document.getElementById("ballVelZ")
+                                
+                                ballX.innerHTML = ball.get_x();
+                                ballY.innerHTML = ball.get_y();
+                                ballZ.innerHTML = ball.get_z();
+                                
+                                var ballVel = ball.getVelocity([0, 0, 0]);
+                                ballVelX.innerHTML = ballVel[0];
+                                ballVelY.innerHTML = ballVel[1];
+                                ballVelZ.innerHTML = ballVel[2];
+                        }
+                        _init();
+                </script>
+                <h2>Just moving ball</h2>
+                <hr/>
+                <table style="background-color: lightblue;">
+                        <tr>
+                                <th style="width: 10em">Property</th>
+                                <th>ball</th>
+                        </tr>
+                        <tr>
+                                <td>X</td>
+                                <td><label id="ballX"/></td>
+                        </tr>
+                        <tr>
+                                <td>Y</td>
+                                <td><label id="ballY"/></td>
+                        </tr>
+                        <tr>
+                                <td>Z</td>
+                                <td><label id="ballZ"/></td>
+                        </tr>
+                        <tr>
+                                <td>Velocity X</td>
+                                <td><label id="ballVelX"/></td>
+                        </tr>
+                        <tr>
+                                <td>Velocity Y</td>
+                                <td><label id="ballVelY"/></td>
+                        </tr>
+                        <tr>
+                                <td>Velocity Z</td>
+                                <td><label id="ballVelZ"/></td>
+                        </tr>
+                </table>
+                <button onClick="setInterval('iterate()', 100)">Start</button>
+        </body>
+</html>
