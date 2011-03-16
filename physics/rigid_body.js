@@ -90,6 +90,11 @@
 	 * @param {ISkin3D} _skin
 	 **/
 	var RigidBody=function(skin){
+		// calling "this.Super" causes recursion in inheritance chains 
+		// because Super references this class constructor
+		//this.Super(skin);
+		jigLib.JEventDispatcher.call(this);
+		
 		this._useDegrees = (JConfig.rotationType == "DEGREES") ? true : false;
 		
 		this._id = RigidBody.idCounter++;

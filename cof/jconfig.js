@@ -30,7 +30,7 @@
 		angVelThreshold: 5,
 		posThreshold: 0.7,
 		orientThreshold: 0.7, 
-		deactivationTime: 0.1, 
+		deactivationTime: 0.2, 
 		numPenetrationRelaxationTimesteps: 50,
 		numCollisionIterations: 4,
 		numContactIterations: 8,

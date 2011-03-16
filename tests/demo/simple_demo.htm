@@ -129,7 +129,7 @@
 		<scene id="mainscene" ambient_color="#555" camera="#mainCamera" background_color="#338">
 			<camera id="mainCamera" loc_z="140" loc_y="150" fov_y="35" rot_x="-0.6" />
 			
-			<object id="groundObject" mesh="#groundMesh" material="#grid" scale="5" />
+			<object id="groundObject" mesh="#groundMesh" material="#grid" scale="200" />
 			<object id="userSphere" mesh="#Sphere" material="#red" scale="2" loc_y="100" />
 
 			<light id="light1" loc_x="-40" loc_y="150" loc_z="0" attenuation_quadratic="0.00001" attenuation_linear="0.00000001" attenuation_constant="1" type="L_POINT" />
@@ -146,6 +146,7 @@
 		var renderer = new GLGE.Renderer( canvas );
 		var system;		
 		var XMLdoc = new GLGE.Document();
+		var usphere;
 		
 		XMLdoc.onLoad = function(){
 			// the GLGE scene
@@ -208,13 +209,13 @@
 			ground.set_y(0);
 			system.addBody(ground);
 		
-			var usphere=new jigLib.JSphere(null,2);
+			usphere=new jigLib.JSphere(null,2);
 			usphere.set_y(70);
 			usphere.addEventListener(jigLib.JCollisionEvent.COLLISION, collisionHandler);
 			system.addBody(usphere);
 		
 			// link the GLGE scene objects to the jiglib bodies
-			links.push( { glge:groundObj, jig:ground } );
+			//links.push( { glge:groundObj, jig:ground } );
 			links.push( { glge:usphereObj, jig:usphere } );
 			
 			var lasttime=(new Date()).getTime();
@@ -253,6 +254,9 @@
 		XMLdoc.parseScript("glge_document");
 	-->
 	</script> 
-	<textarea id="debug" rows="20" cols="100"></textarea>
+	<br />arrow keys to move red ball, spacebar to spawn blue balls 
+	<button onClick="document.getElementById('debug').innerHTML='';">clear output</button> 
+	<!-- <button onClick="alert('red ball...\nisMovable: '+usphere.get_movable()+'\nisActive: '+usphere.isActive);">get red ball status</button> -->
+	<br /><textarea id="debug" rows="20" cols="100"></textarea>
 </body>
 </html>

@@ -6,7 +6,7 @@
 	
 	var CollisionSystemBrute=function(){
 		this.Super();
-	}
+	};
 	jigLib.extend(CollisionSystemBrute,jigLib.CollisionSystemAbstract);
 	
 	// Detects collisions between the all bodies
