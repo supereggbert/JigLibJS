@@ -29,7 +29,6 @@
 	var JNumber3D=jigLib.JNumber3D;
 	var BodyPair=jigLib.BodyPair;
 	var CachedImpulse=jigLib.CachedImpulse;
-	var JCollisionEvent=jigLib.JCollisionEvent;
 
 	/**
 	 * @name PhysicsSystem
@@ -671,12 +670,16 @@
 
 			normalImpulse = deltaVel / ptInfo.denominator;
 
-			gotOne = true;
 			impulse = JNumber3D.getScaleVector(N, normalImpulse);
-			appliedImpulse = Vector3DUtil.add(appliedImpulse, impulse); // keep track of the total impulse applied
-
-			body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
-			body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
+			
+			// Performance improvement? Why continue if impulse is nil?
+			if (Vector3DUtil.getSum(impulse) > 0)
+			{
+				appliedImpulse = Vector3DUtil.add(appliedImpulse, impulse); // keep track of the total impulse applied
+				body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
+				body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
+				gotOne = true;
+			}
 
 			var tempV;
 			var VR = Vr0.slice(0);
@@ -714,8 +717,8 @@
 			body0.setConstraintsAndCollisionsUnsatisfied();
 			body1.setConstraintsAndCollisionsUnsatisfied();
 			// dispatch collision events
-			body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
-			body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
+			body0.dispatchCollisionEvent(body1, appliedImpulse);
+			body1.dispatchCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1));
 		}
 		return gotOne;
 	};
@@ -766,12 +769,15 @@
 				var actualImpulse = accImpulse - origAccumulatedNormalImpulse;
 
 				impulse = JNumber3D.getScaleVector(N, actualImpulse);
-				appliedImpulse = Vector3DUtil.add(appliedImpulse, impulse); // keep track of the total impulse applied
 				
-				body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
-				body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
-
-				gotOne = true;
+				// Performance improvement? Why continue if impulse is nil?
+				if (Vector3DUtil.getSum(impulse) > 0)
+				{
+					appliedImpulse = Vector3DUtil.add(appliedImpulse, impulse); // keep track of the total impulse applied
+					body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
+					body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
+					gotOne = true;
+				}
 			}
 
 			Vr0 = body0.getVelocityAux(ptInfo.r0);
@@ -791,10 +797,15 @@
 				actualImpulse = accImpulseAux - origAccumulatedNormalImpulse;
 
 				impulse = JNumber3D.getScaleVector(N, actualImpulse);
-				body0.applyBodyWorldImpulseAux(impulse, ptInfo.r0);
-				body1.applyBodyWorldImpulseAux(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
-
-				gotOne = true;
+				
+				// Performance improvement? Why continue if impulse is nil?
+				if (Vector3DUtil.getSum(impulse) > 0)
+				{
+					appliedImpulse = Vector3DUtil.add(appliedImpulse, impulse);
+					body0.applyBodyWorldImpulseAux(impulse, ptInfo.r0);
+					body1.applyBodyWorldImpulseAux(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
+					gotOne = true;
+				}
 			}
 
 			if (ptInfo.accumulatedNormalImpulse > 0){
@@ -843,8 +854,8 @@
 			body0.setConstraintsAndCollisionsUnsatisfied();
 			body1.setConstraintsAndCollisionsUnsatisfied();
 			// dispatch collision events
-			body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
-			body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
+			body0.dispatchCollisionEvent(body1, appliedImpulse);
+			body1.dispatchCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1));
 		}
 		return gotOne;
 	};

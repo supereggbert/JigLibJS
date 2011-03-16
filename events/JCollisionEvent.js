@@ -12,7 +12,7 @@
 	 **/
 	var JCollisionEvent=function(body, impulse)
 	{
-		this.Super(this.COLLISION);
+		this.Super(JCollisionEvent.COLLISION);
 		this.collisionBody=body;
 		this.collisionImpulse=impulse;
 	};

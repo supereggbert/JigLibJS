@@ -2,7 +2,6 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-
 <script type="text/javascript" src="../../jiglib.js"></script>
 
 <script type="text/javascript" src="../../cof/jconfig.js"></script>
@@ -94,8 +93,9 @@
 <script type="text/javascript" src="../../vehicles/jchassis.js"></script>
 <script type="text/javascript" src="../../vehicles/jwheel.js"></script>
 <script type="text/javascript" src="../../vehicles/jcar.js"></script>
-
-	<!-- <script type="text/javascript" src="jiglib/jiglib.all.full.js"></script> -->
+<!-- 
+	<script type="text/javascript" src="jiglib/jiglib.all.full.js"></script>
+-->
 	<script type="text/javascript" src="glge/glge_math.js"></script>
 	<script type="text/javascript" src="glge/glge.js"></script>
 </head>
@@ -223,10 +223,10 @@
 			{
 				document.getElementById('debug').innerHTML += 	'body: ' + event.collisionBody._id +
 																'; type: ' + event.collisionBody._type +
-																'; impulse: [' + event.impulse[0] + ',' + 
-																             	 event.impulse[1] + ',' + 
-																             	 event.impulse[2] + ',' + 
-																             	 event.impulse[3] + ']\n';
+																'; impulse: [' + event.collisionImpulse[0] + ',' + 
+																				 event.collisionImpulse[1] + ',' + 
+																				 event.collisionImpulse[2] + ',' + 
+																				 event.collisionImpulse[3] + ']\n';
 			}
 			
 			// renders the scene
