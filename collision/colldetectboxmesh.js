@@ -15,6 +15,9 @@
 	var JTriangleMesh=jigLib.JTriangleMesh;
 	var CollOutData=jigLib.CollOutData;
 	var EdgeData=jigLib.EdgeData;
+	var SpanData=jigLib.SpanDatadot
+	;
+	var SpanData=jigLib.SpanData;
 
 	var CollDetectBoxMesh=function(){
 		this.name = "BoxMesh";
@@ -61,8 +64,8 @@
 	
 	
 	CollDetectBoxMesh.prototype.getBoxTriangleIntersectionPoints=function(pts,box,triangle,combinationDistanceSq){
-		var edges=box.edges;
-		var boxPts=box.getCornerPoints(box.currentState);
+		var edges=box.get_edges();
+		var boxPts=box.getCornerPoints(box.get_currentState());
                         
 		var data;
 		var edge;
@@ -100,17 +103,17 @@
                         
 		var triEdge0,triEdge1,triEdge2,triNormal,D,N,boxOldPos,boxNewPos,meshPos,delta;
 		var dirs0=box.get_currentState().getOrientationCols();
-		var tri=new JTriangle(mesh.octree.getVertex(triangle.getVertexIndex(0)),mesh.octree.getVertex(triangle.getVertexIndex(1)),mesh.octree.getVertex(triangle.getVertexIndex(2)));
+		var tri=new JTriangle(mesh.get_octree().getVertex(triangle.getVertexIndex(0)),mesh.get_octree().getVertex(triangle.getVertexIndex(1)),mesh.get_octree().getVertex(triangle.getVertexIndex(2)));
 		triEdge0=Vector3DUtil.subtract(tri.getVertex(1),tri.getVertex(0));
 		Vector3DUtil.normalize(triEdge0);
 		triEdge1=Vector3DUtil.subtract(tri.getVertex(2),tri.getVertex(1));
 		Vector3DUtil.normalize(triEdge1);
 		triEdge2=Vector3DUtil.subtract(tri.getVertex(0),tri.getVertex(2));
 		Vector3DUtil.normalize(triEdge2);
-		var triNormal=Vector3DUtil.clone(triangle.plane.normal);
+		var triNormal=triangle.get_plane().normal.slice(0);
                         
 		var numAxes=13;
-		var axes = [[triNormal,dirs0[0],dirs0[1],dirs0[2],
+		var axes = [triNormal,dirs0[0],dirs0[1],dirs0[2],
 					Vector3DUtil.crossProduct(dirs0[0],triEdge0),
 					Vector3DUtil.crossProduct(dirs0[0],triEdge1),
 					Vector3DUtil.crossProduct(dirs0[0],triEdge2),
@@ -119,7 +122,7 @@
 					Vector3DUtil.crossProduct(dirs0[1],triEdge2),
 					Vector3DUtil.crossProduct(dirs0[2],triEdge0),
 					Vector3DUtil.crossProduct(dirs0[2],triEdge1),
-					Vector3DUtil.crossProduct(dirs0[2],triEdge2)]];
+					Vector3DUtil.crossProduct(dirs0[2],triEdge2)];
                         
 		var overlapDepths=[];
 		for(var i=0;i<numAxes;i++){
@@ -206,15 +209,15 @@
 		var boxCentre=box.get_currentState().position;
                         
 		var potentialTriangles = [];
-		var numTriangles=mesh.octree.getTrianglesIntersectingtAABox(potentialTriangles,box.get_boundingBox());
+		var numTriangles=mesh.get_octree().getTrianglesIntersectingtAABox(potentialTriangles,box.get_boundingBox());
                         
 		var collision=false;
 		var dist;
 		var meshTriangle;
 		for (var iTriangle = 0 ; iTriangle < numTriangles ; ++iTriangle) {
-			meshTriangle=mesh.octree.getTriangle(potentialTriangles[iTriangle]);
+			meshTriangle=mesh.get_octree().getTriangle(potentialTriangles[iTriangle]);
                                 
-			dist=meshTriangle.plane.pointPlaneDistance(boxCentre);
+			dist=meshTriangle.get_plane().pointPlaneDistance(boxCentre);
 			if (dist > boxRadius || dist < 0){
 				continue;
 			}

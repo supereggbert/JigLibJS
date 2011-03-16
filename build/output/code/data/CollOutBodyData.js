@@ -1,0 +1,1 @@
+(function(b){var c=b.Vector3DUtil;var d=b.RigidBody;var a=function(e,h,g,f){if(e==undefined){e=0;}this.Super(e,position,g);this.rigidBody=f;};b.extend(a,b.CollOutData);b.CollOutBodyData=a;})(jigLib);

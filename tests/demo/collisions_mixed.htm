@@ -4,63 +4,99 @@
 <head>
 
 <title>jigLib benchmarking / regression test: mixed collisions</title>
-<!-- 
-<script type="text/javascript" src="jiglib/jiglib.js"></script>
+<script type="text/javascript" src="../../jiglib.js"></script>
 
-<script type="text/javascript" src="jiglib/cof/jconfig.js"></script>
+<script type="text/javascript" src="../../cof/jconfig.js"></script>
 
-<script type="text/javascript" src="jiglib/maths/glmatrix.js"></script>
-<script type="text/javascript" src="jiglib/maths/vector3dutil.js"></script>
-<script type="text/javascript" src="jiglib/maths/matrix3d.js"></script>
-<script type="text/javascript" src="jiglib/maths/jnumber3d.js"></script>
-<script type="text/javascript" src="jiglib/maths/jmatrix3d.js"></script>
-<script type="text/javascript" src="jiglib/maths/jmaths3d.js"></script>
+<script type="text/javascript" src="../../maths/glmatrix.js"></script>
+<script type="text/javascript" src="../../maths/vector3dutil.js"></script>
 
-<script type="text/javascript" src="jiglib/data/contactdata.js"></script>
-<script type="text/javascript" src="jiglib/data/edgedata.js"></script>
-<script type="text/javascript" src="jiglib/data/planedata.js"></script>
-<script type="text/javascript" src="jiglib/data/spandata.js"></script>
+<script type="text/javascript" src="../../maths/matrix3d.js"></script>
+<script type="text/javascript" src="../../maths/jnumber3d.js"></script>
+<script type="text/javascript" src="../../maths/jmatrix3d.js"></script>
+<script type="text/javascript" src="../../maths/jmaths3d.js"></script>
 
-<script type="text/javascript" src="jiglib/plugins/iskin3d.js"></script>
+<script type="text/javascript" src="../../data/contactdata.js"></script>
+<script type="text/javascript" src="../../data/edgedata.js"></script>
+<script type="text/javascript" src="../../data/planedata.js"></script>
+<script type="text/javascript" src="../../data/spandata.js"></script>
 
-<script type="text/javascript" src="jiglib/geometry/jaabox.js"></script>
+<script type="text/javascript" src="../../data/trianglevertexindices.js"></script>
+<script type="text/javascript" src="../../data/octreecell.js"></script>
+<script type="text/javascript" src="../../data/colloutdata.js"></script>
+<script type="text/javascript" src="../../data/colloutbodydata.js"></script>
 
-<script type="text/javascript" src="jiglib/physics/bodypair.js"></script>
-<script type="text/javascript" src="jiglib/physics/cachedimpluse.js"></script>
-<script type="text/javascript" src="jiglib/physics/materialproperties.js"></script>
-<script type="text/javascript" src="jiglib/physics/physicscontroller.js"></script>
-<script type="text/javascript" src="jiglib/physics/physicsstate.js"></script>
-<script type="text/javascript" src="jiglib/physics/rigid_body.js"></script>
 
-<script type="text/javascript" src="jiglib/geometry/jbox.js"></script>
-<script type="text/javascript" src="jiglib/geometry/jcapsule.js"></script>
-<script type="text/javascript" src="jiglib/geometry/jplane.js"></script>
-<script type="text/javascript" src="jiglib/geometry/jray.js"></script>
-<script type="text/javascript" src="jiglib/geometry/jsegment.js"></script>
-<script type="text/javascript" src="jiglib/geometry/jsphere.js"></script>
-<script type="text/javascript" src="jiglib/geometry/jterrain.js"></script>
+<script type="text/javascript" src="../../plugins/iskin3d.js"></script>
 
-<script type="text/javascript" src="jiglib/collision/collpointinfo.js"></script>
-<script type="text/javascript" src="jiglib/collision/collisioninfo.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectinfo.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectfunctor.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectboxbox.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectboxplane.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectboxterrain.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectcapsulebox.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectcapsulecapsule.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectcapsuleplane.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectcapsuleterrain.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectspherebox.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectspherecapsule.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectsphereplane.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectspheresphere.js"></script>
-<script type="text/javascript" src="jiglib/collision/colldetectsphereterrain.js"></script>
-<script type="text/javascript" src="jiglib/collision/collisionsystem.js"></script>
+<script type="text/javascript" src="../../geometry/jaabox.js"></script>
 
-<script type="text/javascript" src="jiglib/physics/physicssystem.js"></script>
--->
-<script type="text/javascript" src="jiglib/jiglib.all.full.js"></script>
+<script type="text/javascript" src="../../events/JEvent.js"></script>
+<script type="text/javascript" src="../../events/JCollisionEvent.js"></script>
+<script type="text/javascript" src="../../events/JEventDispatcher.js"></script>
+
+<script type="text/javascript" src="../../physics/bodypair.js"></script>
+
+<script type="text/javascript" src="../../physics/cachedimpluse.js"></script>
+<script type="text/javascript" src="../../physics/materialproperties.js"></script>
+<script type="text/javascript" src="../../physics/physicscontroller.js"></script>
+<script type="text/javascript" src="../../physics/physicsstate.js"></script>
+<script type="text/javascript" src="../../physics/rigid_body.js"></script>
+<script type="text/javascript" src="../../physics/hingejoint.js"></script>
+
+<script type="text/javascript" src="../../physics/effect/jeffect.js"></script>
+<script type="text/javascript" src="../../physics/effect/wind.js"></script>
+
+<script type="text/javascript" src="../../geometry/jbox.js"></script>
+<script type="text/javascript" src="../../geometry/jcapsule.js"></script>
+<script type="text/javascript" src="../../geometry/jplane.js"></script>
+<script type="text/javascript" src="../../geometry/jray.js"></script>
+<script type="text/javascript" src="../../geometry/jsegment.js"></script>
+<script type="text/javascript" src="../../geometry/jsphere.js"></script>
+<script type="text/javascript" src="../../geometry/jterrain.js"></script>
+<script type="text/javascript" src="../../geometry/jindexedtriangle.js"></script>
+
+<script type="text/javascript" src="../../geometry/joctree.js"></script>
+<script type="text/javascript" src="../../geometry/jtriangle.js"></script>
+<script type="text/javascript" src="../../geometry/jtrianglemesh.js"></script>
+
+<script type="text/javascript" src="../../collision/collpointinfo.js"></script>
+<script type="text/javascript" src="../../collision/collisioninfo.js"></script>
+<script type="text/javascript" src="../../collision/colldetectinfo.js"></script>
+<script type="text/javascript" src="../../collision/colldetectfunctor.js"></script>
+<script type="text/javascript" src="../../collision/colldetectboxbox.js"></script>
+
+<script type="text/javascript" src="../../collision/colldetectboxplane.js"></script>
+<script type="text/javascript" src="../../collision/colldetectboxterrain.js"></script>
+<script type="text/javascript" src="../../collision/colldetectcapsulebox.js"></script>
+<script type="text/javascript" src="../../collision/colldetectcapsulecapsule.js"></script>
+<script type="text/javascript" src="../../collision/colldetectcapsuleplane.js"></script>
+<script type="text/javascript" src="../../collision/colldetectcapsuleterrain.js"></script>
+<script type="text/javascript" src="../../collision/colldetectspherebox.js"></script>
+<script type="text/javascript" src="../../collision/colldetectspherecapsule.js"></script>
+<script type="text/javascript" src="../../collision/colldetectsphereplane.js"></script>
+
+<script type="text/javascript" src="../../collision/colldetectspheresphere.js"></script>
+<script type="text/javascript" src="../../collision/colldetectsphereterrain.js"></script>
+<script type="text/javascript" src="../../collision/colldetectboxmesh.js"></script>
+<script type="text/javascript" src="../../collision/colldetectspheremesh.js"></script>
+<script type="text/javascript" src="../../collision/collisionsystemabstract.js"></script>
+<script type="text/javascript" src="../../collision/collisionsystembrute.js"></script>
+<script type="text/javascript" src="../../collision/collisionsystemgridentry.js"></script>
+<script type="text/javascript" src="../../collision/collisionsystemgrid.js"></script>
+
+<script type="text/javascript" src="../../physics/constraint/jconstraint.js"></script>
+<script type="text/javascript" src="../../physics/constraint/jconstraintmaxdistance.js"></script>
+<script type="text/javascript" src="../../physics/constraint/jconstraintpoint.js"></script>
+<script type="text/javascript" src="../../physics/hingejoint.js"></script>
+
+<script type="text/javascript" src="../../physics/physicssystem.js"></script>
+
+<script type="text/javascript" src="../../vehicles/jchassis.js"></script>
+<script type="text/javascript" src="../../vehicles/jwheel.js"></script>
+<script type="text/javascript" src="../../vehicles/jcar.js"></script>
+
+	<!-- <script type="text/javascript" src="jiglib/jiglib.all.full.js"></script> -->
 
 <script type="text/javascript" src="glge/glge_math.js"></script>
 <script type="text/javascript" src="glge/glge.js"></script>
