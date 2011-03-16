@@ -29,7 +29,7 @@
 	var JNumber3D=jigLib.JNumber3D;
 	var BodyPair=jigLib.BodyPair;
 	var CachedImpulse=jigLib.CachedImpulse;
-
+	var JCollisionEvent=jigLib.JCollisionEvent;
 
 	/**
 	 * @name PhysicsSystem
@@ -129,10 +129,10 @@
 		}
 	};
 	//TODO document here
-	PhysicsSystem.prototype.etCollisionSystem=function(collisionSystemGrid, sx, sy, sz, nx, ny, nz, dx, dy, dz){
-		if(!sx) sx=0;
-		if(!sy) sy=0;
-		if(!sz) sz=0;
+	PhysicsSystem.prototype.setCollisionSystem=function(collisionSystemGrid, sx, sy, sz, nx, ny, nz, dx, dy, dz){
+		if(sx==undefined) sx=0;
+		if(sy==undefined) sy=0;
+		if(sz==undefined) sz=0;
 		if(nx==undefined) nx=20;
 		if(ny==undefined) ny=20;
 		if(nz==undefined) nz=20;
@@ -632,7 +632,7 @@
 	PhysicsSystem.prototype.processCollision=function(collision, dt){
 		collision.satisfied = true;
 
-		var body0= collision.objInfo.body0;
+		var body0 = collision.objInfo.body0;
 		var body1 = collision.objInfo.body1;
 
 		var gotOne = false;

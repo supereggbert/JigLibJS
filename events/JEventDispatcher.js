@@ -52,12 +52,13 @@
 	 **/
 	JEventDispatcher.prototype.dispatchEvent=function(event)
 	{
-		if (typeof event.type == 'undefined')
-			throw new Error('Invalid argument passed to JEventDispatcher.dispatchEvent - use an instance or subclass of JEvent');
+		//remove this for now do we want to be strict?
+		//if (typeof event.type == 'undefined')
+		//	throw new Error('Invalid argument passed to JEventDispatcher.dispatchEvent - use an instance or subclass of JEvent');
 		
 		var listeners = this._listeners[event.type];
 		
-		if (!listeners instanceof Array || listeners.length == 0)
+		if (!listeners || listeners.length == 0)
 			return;
 		
 		for (var i=0, num=listeners.length; i < num; i++)
