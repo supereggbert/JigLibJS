@@ -4,7 +4,7 @@
 	var JNumber3D=jigLib.JNumber3D;
                 
 	var OctreeCell=function(aabox){
-		this.childCellIndices = [];
+		this.childCellIndices = [-1,-1,-1,-1,-1,-1,-1,-1];
 		this.triangleIndices = [];
                         
 		this.clear();
@@ -18,7 +18,7 @@
 		this._egdes = this.AABox.get_edges();
 	}
 		
-	OctreeCell.prototype.NUM_CHILDREN = 8;
+	OctreeCell.NUM_CHILDREN = 8;
                 
 	// indices of the children (if not leaf). Will be -1 if there is no child
         OctreeCell.prototype.childCellIndices=null;

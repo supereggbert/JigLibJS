@@ -24,16 +24,16 @@
 		rotationType: "DEGREES",
 		aabbDetection: true,
 		doShockStep:  false,
-		allowedPenetration: 0.01,
+		allowedPenetration: 0.05,
 		collToll: 0.05,
 		velThreshold: 0.7,
 		angVelThreshold: 5,
-		posThreshold: 0.7,
-		orientThreshold: 0.7, 
-		deactivationTime: 0.1, 
-		numPenetrationRelaxationTimesteps: 50,
+		posThreshold: 0.01,
+		orientThreshold: 0.01, 
+		deactivationTime: 1, 
+		numPenetrationRelaxationTimesteps: 20,
 		numCollisionIterations: 4,
-		numContactIterations: 8,
+		numContactIterations: 5,
 		numConstraintIterations: 15
 	};
 	 

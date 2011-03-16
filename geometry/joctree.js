@@ -3,6 +3,8 @@
 	var JNumber3D=jigLib.JNumber3D;
 	var EdgeData=jigLib.EdgeData;
 	var JIndexedTriangle=jigLib.JIndexedTriangle;
+	var JTriangle=jigLib.JTriangle;
+	var JSegment=jigLib.JSegment;
 	var OctreeCell=jigLib.OctreeCell;
 	var TriangleVertexIndices=jigLib.TriangleVertexIndices;
 	var JAABox=jigLib.JAABox;
@@ -113,7 +115,8 @@
 			if (this._cells[cellIndex].triangleIndices.length <= maxTrianglesPerCell || this._cells[cellIndex].AABox.getRadiusAboutCentre() < minCellSize) {
 				continue;
 			}
-			for (i = 0; i < OctreeCell.NUM_CHILDREN; i++ ) {
+			
+			for (var i = 0; i < OctreeCell.NUM_CHILDREN; i++ ) {
 				this._cells[cellIndex].childCellIndices[i] = this._cells.length;
 				cellsToProcess.push(this._cells.length);
 				this._cells.push(new OctreeCell(this.createAABox(this._cells[cellIndex].AABox, i)));
@@ -157,7 +160,6 @@
                         
 		while (this._cellsToTest.length != 0) {
 			cellIndex = this._cellsToTest.pop();
-                                
 			cell = this._cells[cellIndex];
                                 
 			if (!aabb.overlapTest(cell.AABox)) {
@@ -176,7 +178,7 @@
 					}
 				}
 			}else {
-				for (i = 0 ; i < OctreeCell.NUM_CHILDREN ; i++) {
+				for (var i = 0 ; i < OctreeCell.NUM_CHILDREN ; i++) {
 					this._cellsToTest.push(cell.childCellIndices[i]);
 				}
 			}
@@ -213,7 +215,7 @@
 	
 	// Create a bounding box appropriate for a child, based on a parents AABox
 	JOctree.prototype.createAABox=function(aabb, _id){
-		var dims = JNumber3D.getScaleVector(Vector3DUtil.subtract(aabb.maxPos,aabb.minPos), 0.5);
+		var dims = JNumber3D.getScaleVector(Vector3DUtil.subtract(aabb.get_maxPos(),aabb.get_minPos()), 0.5);
 		var offset;
 		switch(_id) {
 			case 0:
@@ -244,14 +246,13 @@
 				offset = [0, 0, 0];
 				break;
 		}
-                        
+                        		
 		var result = new JAABox();
-		result.minPos = Vector3DUtil.add(aabb.minPos,[offset.x * dims.x, offset.y * dims.y, offset.z * dims.z]);
-		result.maxPos = Vector3DUtil.add(result.minPos,dims);
-                        
+		result.set_minPos(Vector3DUtil.add(aabb.get_minPos(),[offset[0] * dims[0], offset[1] * dims[1], offset[2] * dims[2]]));
+		result.set_maxPos(Vector3DUtil.add(result.get_minPos(),dims));
 		Vector3DUtil.scaleBy(dims,0.00001);
-		result.minPos = Vector3DUtil.subtract(result.minPos,dims);
-		result.maxPos = Vector3DUtil.subtract(result.maxPos,dims);
+		result.set_minPos(Vector3DUtil.subtract(result.get_minPos(),dims));
+		result.set_maxPos(Vector3DUtil.subtract(result.get_maxPos(),dims));
                         
 		return result;
 	}	
@@ -267,12 +268,12 @@
 			cell.AABox.isPointInside(this.getVertex(triangle.getVertexIndex(2)))) {
 			return true;
 		}
-                                
+
 		var tri = new JTriangle(this.getVertex(triangle.getVertexIndex(0)), this.getVertex(triangle.getVertexIndex(1)), this.getVertex(triangle.getVertexIndex(2)));
 		var edge;
 		var seg;
-		var edges = cell.egdes;
-		var pts = cell.points;
+		var edges = cell.get_egdes();
+		var pts = cell.get_points();
 		for (var i = 0; i < 12; i++ ) {
 			edge = edges[i];
 			seg = new JSegment(pts[edge.ind0], Vector3DUtil.subtract(pts[edge.ind1],pts[edge.ind0]));

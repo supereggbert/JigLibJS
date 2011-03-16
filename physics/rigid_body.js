@@ -582,7 +582,7 @@
 		if (!this._movable) return;
 		
 		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(impulse, this._invMass));
-		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse);
+		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse); 
 		JMatrix3D.multiplyVector(this._worldInvInertia, rotImpulse);
 		this._currState.rotVelocity = Vector3DUtil.add(this._currState.rotVelocity, rotImpulse);
 

@@ -23,6 +23,7 @@ distribution.
 	var Vector3DUtil=jigLib.Vector3DUtil;
 	var JNumber3D=jigLib.JNumber3D;
 	var EdgeData=jigLib.EdgeData;
+	var JMath3D=jigLib.JMath3D;
 	
 	/**
 	 * @author Muzer(muzerly@gmail.com)
@@ -322,6 +323,47 @@ distribution.
 		var _maxPos=this._maxPos;
 		return [_minPos[0],_minPos[1],_minPos[2],_maxPos[0],_maxPos[1],_maxPos[2]].toString();
 	};
+	
+	
+	JAABox.prototype.segmentAABoxOverlap=function(seg){
+		var jDir,kDir,i,iFace;
+		var frac,dist0,dist1,tiny=JMath3D.NUM_TINY;
+                        
+		var pt,minPosArr,maxPosArr,p0,p1,faceOffsets;
+		minPosArr = this._minPos.slice(0);
+		maxPosArr = this._maxPos.slice(0);
+		p0 = seg.origin.slice(0);
+		p1 = seg.getEnd().slice(0);
+		for (i = 0; i < 3; i++ ) {
+			jDir = (i + 1) % 3;
+			kDir = (i + 2) % 3;
+			faceOffsets = [minPosArr[i], maxPosArr[i]];
+                                
+			for (iFace = 0 ; iFace < 2 ; iFace++) {
+				dist0 = p0[i] - faceOffsets[iFace];
+				dist1 = p1[i] - faceOffsets[iFace];
+				frac = -1;
+				if (dist0 * dist1 < -tiny)
+					frac = -dist0 / (dist1 - dist0);
+				else if (Math.abs(dist0) < tiny)
+					frac = 0;
+				else if (Math.abs(dist1) < tiny)
+                                               frac = 1;
+                                                
+				if (frac >= 0) {
+					pt = seg.getPoint(frac).slice(0);
+					if((pt[jDir] > minPosArr[jDir] - tiny) && 
+					(pt[jDir] < maxPosArr[jDir] + tiny) && 
+					(pt[kDir] > minPosArr[kDir] - tiny) && 
+					(pt[kDir] < maxPosArr[kDir] + tiny)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 
 	jigLib.JAABox=JAABox;
 	
