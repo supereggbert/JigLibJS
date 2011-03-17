@@ -422,9 +422,9 @@
 	 **/
 	JBox.prototype.getInertiaProperties=function(m){
 		return JMatrix3D.getScaleMatrix(
-			(m*12) * (this._sideLengths[1] * this._sideLengths[1] + this._sideLengths[2] * this._sideLengths[2]),
-			(m*12) * (this._sideLengths[0] * this._sideLengths[0] + this._sideLengths[2] * this._sideLengths[2]),
-			(m*12) * (this._sideLengths[0] * this._sideLengths[0] + this._sideLengths[1] * this._sideLengths[1]));
+			(m*4) * (this._sideLengths[1] * this._sideLengths[1] + this._sideLengths[2] * this._sideLengths[2]),
+			(m*4) * (this._sideLengths[0] * this._sideLengths[0] + this._sideLengths[2] * this._sideLengths[2]),
+			(m*4) * (this._sideLengths[0] * this._sideLengths[0] + this._sideLengths[1] * this._sideLengths[1]));
 	};
 				
 	/**

@@ -111,7 +111,7 @@
 		this._linVelDamping = [0.995, 0.995, 0.995, 0];
 		this._rotVelDamping = [0.5, 0.5, 0.5, 0];
 		this._maxLinVelocities = 500;
-		this._maxRotVelocities = 50;
+		this._maxRotVelocities = 500;
 
 		this._velChanged = false;
 		this._inactiveTime = 0;
