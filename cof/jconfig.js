@@ -25,7 +25,7 @@
 		aabbDetection: true,
 		doShockStep:  false,
 		allowedPenetration: 0.01,
-		collToll: 0.15,
+		collToll: 0.05,
 		velThreshold: 0.7,
 		angVelThreshold: 5,
 		posThreshold: 0.01,

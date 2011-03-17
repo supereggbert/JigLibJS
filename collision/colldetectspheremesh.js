@@ -54,9 +54,11 @@
 				// have overlap - but actually report the old intersection
 				oldD2 = triangle.pointTriangleDistanceSq(arr, sphere.get_oldState().position);
 				dist = Math.sqrt(oldD2);
+				
 				depth = sphere.get_radius() - dist;
-				var collisionN = (dist > tiny) ? (Vector3DUtil.subtract(sphere.get_oldState().position,triangle.getPoint(arr[0], arr[1]))) : triangle.normal.slice(0);
+				var collisionN = (dist > tiny) ? (Vector3DUtil.subtract(sphere.get_oldState().position,triangle.getPoint(arr[0], arr[1]))) : triangle.get_normal().slice(0);
 				Vector3DUtil.normalize(collisionN);
+				
 				// since impulse get applied at the old position
 				var pt = Vector3DUtil.subtract(sphere.get_oldState().position,JNumber3D.getScaleVector(collisionN, sphere.get_radius()));
                                         
