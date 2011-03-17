@@ -109,7 +109,7 @@
 		this._torque = [0,0,0,0];
 			
 		this._linVelDamping = [0.995, 0.995, 0.995, 0];
-		this._rotVelDamping = [0.5, 0.5, 0.5, 0];
+		this._rotVelDamping = [0.9, 0.9, 0.9, 0];
 		this._maxLinVelocities = 500;
 		this._maxRotVelocities = 500;
 
