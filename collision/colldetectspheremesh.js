@@ -69,7 +69,6 @@
 				Vector3DUtil.normalize(collNormal);
 			}
 		}
-                        
 		var collInfo = new jigLib.CollisionInfo();
 		collInfo.objInfo = info;
 		collInfo.dirToBody = collNormal;

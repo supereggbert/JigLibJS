@@ -252,7 +252,7 @@
 		result.set_maxPos(Vector3DUtil.add(result.get_minPos(),dims));
 		Vector3DUtil.scaleBy(dims,0.00001);
 		result.set_minPos(Vector3DUtil.subtract(result.get_minPos(),dims));
-		result.set_maxPos(Vector3DUtil.subtract(result.get_maxPos(),dims));
+		result.set_maxPos(Vector3DUtil.add(result.get_maxPos(),dims));
                         
 		return result;
 	}	
