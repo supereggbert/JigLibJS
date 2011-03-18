@@ -123,7 +123,7 @@
 	 * @type JMatrix3D
 	 **/
 	JSphere.prototype.getInertiaProperties=function(m){
-		var Ixx = 0.4 * 1/m * this._radius * this._radius;
+		var Ixx = 0.4 * 1 * this._radius * this._radius;
 		return JMatrix3D.getScaleMatrix(Ixx, Ixx, Ixx);
 	};
 				

@@ -32,7 +32,7 @@
                         
 		var potentialTriangles = [];
 		var numTriangles = mesh.get_octree().getTrianglesIntersectingtAABox(potentialTriangles, sphere.get_boundingBox());
-                        
+
 		var newD2,distToCentre,oldD2,dist,depth,tiny=JNumber3D.NUM_TINY;
 		var meshTriangle;
 		var vertexIndices;
