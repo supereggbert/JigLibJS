@@ -6,7 +6,10 @@
 	 * @class JEventDispatcher The base class for event dispatchers
 	 * @constructor
 	 **/
-	var JEventDispatcher=function() {};
+	var JEventDispatcher=function() 
+	{
+		this._listeners={};
+	};
 	
 	JEventDispatcher.prototype._listeners={};
 	

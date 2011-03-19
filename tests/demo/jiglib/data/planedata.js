@@ -1,1 +1,0 @@
-(function(a){var b=a.Vector3DUtil;var c=function(e,d){this.position=e.slice(0);this.normal=d.slice(0);this.distance=b.dotProduct(this.position,this._normal);};c.prototype.position=null;c.prototype.normal=null;c.prototype.distance=null;c.prototype.pointPlaneDistance=function(d){return b.dotProduct(normal,d)-distance;};a.PlaneData=c;})(jigLib);

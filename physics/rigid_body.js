@@ -28,6 +28,7 @@
 	var PhysicsState=jigLib.PhysicsState;
 	var PhysicsSystem=jigLib.PhysicsSystem;
 	var JAABox=jigLib.JAABox;
+	var JCollisionEvent=jigLib.JCollisionEvent;
 	
 	/**
 	 * @name RigidBody
@@ -84,10 +85,16 @@
 	 * @property {array} _constraints a collection of JConstraint objects
 	 * @property {array} collisions a collection of CollisionInfo objects
 	 * @property {boolean} isActive
+	 * @property {number} minImpulseForCollisionEvent the minimum total absolute impulse required to trigger a collision event
 	 * @constructor
 	 * @param {ISkin3D} _skin
 	 **/
 	var RigidBody=function(skin){
+		// calling "this.Super" causes recursion in inheritance chains 
+		// because Super references this class constructor
+		//this.Super(skin);
+		jigLib.JEventDispatcher.call(this);
+		
 		this._useDegrees = (JConfig.rotationType == "DEGREES") ? true : false;
 		
 		this._id = RigidBody.idCounter++;
@@ -193,6 +200,20 @@
 	RigidBody.prototype.collisions=null;
 	
 	RigidBody.prototype.isActive=null;
+	RigidBody.prototype.minImpulseForCollisionEvent = 1;
+	
+	/**
+	 * @function dispatchCollisionEvent dispatches a JCollisionEvent
+	 * @param {RigidBody} body the other body involved in the collision
+	 * @param {Array} impulse a 3D vector representing the impulse applied to this body as a result of the collision
+	 */
+	RigidBody.prototype.dispatchCollisionEvent=function(body, impulse)
+	{
+		if (Vector3DUtil.getSum(impulse) < this.minImpulseForCollisionEvent)
+			return;
+		
+		this.dispatchEvent(new JCollisionEvent(body, impulse));
+	};
 	
 	/**
 	 * @function radiansToDegrees converts radians to degrees

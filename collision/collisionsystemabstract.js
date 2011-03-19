@@ -37,24 +37,24 @@
 		this.detectionFunctors["TRIANGLEMESH_BOX"] = new jigLib.CollDetectBoxMesh();
 	};
 	CollisionSystemAbstract.prototype.detectionFunctors={};
-        CollisionSystemAbstract.prototype.collBody=null;
+    CollisionSystemAbstract.prototype.collBody=null;
 	CollisionSystemAbstract.prototype._numCollisionsChecks = 0;
 
-        CollisionSystemAbstract.prototype.addCollisionBody=function(body){
+    CollisionSystemAbstract.prototype.addCollisionBody=function(body){
 		if (!this.findBody(body)) this.collBody.push(body);
 	};
                 
-        CollisionSystemAbstract.prototype.removeCollisionBody=function(body){
+    CollisionSystemAbstract.prototype.removeCollisionBody=function(body){
 		if (this.findBody(body))  this.collBody.splice(this.collBody.indexOf(body), 1);
 	};
 
-        CollisionSystemAbstract.prototype.removeAllCollisionBodies=function(){
+    CollisionSystemAbstract.prototype.removeAllCollisionBodies=function(){
 		this.collBody=[];
 	};
 	
 	
 	// Detects collisions between the body and all the registered collision bodies
-        CollisionSystemAbstract.prototype.detectCollisions=function(body, collArr){
+    CollisionSystemAbstract.prototype.detectCollisions=function(body, collArr){
 		if (!body.isActive) return;
                         
 		var info;
@@ -75,7 +75,7 @@
 	};
                 
 	// Detects collisions between the all bodies
-        CollisionSystemAbstract.prototype.detectAllCollisions=function(bodies, collArr){
+    CollisionSystemAbstract.prototype.detectAllCollisions=function(bodies, collArr){
 	};
 
 	CollisionSystemAbstract.prototype.collisionSkinMoved=function(colBody){
