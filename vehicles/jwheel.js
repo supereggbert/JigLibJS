@@ -360,7 +360,7 @@
 			segments[iRay] = segment;
 		}
 		if (!this._lastOnFloor) return false;
-
+		
 		var frac= objArr[bestIRay].frac;
 		var groundPos = objArr[bestIRay].position;
 		var otherBody = objArr[bestIRay].rigidBody;

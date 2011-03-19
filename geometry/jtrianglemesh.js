@@ -8,6 +8,7 @@
 	var PhysicsState=jigLib.PhysicsState;
 	var RigidBody=jigLib.RigidBody;
 	var ISkin3D=jigLib.ISkin3D;
+	var JTriangle=jigLib.JTriangle;
 
 	//removed init position and init orientation seems weird to have on trimesh but no other geom types
 	var JTriangleMesh=function(skin, maxTrianglesPerCell, minCellSize){
@@ -63,12 +64,12 @@
 		return this._octree;
 	}
                 
-        /*JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
-		var segBox = new JAABox();
+       /* JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
+		var segBox = new jigLib.JAABox();
 		segBox.addSegment(seg);
                         
 		var potentialTriangles = [];
-		var numTriangle = this._octree.getTrianglesIntersectingtAABox(potentialTriangles, segBox);
+		var numTriangles = this._octree.getTrianglesIntersectingtAABox(potentialTriangles, segBox);
                         
 		var bestFrac = JNumber3D.NUM_HUGE;
 		var tri;
@@ -82,7 +83,7 @@
 				if (out.frac < bestFrac) {
 					bestFrac = out.frac;
 					out.position = seg.getPoint(bestFrac);
-					out.normal = meshTriangle.plane.normal;
+					out.normal = meshTriangle.get_plane().normal;
 				}
 			}
 		}
@@ -97,7 +98,7 @@
 	JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
                         
 		var potentialTriangles = [];
-		var numTriangle = this._octree.getTrianglesIntersectingSegment(potentialTriangles, seg);
+		var numTriangles = this._octree.getTrianglesIntersectingSegment(potentialTriangles, seg);
                         
 		var bestFrac = JNumber3D.NUM_HUGE;
 		for (var iTriangle = 0 ; iTriangle < numTriangles ; iTriangle++) {
@@ -109,7 +110,7 @@
 				if (out.frac < bestFrac) {
 					bestFrac = out.frac;
 					out.position = seg.getPoint(bestFrac);
-					out.normal = meshTriangle.plane.normal;
+					out.normal = meshTriangle.get_plane().normal;
 				}
 			}
 		}

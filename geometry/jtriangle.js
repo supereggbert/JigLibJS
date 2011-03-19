@@ -93,6 +93,7 @@
 		if (a > -JNumber3D.NUM_TINY && a < JNumber3D.NUM_TINY) {
 			return false;
 		}
+		
 		f = 1 / a;
 		s = Vector3DUtil.subtract(seg.origin,this.origin);
 		u = f * Vector3DUtil.dotProduct(s,p);

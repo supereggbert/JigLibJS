@@ -42,6 +42,9 @@ distribution.
 		if(minPos){
 			this._minPos = minPos.slice(0);
 			this._maxPos = maxPos.slice(0);
+		}else{
+			this._minPos = [0,0,0];
+			this._maxPos = [0,0,0];
 		}
 	};
 	
@@ -338,7 +341,7 @@ distribution.
 	
 	JAABox.prototype.segmentAABoxOverlap=function(seg){
 		var jDir,kDir,i,iFace;
-		var frac,dist0,dist1,tiny=JMath3D.NUM_TINY;
+		var frac,dist0,dist1,tiny=JNumber3D.NUM_TINY;
                         
 		var pt,minPosArr,maxPosArr,p0,p1,faceOffsets;
 		minPosArr = this._minPos.slice(0);
@@ -354,13 +357,13 @@ distribution.
 				dist0 = p0[i] - faceOffsets[iFace];
 				dist1 = p1[i] - faceOffsets[iFace];
 				frac = -1;
-				if (dist0 * dist1 < -tiny)
+				if (dist0 * dist1 < -tiny){
 					frac = -dist0 / (dist1 - dist0);
-				else if (Math.abs(dist0) < tiny)
+				}else if (Math.abs(dist0) < tiny){
 					frac = 0;
-				else if (Math.abs(dist1) < tiny)
-                                               frac = 1;
-                                                
+				}else if (Math.abs(dist1) < tiny){
+					frac = 1;
+				}
 				if (frac >= 0) {
 					pt = seg.getPoint(frac).slice(0);
 					if((pt[jDir] > minPosArr[jDir] - tiny) && 

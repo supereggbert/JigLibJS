@@ -125,8 +125,7 @@
 				numTriangles = this._cells[cellIndex].triangleIndices.length;
 				for (var j=0; j < numTriangles; j++ ) {
 					iTri = this._cells[cellIndex].triangleIndices[j];
-					if (this.doesTriangleIntersectCell(this._triangles[iTri], childCell))
-					{
+					if (this.doesTriangleIntersectCell(this._triangles[iTri], childCell)){
 						childCell.triangleIndices.push(iTri);
 					}
 				}
@@ -159,7 +158,7 @@
 			if (!cell.AABox.segmentAABoxOverlap(seg)) {
 				continue;
 			}
-                                
+
 			if (cell.isLeaf()) {
 				nTris = cell.triangleIndices.length;
 				for (var i = 0 ; i < nTris ; i++) {
@@ -193,7 +192,6 @@
 		this.incrementTestCounter();
                         
 		var cellIndex,nTris,cell,triangle;
-                        
 		while (this._cellsToTest.length != 0) {
 			cellIndex = this._cellsToTest.pop();
 			cell = this._cells[cellIndex];
@@ -201,7 +199,6 @@
 			if (!aabb.overlapTest(cell.AABox)) {
 				continue;
 			}
-                                
 			if (cell.isLeaf()) {
 				nTris = cell.triangleIndices.length;
 				for (var i = 0 ; i < nTris ; i++) {
@@ -313,7 +310,7 @@
 		for (var i = 0; i < 12; i++ ) {
 			edge = edges[i];
 			seg = new JSegment(pts[edge.ind0], Vector3DUtil.subtract(pts[edge.ind1],pts[edge.ind0]));
-			if (tri.segmentTriangleIntersection(null, seg)) {
+			if (tri.segmentTriangleIntersection({}, seg)) {
 				return true;
 			}
 		}

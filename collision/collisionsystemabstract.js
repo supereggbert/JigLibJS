@@ -117,13 +117,30 @@
 	CollisionSystemAbstract.prototype.segmentBounding=function(seg, obj){
 		var pos = seg.getPoint(0.5);
 		var r = Vector3DUtil.get_length(seg.delta) / 2;
+
+		if (obj.get_type() != "PLANE" && obj.get_type() != "TERRAIN" && obj.get_type() != "TRIANGLEMESH"){
+			var num1 = Vector3DUtil.get_length(Vector3DUtil.subtract(pos, obj.get_currentState().position));
+			var num2 = r + obj.get_boundingSphere();
+			if (num1 <= num2){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return true;
+		}
+	};
+	
+	/*CollisionSystemAbstract.prototype.segmentBounding=function(seg, obj){
+		var pos = seg.getPoint(0.5);
+		var r = Vector3DUtil.get_length(seg.delta) / 2;
                         
 		var num1 = Vector3DUtil.get_length(Vector3DUtil.subtract(pos,obj.get_currentState().position));
 		var num2 = r + obj.get_boundingSphere();
                         
 		if (num1 <= num2) return true;
                         else return false;
-	};
+	};*/
 
 	CollisionSystemAbstract.prototype.get_numCollisionsChecks=function(){
 		return this._numCollisionsChecks;    
