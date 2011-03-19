@@ -109,7 +109,7 @@
 		this._torque = [0,0,0,0];
 			
 		this._linVelDamping = [0.995, 0.995, 0.995, 0];
-		this._rotVelDamping = [0.9, 0.9, 0.9, 0];
+		this._rotVelDamping = [0.5, 0.5, 0.5, 0];
 		this._maxLinVelocities = 500;
 		this._maxRotVelocities = 500;
 
@@ -544,7 +544,7 @@
 	 **/
 	RigidBody.prototype.applyWorldImpulse=function(impulse, pos){
 		if (!this._movable) return;
-		
+				
 		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(impulse, this._invMass));
 
 		var rotImpulse = Vector3DUtil.crossProduct(Vector3DUtil.subtract(pos, this._currState.position), impulse);
@@ -562,7 +562,7 @@
 	 **/
 	RigidBody.prototype.applyWorldImpulseAux=function(impulse, pos){
 		if (!this._movable) return;
-		
+						
 		this._currLinVelocityAux = Vector3DUtil.add(this._currLinVelocityAux, JNumber3D.getScaleVector(impulse, this._invMass));
 
 		var rotImpulse = Vector3DUtil.crossProduct(Vector3DUtil.subtract(pos, this._currState.position), impulse);
@@ -579,8 +579,9 @@
 	 * @type void
 	 **/
 	RigidBody.prototype.applyBodyWorldImpulse=function(impulse, delta){
+
 		if (!this._movable) return;
-		
+				
 		this._currState.linVelocity = Vector3DUtil.add(this._currState.linVelocity, JNumber3D.getScaleVector(impulse, this._invMass));
 		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse); 
 		JMatrix3D.multiplyVector(this._worldInvInertia, rotImpulse);
@@ -597,7 +598,7 @@
 	 **/
 	RigidBody.prototype.applyBodyWorldImpulseAux=function(impulse, delta){
 		if (!this._movable) return;
-		
+				
 		this._currLinVelocityAux = Vector3DUtil.add(this._currLinVelocityAux, JNumber3D.getScaleVector(impulse, this._invMass));
 
 		var rotImpulse = Vector3DUtil.crossProduct(delta, impulse);

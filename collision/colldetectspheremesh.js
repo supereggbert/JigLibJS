@@ -32,7 +32,8 @@
                         
 		var potentialTriangles = [];
 		var numTriangles = mesh.get_octree().getTrianglesIntersectingtAABox(potentialTriangles, sphere.get_boundingBox());
-
+		if(!numTriangles) return;
+		
 		var newD2,distToCentre,oldD2,dist,depth,tiny=JNumber3D.NUM_TINY;
 		var meshTriangle;
 		var vertexIndices;
@@ -41,7 +42,7 @@
 		for (var iTriangle = 0 ; iTriangle < numTriangles ; ++iTriangle) {
 			meshTriangle = mesh.get_octree().getTriangle(potentialTriangles[iTriangle]);
 			distToCentre = meshTriangle.get_plane().pointPlaneDistance(sphere.get_currentState().position);
-			//alert(distToCentre);
+
 			if (distToCentre <= 0) continue;
 			if (distToCentre >= sphereTolR) continue;
                                 
@@ -58,7 +59,6 @@
 				depth = sphere.get_radius() - dist;
 				var collisionN = (dist > tiny) ? (Vector3DUtil.subtract(sphere.get_oldState().position,triangle.getPoint(arr[0], arr[1]))) : triangle.get_normal().slice(0);
 				Vector3DUtil.normalize(collisionN);
-				
 				// since impulse get applied at the old position
 				var pt = Vector3DUtil.subtract(sphere.get_oldState().position,JNumber3D.getScaleVector(collisionN, sphere.get_radius()));
                                         

@@ -171,7 +171,7 @@
                         
 		delta=Vector3DUtil.subtract(boxNewPos,boxOldPos);
 		oldDepth=depth+Vector3DUtil.dotProduct(delta,N);
-                        
+
 		var numPts=pts.length;
 		var collPts = [];
 		if(numPts>0){
@@ -188,7 +188,7 @@
 			collInfo.objInfo = info;
 			collInfo.dirToBody = N;
 			collInfo.pointInfo = collPts;
-                                
+			
 			var mat = new MaterialProperties();
 			mat.set_restitution(0.5*(box.get_material().get_restitution() + mesh.get_material().get_restitution()));
 			mat.set_friction(0.5*(box.get_material().get_friction() + mesh.get_material().get_friction()));

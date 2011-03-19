@@ -12,8 +12,8 @@
 	//removed init position and init orientation seems weird to have on trimesh but no other geom types
 	var JTriangleMesh=function(skin, maxTrianglesPerCell, minCellSize){
 		this.Super(skin);
-		if(maxTrianglesPerCell==undefined) maxTrianglesPerCell=10;
-		if(minCellSize==undefined) minCellSize=10;
+		if(maxTrianglesPerCell==undefined) maxTrianglesPerCell=20;
+		if(minCellSize==undefined) minCellSize=1;
                         
 		this._maxTrianglesPerCell = maxTrianglesPerCell;
 		this._minCellSize = minCellSize;
@@ -63,7 +63,7 @@
 		return this._octree;
 	}
                 
-        JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
+        /*JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
 		var segBox = new JAABox();
 		segBox.addSegment(seg);
                         
@@ -77,6 +77,33 @@
 			meshTriangle = this._octree.getTriangle(potentialTriangles[iTriangle]);
                                 
 			tri = new JTriangle(this._octree.getVertex(meshTriangle.getVertexIndex(0)), this._octree.getVertex(meshTriangle.getVertexIndex(1)), this._octree.getVertex(meshTriangle.getVertexIndex(2)));
+                                
+			if (tri.segmentTriangleIntersection(out, seg)) {
+				if (out.frac < bestFrac) {
+					bestFrac = out.frac;
+					out.position = seg.getPoint(bestFrac);
+					out.normal = meshTriangle.plane.normal;
+				}
+			}
+		}
+		out.frac = bestFrac;
+		if (bestFrac < JNumber3D.NUM_HUGE) {
+			return true;
+		}else {
+			return false;
+		}
+	}*/
+	
+	JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
+                        
+		var potentialTriangles = [];
+		var numTriangle = this._octree.getTrianglesIntersectingSegment(potentialTriangles, seg);
+                        
+		var bestFrac = JNumber3D.NUM_HUGE;
+		for (var iTriangle = 0 ; iTriangle < numTriangles ; iTriangle++) {
+			var meshTriangle = potentialTriangles[iTriangle];
+                                
+			var tri = new JTriangle(this._octree.getVertex(meshTriangle.getVertexIndex(0)), this._octree.getVertex(meshTriangle.getVertexIndex(1)), this._octree.getVertex(meshTriangle.getVertexIndex(2)));
                                 
 			if (tri.segmentTriangleIntersection(out, seg)) {
 				if (out.frac < bestFrac) {

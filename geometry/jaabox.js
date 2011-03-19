@@ -313,6 +313,17 @@ distribution.
 	JAABox.prototype.getRadiusAboutCentre=function(){
 		return 0.5 * (Vector3DUtil.get_length(Vector3DUtil.subtract(this._maxPos,this._minPos)));
 	}
+	
+	JAABox.prototype.scaleBox=function(factor){
+		var center=this.get_centrePos()
+		var deltamin=Vector3DUtil.subtract(this._minPos,center);
+		Vector3DUtil.scaleBy(deltamin,factor);
+		this._minPos=Vector3DUtil.subtract(this._minPos,deltamin);
+		
+		var deltamax=Vector3DUtil.subtract(this._maxPos,center);
+		Vector3DUtil.scaleBy(deltamax,factor);
+		this._maxPos=Vector3DUtil.subtract(this._maxPos,deltamax);
+	}
 
 	/**
 	 * @function toString  

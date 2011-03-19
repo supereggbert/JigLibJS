@@ -678,6 +678,9 @@
 			body0.applyBodyWorldImpulse(impulse, ptInfo.r0);
 			body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(impulse, -1), ptInfo.r1);
 
+			Vr0 = body0.getVelocity(ptInfo.r0);
+			Vr1 = body1.getVelocity(ptInfo.r1);
+
 			var tempV;
 			var VR = Vr0.slice(0);
 			if(body1.get_movable()) VR = Vector3DUtil.subtract(Vr0, Vr1);
@@ -702,7 +705,6 @@
 
 				if (denominator > JNumber3D.NUM_TINY){
 					var impulseToReverse = tangent_speed / denominator;
-
 					T = JNumber3D.getScaleVector(T, impulseToReverse);
 					body0.applyBodyWorldImpulse(T, ptInfo.r0);
 					body1.applyBodyWorldImpulse(JNumber3D.getScaleVector(T, -1), ptInfo.r1);

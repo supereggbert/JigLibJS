@@ -143,6 +143,42 @@
 			triangle.updateVertexIndices(this._vertices);
 		}
 	}
+	
+	JOctree.prototype.getTrianglesIntersectingSegment=function(triangles, seg){
+		if (this._cells.length == 0) return 0;
+                        
+		this._cellsToTest=[];
+		this._cellsToTest.push(0);
+                                               
+		var cellIndex,nTris,cell,triangle;
+                        
+		while (this._cellsToTest.length != 0) {
+			cellIndex = this._cellsToTest.pop();
+			cell = this._cells[cellIndex];
+                                
+			if (!cell.AABox.segmentAABoxOverlap(seg)) {
+				continue;
+			}
+                                
+			if (cell.isLeaf()) {
+				nTris = cell.triangleIndices.length;
+				for (var i = 0 ; i < nTris ; i++) {
+					triangle = this.getTriangle(cell.triangleIndices[i]);
+					if (triangle.counter != this._testCounter) {
+						triangle.counter = this._testCounter;
+						if (triangle.get_boundingBox().segmentAABoxOverlap(seg)) {
+							triangles.push(triangle);
+						}
+					}
+				}
+			}else {
+				for (var i = 0 ; i < OctreeCell.NUM_CHILDREN ; i++) {
+					this._cellsToTest.push(cell.childCellIndices[i]);
+				}
+			}
+		}
+		return triangles.length;
+	}
                 
 	/* Gets a list of all triangle indices that intersect an AABox. The vector passed in resized,
                  so if you keep it between calls after a while it won't grow any more, and this
