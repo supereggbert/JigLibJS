@@ -79,9 +79,9 @@
 	 * @type boolean
 	 **/
 	JSphere.prototype.segmentIntersect=function(out, seg, state){
-		out.fracOut = 0;
-		out.posOut = [0,0,0,0];
-		out.normalOut = [0,0,0,0];
+		out.frac = 0;
+		out.position = [0,0,0,0];
+		out.normal = [0,0,0,0];
 
 		var frac = 0;
 		var r = seg.delta;
@@ -110,10 +110,10 @@
 			return false;
 		}
 		frac = Math.max(lambda1, 0);
-		out.fracOut = frac;
-		out.posOut = seg.getPoint(frac);
-		out.normalOut = Vector3DUtil.subtract(out.posOut, state.position);
-		Vector3DUtil.normalize(out.normalOut);
+		out.frac = frac;
+		out.position = seg.getPoint(frac);
+		out.normal = Vector3DUtil.subtract(out.posOut, state.position);
+		Vector3DUtil.normalize(out.normal);
 		return true;
 	};
 

@@ -353,18 +353,17 @@
 			
 			if (this._collSystem.segmentIntersect(objArr[iRay], segment, carBody)) {
 				this._lastOnFloor = true;
-				if (objArr[iRay].fracOut < objArr[bestIRay].fracOut){
+				if (objArr[iRay].frac < objArr[bestIRay].frac){
 					bestIRay = iRay;
 				}
 			}
 			segments[iRay] = segment;
 		}
-		
 		if (!this._lastOnFloor) return false;
 
-		var frac= objArr[bestIRay].fracOut;
-		var groundPos = objArr[bestIRay].posOut;
-		var otherBody = objArr[bestIRay].bodyOut;
+		var frac= objArr[bestIRay].frac;
+		var groundPos = objArr[bestIRay].position;
+		var otherBody = objArr[bestIRay].rigidBody;
 
 		var groundNormal = worldAxis.slice(0);
 		if (numRays > 1){
@@ -432,6 +431,7 @@
 		force = Vector3DUtil.add(force, extraForce);
 
 		carBody.addWorldForce(force, groundPos);
+		
 		if (otherBody.get_movable()){
 			var maxOtherBodyAcc = 500;
 			var maxOtherBodyForce = maxOtherBodyAcc * otherBody.get_mass();

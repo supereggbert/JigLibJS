@@ -82,11 +82,11 @@
 		// used for grid
 	};
 	
+	
 	CollisionSystemAbstract.prototype.segmentIntersect=function(out, seg, ownerBody){
 		out.frac = JNumber3D.NUM_HUGE;
 		out.position = [];
 		out.normal = [];
-                        
 		var obj = new CollOutBodyData();
 		for(j=0;j<this.collBody.length;j++){
 			var _collBody=this.collBody[j];
@@ -119,7 +119,7 @@
 		var r = Vector3DUtil.get_length(seg.delta) / 2;
                         
 		var num1 = Vector3DUtil.get_length(Vector3DUtil.subtract(pos,obj.get_currentState().position));
-		var num2 = r + obj.boundingSphere;
+		var num2 = r + obj.get_boundingSphere();
                         
 		if (num1 <= num2) return true;
                         else return false;

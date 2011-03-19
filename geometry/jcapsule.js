@@ -128,9 +128,9 @@ distribution.
 	 * @type boolean
 	 **/
 	JCapsule.prototype.segmentIntersect=function(out, seg, state){
-		out.fracOut = 0;
-		out.posOut = [0,0,0,0];
-		out.normalOut = [0,0,0,0];
+		out.frac = 0;
+		out.position = [0,0,0,0];
+		out.normal = [0,0,0,0];
 						
 		var Ks = seg.delta;
 		var kss = Vector3DUtil.dotProduct(Ks, Ks);
@@ -174,11 +174,11 @@ distribution.
 		if (t < 0 || t > 1) {
 			return false;
 		}
-		out.fracOut = t;
-		out.posOut = seg.getPoint(t);
-		out.normalOut = Vector3DUtil.subtract(out.posOut, getBottomPos(state));
-		out.normalOut = Vector3DUtil.subtract(out.normalOut, JNumber3D.getScaleVector(cols[1], Vector3DUtil.dotProduct(out.normalOut, cols[1])));
-		Vector3DUtil.normalize(out.normalOut);
+		out.frac = t;
+		out.position = seg.getPoint(t);
+		out.normal = Vector3DUtil.subtract(out.posOut, getBottomPos(state));
+		out.normal = Vector3DUtil.subtract(out.normal, JNumber3D.getScaleVector(cols[1], Vector3DUtil.dotProduct(out.normal, cols[1])));
+		Vector3DUtil.normalize(out.normal);
 		return true;
 	};
 

@@ -341,9 +341,9 @@
 	 * @type boolean
 	 **/
 	JBox.prototype.segmentIntersect=function(out, seg, state){
-		out.fracOut = 0;
-		out.posOut = [0,0,0,0];
-		out.normalOut = [0,0,0,0];
+		out.frac = 0;
+		out.position = [0,0,0,0];
+		out.normal = [0,0,0,0];
 
 		var frac = JNumber3D.NUM_HUGE;
 		var min = -JNumber3D.NUM_HUGE;
@@ -404,13 +404,13 @@
 		if (frac > 1 - JNumber3D.NUM_TINY){
 			return false;
 		}
-		out.fracOut = frac;
-		out.posOut = seg.getPoint(frac);
+		out.frac = frac;
+		out.position = seg.getPoint(frac);
 
 		if (Vector3DUtil.dotProduct(orientationCol[dir], seg.delta) < 0)
-			out.normalOut = JNumber3D.getScaleVector(orientationCol[dir], -1);
+			out.normal = JNumber3D.getScaleVector(orientationCol[dir], -1);
 		else
-			out.normalOut = orientationCol[dir];
+			out.normal = orientationCol[dir];
 
 		return true;
 	};

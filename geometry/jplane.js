@@ -93,9 +93,9 @@
 	 * @type boolean
 	 **/
 	JPlane.prototype.segmentIntersect=function(out, seg, state){
-		out.fracOut = 0;
-		out.posOut = [0,0,0,0];
-		out.normalOut = [0,0,0,0];
+		out.frac = 0;
+		out.position = [0,0,0,0];
+		out.normal = [0,0,0,0];
 
 		var frac = 0;
 
@@ -109,10 +109,10 @@
 				return false;
 			}else{
 				frac = t;
-				out.fracOut = frac;
-				out.posOut = seg.getPoint(frac);
-				out.normalOut = this._normal.slice(0);
-				Vector3DUtil.normalize(out.normalOut);
+				out.frac = frac;
+				out.position = seg.getPoint(frac);
+				out.normal = this._normal.slice(0);
+				Vector3DUtil.normalize(out.normal);
 				return true;
 			}
 		}else{
