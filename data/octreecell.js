@@ -10,12 +10,12 @@
 		this.clear();
                         
 		if(aabox){
-			AABox = aabox.clone();
+			this.AABox = aabox.clone();
 		}else {
-			AABox = new JAABox();
+			this.AABox = new JAABox();
 		}
-		this._points = AABox.getAllPoints();
-		this._egdes = AABox.get_edges();
+		this._points = this.AABox.getAllPoints();
+		this._egdes = this.AABox.get_edges();
 	}
 		
 	OctreeCell.NUM_CHILDREN = 8;
@@ -25,7 +25,7 @@
 	// indices of the triangles (if leaf)
         OctreeCell.prototype.triangleIndices=null;
 	// Bounding box for the space we own
-	OctreeCell.prototype.AABox;
+	OctreeCell.prototype.AABox=null;
                 
         OctreeCell.prototype._points=null;
         OctreeCell.prototype._egdes=null;
