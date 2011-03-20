@@ -64,7 +64,7 @@
 		return this._octree;
 	}
                 
-       /* JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
+        /*JTriangleMesh.prototype.segmentIntersect=function(out, seg, state){
 		var segBox = new jigLib.JAABox();
 		segBox.addSegment(seg);
                         

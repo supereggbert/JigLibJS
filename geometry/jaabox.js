@@ -338,7 +338,32 @@ distribution.
 		return [_minPos[0],_minPos[1],_minPos[2],_maxPos[0],_maxPos[1],_maxPos[2]].toString();
 	};
 	
-	
+	JAABox.prototype.segmentAABoxOverlap=function(seg){
+		pt1 = seg.origin.slice(0);
+		pt2 = seg.getEnd().slice(0);
+
+		//if either point is inside the box then it must overlap!
+		if(this.isPointInside(pt1) || this.isPointInside(pt2)){
+			return true;
+		}
+		
+		min= this._minPos.slice(0);
+		max = this._maxPos.slice(0);
+		
+		var sidesIntersected1=( (pt1[0]-min[0])*(pt2[0]-min[0])<0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<0 ) +
+		( (pt1[1]-min[1])*(pt2[1]-min[1])<0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<0 );
+		
+		var sidesIntersected2=( (pt1[0]-min[0])*(pt2[0]-min[0])<0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<0 ) +
+		( (pt1[2]-min[2])*(pt2[2]-min[2])<0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<0 );
+		
+		var sidesIntersected3=( (pt1[1]-min[1])*(pt2[1]-min[1])<0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<0 ) +
+		( (pt1[2]-min[2])*(pt2[2]-min[2])<0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<0 );
+		
+		if((sidesIntersected1>1) + (sidesIntersected2>1) + (sidesIntersected3>1)>1) return true;
+		
+		return false;
+	};
+	/*
 	JAABox.prototype.segmentAABoxOverlap=function(seg){
 		var jDir,kDir,i,iFace;
 		var frac,dist0,dist1,tiny=JNumber3D.NUM_TINY;
@@ -376,7 +401,7 @@ distribution.
 			}
 		}
 		return false;
-	}
+	}*/
 
 
 	jigLib.JAABox=JAABox;

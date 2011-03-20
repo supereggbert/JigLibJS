@@ -152,7 +152,6 @@
 		var cellIndex,nTris,cell,triangle;
 		
 		this.incrementTestCounter();
-
 		while (this._cellsToTest.length != 0) {
 			cellIndex = this._cellsToTest.pop();
 			cell = this._cells[cellIndex];
