@@ -88,6 +88,7 @@
 		out.position = [];
 		out.normal = [];
 		var obj = new CollOutBodyData();
+		
 		for(j=0;j<this.collBody.length;j++){
 			var _collBody=this.collBody[j];
 			if (_collBody != ownerBody && this.segmentBounding(seg, _collBody)){

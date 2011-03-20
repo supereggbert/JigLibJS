@@ -112,7 +112,7 @@
 		frac = Math.max(lambda1, 0);
 		out.frac = frac;
 		out.position = seg.getPoint(frac);
-		out.normal = Vector3DUtil.subtract(out.posOut, state.position);
+		out.normal = Vector3DUtil.subtract(out.position, state.position);
 		Vector3DUtil.normalize(out.normal);
 		return true;
 	};

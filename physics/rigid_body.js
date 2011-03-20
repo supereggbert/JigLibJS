@@ -834,7 +834,7 @@
 	 * @type void
 	 **/
 	RigidBody.prototype.set_movable=function(mov){
-		if (this._type == "PLANE" || this._type == "TERRAIN") 
+		if (this._type == "PLANE" || this._type == "TERRAIN" || this._type == "TRIANGLEMESH") 
 			return;
 
 		this._movable = mov;
@@ -847,7 +847,7 @@
 	 * @type void
 	 **/
 	RigidBody.prototype.internalSetImmovable=function(){
-		if (this._type == "PLANE" || this._type == "TERRAIN") 
+		if (this._type == "PLANE" || this._type == "TERRAIN" || this._type == "TRIANGLEMESH") 
 			return;
 		this._origMovable = this._movable;
 		this._movable = false;
@@ -858,7 +858,7 @@
 	 * @type void
 	 **/
 	RigidBody.prototype.internalRestoreImmovable=function(){
-		if (this._type == "PLANE" || this._type == "TERRAIN") 
+		if (this._type == "PLANE" || this._type == "TERRAIN" || this._type == "TRIANGLEMESH") 
 			return;
 		this._movable = this._origMovable;
 	};

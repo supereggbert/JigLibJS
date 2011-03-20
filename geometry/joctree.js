@@ -150,7 +150,9 @@
 		this._cellsToTest.push(0);
                                                
 		var cellIndex,nTris,cell,triangle;
-                        
+		
+		this.incrementTestCounter();
+
 		while (this._cellsToTest.length != 0) {
 			cellIndex = this._cellsToTest.pop();
 			cell = this._cells[cellIndex];
@@ -158,7 +160,7 @@
 			if (!cell.AABox.segmentAABoxOverlap(seg)) {
 				continue;
 			}
-
+			
 			if (cell.isLeaf()) {
 				nTris = cell.triangleIndices.length;
 				for (var i = 0 ; i < nTris ; i++) {
