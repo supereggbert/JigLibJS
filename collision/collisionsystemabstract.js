@@ -155,9 +155,9 @@
 	CollisionSystemAbstract.prototype.checkCollidables=function(body0, body1){
 		if (body0.get_nonCollidables().length == 0 && body1.get_nonCollidables().length == 0) return true;
                         
-		if(body0.nonCollidables.indexOf(body1) > -1) return false;
+		if(body0.get_nonCollidables().indexOf(body1) > -1) return false;
                         
-		if(body1.nonCollidables.indexOf(body0) > -1) return false;
+		if(body1.get_nonCollidables().indexOf(body0) > -1) return false;
                         
 		return true;
 	}
