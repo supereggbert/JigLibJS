@@ -296,17 +296,17 @@
 			var body=bodies[j];
 			if (!body.isActive) continue;
 
-			bodyID = body.id;
+			bodyID = body.get_id();
 			bodyType = body.get_type();
                                 
 			var lists=this.getListsToCheck(body);
-                                
+			
 			for(var k=0;k<lists.length;k++){
 				var entry=lists[k];                                      
 				for (entry = entry.next; entry != null; entry = entry.next){
 					if (body == entry.collisionBody) continue;
                                                 
-					if (entry.collisionBody && entry.collisionBody.isActive && bodyID > entry.collisionBody.id)
+					if (entry.collisionBody && entry.collisionBody.isActive && bodyID > entry.collisionBody.get_id())
 						continue;
                                                 
 					if (this.checkCollidables(body, entry.collisionBody) && this.detectionFunctors[bodyType + "_" + entry.collisionBody.get_type()] != undefined){
