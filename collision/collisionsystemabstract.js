@@ -42,6 +42,7 @@
 
     CollisionSystemAbstract.prototype.addCollisionBody=function(body){
 		if (!this.findBody(body)) this.collBody.push(body);
+		
 	};
                 
     CollisionSystemAbstract.prototype.removeCollisionBody=function(body){

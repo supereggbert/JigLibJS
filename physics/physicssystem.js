@@ -358,9 +358,7 @@
 	 * @type boolean
 	 **/
 	PhysicsSystem.prototype.findBody=function(body){
-		var i=this._bodies.length-1;
-		if (i > 0) do { if(body==this._bodies[i]) return true; } while (i--);
-		return false;
+		return (this._bodies.indexOf(body)>-1);
 	};
 
 	/**
