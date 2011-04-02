@@ -43,6 +43,7 @@
 					[1, 3, 2, 0], [7, 6, 4, 5]];
 
 		this._type = "BOX";
+		this._skin = skin;
 
 		this._sideLengths = Vector3DUtil.create(width, height, depth, 0);
 		this._boundingSphere = 0.5 * Vector3DUtil.get_length(this._sideLengths);
