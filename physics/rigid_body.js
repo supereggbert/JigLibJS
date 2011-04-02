@@ -434,6 +434,7 @@
 		this._currState.rotVelocity = [0,0,0,0];
 		this.copyCurrentStateToOld();
 		this.updateBoundingBox();
+		this.setActive();
 	};
 
 	/**
