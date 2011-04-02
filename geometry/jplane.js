@@ -75,6 +75,22 @@
 	JPlane.prototype.get_distance=function(){
 		return this._distance;
 	};
+	
+	/**
+	 * @function set_normal sets the normal
+	 * @param {array} value The plane normal
+	 **/
+	JPlane.prototype.set_normal=function(value){
+		this._normal=value;
+	};
+
+	/**
+	 * @function set_normal sets the distance
+	 * @param {number} value The plane distance
+	 **/
+	JPlane.prototype.set_distance=function(value){
+		this._distance=value;
+	};
 
 	/**
 	 * @function pointPlaneDistance gets the distance from a given point

@@ -1285,7 +1285,6 @@
 	 **/
 	PhysicsSystem.prototype.findAllActiveBodies=function(){
 		this._activeBodies = [];
-				
 		for(var i=0, bl=this._bodies.length; i<bl; i++){
 			var _body=this._bodies[i];
 			if (_body.isActive)

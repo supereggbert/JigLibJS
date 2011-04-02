@@ -35,8 +35,8 @@
 			<filelist dir="${basedir}/build/output/code/events" files="JEvent.js" />
 			<fileset dir="${basedir}/build/output/code/events" includes="*.js" excludes="JEvent.js" />
 			<filelist dir="${basedir}/build/output/code/maths" files="glmatrix.js,vector3dutil.js,matrix3d.js,jnumber3d.js,jmatrix3d.js,jmaths3d.js" />
-			<filelist dir="${basedir}/build/output/code/data" files="CollOutData.js" />
-			<fileset dir="${basedir}/build/output/code/data" includes="*.js" excludes="CollOutData.js" />
+			<filelist dir="${basedir}/build/output/code/data" files="colloutdata.js" />
+			<fileset dir="${basedir}/build/output/code/data" includes="*.js" excludes="colloutdata.js" />
 			<fileset dir="${basedir}/build/output/code/plugins" includes="*.js" />
 			<filelist dir="${basedir}/build/output/code/geometry" files="jaabox.js" />
 			<fileset dir="${basedir}/build/output/code/physics" includes="*.js" excludes="hingejoint.js,physicssystem.js" />
@@ -61,7 +61,7 @@
 			<fileset dir="${basedir}/events" includes="*.js" excludes="JEvent.js" />
 			<filelist dir="${basedir}/maths" files="glmatrix.js,vector3dutil.js,matrix3d.js,jnumber3d.js,jmatrix3d.js,jmaths3d.js" />
 			<filelist dir="${basedir}/data" files="CollOutData.js" />
-			<fileset dir="${basedir}/data" includes="*.js" excludes="CollOutData.js" />
+			<fileset dir="${basedir}/data" includes="*.js" excludes="colloutdata.js" />
 			<fileset dir="${basedir}/plugins" includes="*.js" />
 			<filelist dir="${basedir}/geometry" files="jaabox.js" />
 			<fileset dir="${basedir}/physics" includes="*.js" excludes="hingejoint.js,physicssystem.js" />
