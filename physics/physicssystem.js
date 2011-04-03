@@ -714,8 +714,10 @@
 			body0.setConstraintsAndCollisionsUnsatisfied();
 			body1.setConstraintsAndCollisionsUnsatisfied();
 			// dispatch collision events
-			body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
-			body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
+			if(Vector3DUtil.get_length(appliedImpulse)>0){ //only fire event if the impulse size is greater then zero
+				body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
+				body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
+			}
 		}
 		return gotOne;
 	};
@@ -843,8 +845,10 @@
 			body0.setConstraintsAndCollisionsUnsatisfied();
 			body1.setConstraintsAndCollisionsUnsatisfied();
 			// dispatch collision events
-			body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
-			body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
+			if(Vector3DUtil.get_length(appliedImpulse)>0){ //only fire event if the impulse size is greater then zero
+				body0.dispatchEvent(new JCollisionEvent(body1, appliedImpulse));
+				body1.dispatchEvent(new JCollisionEvent(body0, JNumber3D.getScaleVector(appliedImpulse, -1)));
+			}
 		}
 		return gotOne;
 	};
