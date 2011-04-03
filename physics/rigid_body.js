@@ -440,10 +440,18 @@
 	/**
 	 * @function setVelocity 
 	 * @param {array} vel velocity in each axis expressed as a 3D vector
+	 * @param {boolean} local apply velocity in local frame
 	 * @type void
 	 **/
-	RigidBody.prototype.setVelocity=function(vel){
-		this._currState.linVelocity = vel.slice(0);
+	RigidBody.prototype.setVelocity=function(vel,local){
+		if(!local){
+			this._currState.linVelocity = vel.slice(0);
+		}else{
+			var matrix=this._currState.get_orientation();
+			this._currState.linVelocity[0]=matrix.glmatrix[0]*vel[0]+matrix.glmatrix[1]*vel[1]+matrix.glmatrix[2]*vel[2];
+			this._currState.linVelocity[1]=matrix.glmatrix[4]*vel[0]+matrix.glmatrix[5]*vel[1]+matrix.glmatrix[6]*vel[2];
+			this._currState.linVelocity[2]=matrix.glmatrix[8]*vel[0]+matrix.glmatrix[9]*vel[1]+matrix.glmatrix[10]*vel[2];
+		}
 	};
 
 	/**

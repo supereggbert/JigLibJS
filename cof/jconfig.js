@@ -24,7 +24,7 @@
 		rotationType: "DEGREES",
 		aabbDetection: true,
 		doShockStep:  false,
-		allowedPenetration: 0.05,
+		allowedPenetration: 0.015,
 		collToll: 0.01,
 		velThreshold: 0.1,
 		angVelThreshold: 5,
