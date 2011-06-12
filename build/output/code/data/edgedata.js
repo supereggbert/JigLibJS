@@ -1,1 +1,0 @@
-(function(a){var b=function(d,c){this.ind0=d;this.ind1=c;};a.EdgeData=b;})(jigLib);

@@ -350,16 +350,16 @@ distribution.
 		min= this._minPos.slice(0);
 		max = this._maxPos.slice(0);
 		
-		var sidesIntersected1=( (pt1[0]-min[0])*(pt2[0]-min[0])<0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<0 ) +
-		( (pt1[1]-min[1])*(pt2[1]-min[1])<0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<0 );
+		var sidesIntersected1=( (pt1[0]-min[0])*(pt2[0]-min[0])<=0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<=0 ) +
+		( (pt1[1]-min[1])*(pt2[1]-min[1])<0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<=0 );
 		
-		var sidesIntersected2=( (pt1[0]-min[0])*(pt2[0]-min[0])<0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<0 ) +
-		( (pt1[2]-min[2])*(pt2[2]-min[2])<0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<0 );
+		var sidesIntersected2=( (pt1[0]-min[0])*(pt2[0]-min[0])<=0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<=0 ) +
+		( (pt1[2]-min[2])*(pt2[2]-min[2])<=0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<=0 );
 		
-		var sidesIntersected3=( (pt1[1]-min[1])*(pt2[1]-min[1])<0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<0 ) +
-		( (pt1[2]-min[2])*(pt2[2]-min[2])<0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<0 );
+		var sidesIntersected3=( (pt1[1]-min[1])*(pt2[1]-min[1])<=0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<=0 ) +
+		( (pt1[2]-min[2])*(pt2[2]-min[2])<=0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<=0 );
 		
-		if((sidesIntersected1>1) + (sidesIntersected2>1) + (sidesIntersected3>1)>1) return true;
+		if((sidesIntersected1>=1) + (sidesIntersected2>=1) + (sidesIntersected3>=1)>1) return true;
 		
 		return false;
 	};
