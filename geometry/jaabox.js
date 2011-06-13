@@ -338,70 +338,43 @@ distribution.
 		return [_minPos[0],_minPos[1],_minPos[2],_maxPos[0],_maxPos[1],_maxPos[2]].toString();
 	};
 	
-	JAABox.prototype.segmentAABoxOverlap=function(seg){
-		pt1 = seg.origin.slice(0);
-		pt2 = seg.getEnd().slice(0);
 
-		//if either point is inside the box then it must overlap!
-		if(this.isPointInside(pt1) || this.isPointInside(pt2)){
-			return true;
-		}
-		
-		min= this._minPos.slice(0);
-		max = this._maxPos.slice(0);
-		
-		var sidesIntersected1=( (pt1[0]-min[0])*(pt2[0]-min[0])<=0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<=0 ) +
-		( (pt1[1]-min[1])*(pt2[1]-min[1])<0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<=0 );
-		
-		var sidesIntersected2=( (pt1[0]-min[0])*(pt2[0]-min[0])<=0 ) + ( (pt1[0]-max[0])*(pt2[0]-max[0])<=0 ) +
-		( (pt1[2]-min[2])*(pt2[2]-min[2])<=0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<=0 );
-		
-		var sidesIntersected3=( (pt1[1]-min[1])*(pt2[1]-min[1])<=0 ) + ( (pt1[1]-max[1])*(pt2[1]-max[1])<=0 ) +
-		( (pt1[2]-min[2])*(pt2[2]-min[2])<=0 ) + ( (pt1[2]-max[2])*(pt2[2]-max[2])<=0 );
-		
-		if((sidesIntersected1>=1) + (sidesIntersected2>=1) + (sidesIntersected3>=1)>1) return true;
-		
-		return false;
-	};
-	/*
+	
+
 	JAABox.prototype.segmentAABoxOverlap=function(seg){
-		var jDir,kDir,i,iFace;
-		var frac,dist0,dist1,tiny=JNumber3D.NUM_TINY;
-                        
-		var pt,minPosArr,maxPosArr,p0,p1,faceOffsets;
-		minPosArr = this._minPos.slice(0);
-		maxPosArr = this._maxPos.slice(0);
-		p0 = seg.origin.slice(0);
-		p1 = seg.getEnd().slice(0);
-		for (i = 0; i < 3; i++ ) {
-			jDir = (i + 1) % 3;
-			kDir = (i + 2) % 3;
-			faceOffsets = [minPosArr[i], maxPosArr[i]];
-                                
-			for (iFace = 0 ; iFace < 2 ; iFace++) {
-				dist0 = p0[i] - faceOffsets[iFace];
-				dist1 = p1[i] - faceOffsets[iFace];
-				frac = -1;
-				if (dist0 * dist1 < -tiny){
-					frac = -dist0 / (dist1 - dist0);
-				}else if (Math.abs(dist0) < tiny){
-					frac = 0;
-				}else if (Math.abs(dist1) < tiny){
-					frac = 1;
+		var fst = 0;
+		var fet = 1;  
+		var pt1 = seg.origin;
+		var pt2 = seg.getEnd();
+		var min= this._minPos;
+		var max = this._maxPos;
+	  
+		for (var i = 0; i < 3; i++) {  
+			var s=pt1[i];var e=pt2[i];
+			var amax=max[i];var amin=min[i];
+			if (s < e) {  
+				if (s > amax || e < amin){
+					return false;  
 				}
-				if (frac >= 0) {
-					pt = seg.getPoint(frac).slice(0);
-					if((pt[jDir] > minPosArr[jDir] - tiny) && 
-					(pt[jDir] < maxPosArr[jDir] + tiny) && 
-					(pt[kDir] > minPosArr[kDir] - tiny) && 
-					(pt[kDir] < maxPosArr[kDir] + tiny)) {
-						return true;
-					}
+			}else {  
+				if (e > amax || s < amin){ 
+					return false;  
 				}
+			}  
+			var d = e - s;  
+			var st = (s < amin) ? (amin - s) / d : 0;  
+			var et = (e > amax) ? (amax - s) / d : 1;  
+	  
+			if (st > fst) fst = st;  
+			if (et < fet) fet = et;  
+			if (fet < fst){
+				return false;  
 			}
-		}
-		return false;
-	}*/
+		}  
+
+		return true;  
+	} 
+	
 
 
 	jigLib.JAABox=JAABox;
