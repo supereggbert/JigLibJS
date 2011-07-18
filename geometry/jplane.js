@@ -82,6 +82,7 @@
 	 **/
 	JPlane.prototype.set_normal=function(value){
 		this._normal=value;
+		this._initNormal=value;
 	};
 
 	/**
